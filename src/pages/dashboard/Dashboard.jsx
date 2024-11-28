@@ -6,21 +6,19 @@ import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
 import { data } from "../../component/core/dashboard/memoDoomyData";
 import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
 import MemoForm from "../../component/shared/createMemo/MemoForm";
+import DrawerSideTab from "../../component/shared/drawer/DrawerSideTab";
 
 const Dashboard = () => {
   const [selected, setSelected] = useState("all");
 
-  const [openDrawer, setOpenDrawer] = useState("")
-
+  const [openDrawer, setOpenDrawer] = useState("");
 
   const handleOpenCreateMemo = () => {
-    setOpenDrawer(true)
-  }
+    setOpenDrawer(true);
+  };
   const handleCloseCreateMemo = () => {
-    setOpenDrawer(false)
-  }
-
-
+    setOpenDrawer(false);
+  };
 
   return (
     <>
@@ -74,18 +72,26 @@ const Dashboard = () => {
         </section>
       </main>
 
-
-
-
-                    <ExpandedDrawer isOpen={openDrawer} onClose={handleCloseCreateMemo} maxWidth={620}>
-                        <MemoForm />
-                      {/* <DrawerSideTab>
-                      </DrawerSideTab> */}
-                    </ExpandedDrawer>
-
-
-
-
+      <ExpandedDrawer
+        isOpen={openDrawer}
+        onClose={handleCloseCreateMemo}
+        maxWidth={620}
+      >
+        <DrawerSideTab
+          tabs={[
+            {
+              title: "Create Memo",
+              component: <MemoForm />,
+            },
+            {
+              title: "Approval",
+              component: <MemoForm />,
+            },
+          ]}
+        >
+          <MemoForm />
+        </DrawerSideTab>
+      </ExpandedDrawer>
     </>
   );
 };

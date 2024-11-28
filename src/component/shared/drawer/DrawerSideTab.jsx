@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from "react";
 import PropType from "prop-types";
-// import "./formDrawer.css";
 
 export default function DrawerSideTab({
   tabs,
@@ -18,7 +17,7 @@ export default function DrawerSideTab({
   };
 
   return (
-    <Fragment>
+    <>
       <p className="font-Exotic font-semibold text-lg">{title}</p>
       <form className="grid grid-cols-1 h-full md:grid-cols-4 gap-4">
         <div className="my- w-full pl-5 overflow-y-auto col-span-3 bg-white rounded-[0.25rem] mb-[1rem] form_drawer_body_container order-2 md:order-1">
@@ -52,7 +51,7 @@ export default function DrawerSideTab({
           )}
         </div>
       </form>
-    </Fragment>
+    </>
   );
 }
 
