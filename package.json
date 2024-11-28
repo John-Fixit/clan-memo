@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.8",
+    "@tanstack/react-query": "^5.61.5",
     "antd": "^5.22.2",
+    "axios": "^1.7.8",
     "chart.js": "^4.4.6",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",

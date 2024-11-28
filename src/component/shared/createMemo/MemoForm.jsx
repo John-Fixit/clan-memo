@@ -2,22 +2,23 @@
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect, useMemo } from "react";
 
-
 import { MdOutlineAttachment } from "react-icons/md";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 import { Input, Select } from "antd";
 import { useForm } from "react-hook-form";
 import MemoRecipient from "./MemoRecipient";
 
-
-
-
-
-const MemoForm=({ handleCloseDrawer })=>{
-
-  const { handleSubmit, register, getValues, setValue, watch, formState: {errors} } = useForm({
+const MemoForm = ({ handleCloseDrawer }) => {
+  const {
+    handleSubmit,
+    register,
+    getValues,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       from: "personal",
       senderName: "",
@@ -25,15 +26,13 @@ const MemoForm=({ handleCloseDrawer })=>{
       recipient: "",
       subject: "",
       approval: [],
-      body: ""
-    }
+      body: "",
+    },
   });
 
-
-  const onSubmit=(data)=>{
+  const onSubmit = (data) => {
     console.log(data);
-  }
-
+  };
 
   const [memo_body, setMemo_body] = useState("");
   const [isLoading, setIsLoading] = useState("");
@@ -134,41 +133,48 @@ const MemoForm=({ handleCloseDrawer })=>{
   return (
     <>
       <div>
-        <form className="mb-" onSubmit={handleSubmit(onSubmit)}>
+        <form className="" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <div className="flex gap-3">
-              <label htmlFor="">From</label>
+              <label htmlFor="" className="tracking-[0.5px] leading-[22px]">From</label>
               <Select
                 placeholder="Search Recipient"
-                size={'large'}
-              
+                size={"large"}
                 defaultValue={getValues("from")}
-                onChange={(value)=>{setValue("from", value)}}
+                onChange={(value) => {
+                  setValue("from", value);
+                }}
                 options={[
-                  {label: "Personal", value: "personal"},
-                  {label: "Others", value: "others"},
+                  { label: "Personal", value: "personal" },
+                  { label: "Others", value: "others" },
                 ]}
               />
             </div>
 
-            {
-             watch('from')==='others' && (
-                <div className="mt-2">
-                  <Input size="large" placeholder="Enter Name" 
+            {watch("from") === "others" && (
+              <div className="mt-2">
+                <Input
+                  size="large"
+                  placeholder="Enter Name"
                   status={errors.senderName ? "error" : ""}
                   {...register("senderName", {
-                    required: watch('from')==='personal'? "This field is required": false
+                    required:
+                      watch("from") === "personal"
+                        ? "This field is required"
+                        : false,
                   })}
-                  />
-                </div>
-              )
-            }
-
-           
+                />
+              </div>
+            )}
           </div>
-          <MemoRecipient watch={watch} setValue={setValue} getValues={getValues} register={register}/>
+          <MemoRecipient
+            watch={watch}
+            setValue={setValue}
+            getValues={getValues}
+            register={register}
+          />
           <div className="mb-4">
-            <label htmlFor="">Subject</label>
+            <label htmlFor="" className="tracking-[0.5px] leading-[22px]">Subject</label>
             <Input
               size="large"
               placeholder="Subject"
@@ -176,7 +182,7 @@ const MemoForm=({ handleCloseDrawer })=>{
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="">Approval</label>
+            <label htmlFor="" className="tracking-[0.5px] leading-[22px]">Approval</label>
             <Select
               mode="multiple"
               size={"large"}
@@ -190,8 +196,8 @@ const MemoForm=({ handleCloseDrawer })=>{
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="">Body</label>
-            <div className="flex flex-col rounded mt-2 mb-4">
+            <label htmlFor="" className="tracking-[0.5px] leading-[22px]">Body</label>
+            <div className="flex flex-col rounded mb-4">
               <ReactQuill
                 ref={quillRef}
                 theme="snow"
@@ -204,16 +210,14 @@ const MemoForm=({ handleCloseDrawer })=>{
               />
             </div>
           </div>
-          <div className="flex justify-between mb-4">
-            <div className="attach my-auto">
-              <button
-                className={`header_btnStyle bg-[#fff] rounded text-[#5A6ACF] border border-[#5A6ACF] font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
-                onClick={handleSaveAsDraft}
-                type="submit"
-              >
-                Save as draft
-              </button>
-            </div>
+          <div className="flex justify-between pb-5">
+            <button
+              className={`header_btnStyle bg-[#fff] rounded text-[#5A6ACF] border border-[#5A6ACF] font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
+              onClick={handleSaveAsDraft}
+              type="submit"
+            >
+              Save as draft
+            </button>
             <button
               className={`header_btnStyle bg-[#5A6ACF] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[20px] uppercase `}
               onClick={handleSubmitMemo}
@@ -225,8 +229,6 @@ const MemoForm=({ handleCloseDrawer })=>{
       </div>
     </>
   );
-}
-
-
+};
 
 export default MemoForm;
