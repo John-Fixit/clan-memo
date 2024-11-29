@@ -75,7 +75,7 @@ const Dashboard = () => {
       <ExpandedDrawer
         isOpen={openDrawer}
         onClose={handleCloseCreateMemo}
-        maxWidth={620}
+        maxWidth={720}
       >
         <DrawerSideTab
           tabs={[

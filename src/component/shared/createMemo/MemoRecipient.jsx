@@ -153,6 +153,32 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
 
 
 
+  const onSelectrecipient = (val) => {
+    
+    if (getValues("recipient_type") === "STAFF") {
+      const userIDs = val?.map((each) => each?.value);
+
+      
+
+      const data = { recipients: userIDs, recipient_value_array: val, to_value: null, recipient_value: null };
+
+      Object.entries(data).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+
+
+    } else {
+      const data = { recipient_value: val?.value, to_value: val?.label,  recipients: [], recipient_value_array: []};
+
+      Object.entries(data).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+      
+    }
+  };
+
+
+
 
 
   return (
@@ -189,7 +215,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             maxCount={getValues('recipient_type') === 'STAFF' ? 100 : undefined }
             size={"large"}
             placeholder="Search Recipient"
-            // onChange={onSelectrecipient}
+            onChange={onSelectrecipient}
             className="border-1 border-gray-300 rounded-md"
             style={{
               width: "100%",
