@@ -35,9 +35,9 @@ const Sidebar = ({ visible, show })=> {
 
   return (
     <>
-      <div className="mobile-nav lg:ps-[20%] md:py-3 py-4 ps-3 md:ps-0 pe-3 md:shadow-sm shadow">
+      <div className="mobile-nav lg:ps-[18%] md:py-3 py-4 ps-3 md:ps-0 pe-3 md:shadow-sm shadow">
         <div
-          className={`flex items-center w-full ${
+          className={`flex items-center ${
             mdScreenRange && !visible ? "ms-[10vh]" : ""
           }`}
         >

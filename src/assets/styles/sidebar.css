@@ -15,7 +15,7 @@
     z-index: 99;
     color: #fff;
     overflow-y: scroll;
-}   
+}
 
 .nav_btn{
     position: absolute;
@@ -57,12 +57,12 @@
   
 @media only screen and (min-width: 450px) and (max-width: 900px){
     .sidebar{
-        transform: translateX(-75%);
+        transform: translateX(-70%);
     }
 
     .sidebar_nav{
-        width: 35%;
-        padding: 10px;
+        width: 30%;
+        padding: 10px 0 10px 5px;
         height: auto;
     }
     .mobile-nav-btn{
@@ -76,7 +76,7 @@
     }
 
     .sidebar_nav{
-        width: 35%;
+        width: 30%;
         padding: 10px;
         height: auto;
     }

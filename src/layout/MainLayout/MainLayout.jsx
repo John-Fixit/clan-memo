@@ -16,11 +16,9 @@ const MainLayout = () => {
     }
   }, []);
 
-  
   const activePath = useLocation().pathname;
 
   const current_page = activePath.split("/").pop()?.replace(/_/g, " ");
-
 
   return (
     <>
@@ -36,19 +34,16 @@ const MainLayout = () => {
             }
           }}
         >
-        <div className="grid grid-cols-3 h-screen">
-            <div className="md:col-span-3 px-3">
-              <div className="my-5">
-                <h3 className="text-[18px] font-medium leading-[23px] tracking-[0.5px] text-[#1F384C] capitalize">{current_page}</h3>
-              </div>
-              <div className="mt-4">
-                <Outlet />
-              </div>
+          <div className="">
+            <div className="my-5 px-3">
+              <h3 className="text-[18px] font-medium leading-[23px] tracking-[0.5px] text-[#1F384C] capitalize">
+                {current_page}
+              </h3>
             </div>
-            {/* <div className="border-s border-gray-300 ps-3 md:block hidden">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti minus cupiditate aperiam debitis fuga dicta ducimus facilis repellat minima in, vero molestias, tempora aut quibusdam impedit! Tenetur magnam cumque dolor?
-            </div> */}
-        </div>
+            <div className="mt-4">
+              <Outlet />
+            </div>
+          </div>
         </section>
       </main>
     </>

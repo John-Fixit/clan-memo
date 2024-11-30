@@ -18,7 +18,7 @@
   .bars {
     width: 100%;
     height: 4px;
-    background-color: #733534;
+    background-color: #5A6ACF;
     border-radius: 4px;
   }
   
@@ -60,6 +60,6 @@
 
   @media only screen and (min-width: 450px) and (max-width: 900px) {
     .bars {
-      background-color: #ffff;
+      background-color: #5A6ACF;
     }
   }

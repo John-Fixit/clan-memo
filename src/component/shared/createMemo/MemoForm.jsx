@@ -143,7 +143,7 @@ const MemoForm = () => {
           <Input
             size="large"
             placeholder="Subject"
-            // status={errors.subject ? "error" : ""}
+            status={errors.subject ? "error" : ""}
             // {...register("subject", {
             //   required: "This field is required",
             // })}

@@ -52,7 +52,7 @@ const MemoTopCards =({memos, setSelected})=>{
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6 ">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 ">
         {memoData?.map((item, index) => {
           return (
             <div

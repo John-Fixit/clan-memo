@@ -3,7 +3,7 @@ import { Avatar, Button, ConfigProvider } from "antd"
 const RecentActivity = () => {
   return (
     <>
-        <div className="col-span-1 border rounded-[5px] flex flex-col gap-y-5 py-3">
+        <div className="border w-full rounded-[5px] flex flex-col gap-y-5 py-3">
             <div className="flex justify-between items-center px-5">
               <div>
                 <h3 className="text-[14px] text-black tracking-[0.5px] leading-[22px]">
