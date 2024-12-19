@@ -6,8 +6,9 @@ import { TbBuildingMonument } from "react-icons/tb";
 import { MdOutlinePending } from "react-icons/md";
 import { MdOutlineApproval } from "react-icons/md";
 import PropTypes from "prop-types";
+import { IoDocumentOutline } from "react-icons/io5";
 
-const MemoTopCards =({memos, setSelected})=>{
+const MemoTopCards =({memos, setSelected, grid })=>{
   const navigate = useNavigate({});
   const handleSelect = (val) => {
     setSelected(val)
@@ -16,43 +17,43 @@ const MemoTopCards =({memos, setSelected})=>{
 
   const memoData = [
     {
-      name: "All Memo",
-      key: "all",
-      icon: MdOutlineReviews,
+      name: "Total",
+      key: "total",
+      icon: IoDocumentOutline,
       total: memos?.length ?? 0,
       b_color: 'bg-amber-100',
       t_color: 'text-amber-600'
     },
     {
-        name: "Draft Memos",
-        key: "draft",
-      icon: TbBuildingMonument,
+        name: "Pending",
+        key: "pending",
+      icon: IoDocumentOutline,
       total: memos?.filter(memo=>memo?.created_by==='me' && memo?.status==='draft').length ?? 0,
       b_color: 'bg-cyan-100',
       t_color: 'text-cyan-600'
     },
     {
-        name: "Approval Memos",
-        key: "approval",
-        icon: MdOutlineApproval,
+        name: "Approved",
+        key: "approved",
+        icon: IoDocumentOutline,
         total: memos?.filter(memo=>memo?.created_by !== 'me').length ?? 0,
-        b_color: 'bg-amber-100',
-      t_color: 'text-amber-600'
+        b_color: 'bg-green-100',
+      t_color: 'text-green-600'
       },
       {
-        name: "Pending Memo",
-        key: "pending",
-        icon: MdOutlinePending,
-        total: memos?.filter(memo=>memo?.created_by==='me' && memo?.status==='pending')?.length,
-        b_color: 'bg-cyan-100',
-      t_color: 'text-cyan-600'
+        name: "Declined",
+        key: "declined",
+        icon: IoDocumentOutline,
+        total: memos?.filter(memo=>memo?.created_by==='me' && memo?.status==='declined')?.length,
+        b_color: 'bg-red-100',
+      t_color: 'text-red-600'
       },
   ]
 
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 ">
+      <div className={`grid grid-cols-1 gap-4 ${grid===4? "lg:grid-cols-4 md:grid-cols-2": "lg:grid-cols-2"} lg:gap-6`}>
         {memoData?.map((item, index) => {
           return (
             <div

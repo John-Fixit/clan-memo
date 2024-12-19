@@ -86,10 +86,10 @@ const Dashboard = () => {
               title: "Create Memo",
               component: <MemoForm />,
             },
-            {
-              title: "Approval",
-              component: <MemoForm />,
-            },
+            // {
+            //   title: "Approval",
+            //   component: <MemoForm />,
+            // },
           ]}
         >
           <MemoForm />

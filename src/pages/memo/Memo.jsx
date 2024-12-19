@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { data } from "../../component/core/dashboard/memoDoomyData";
 import PageHeader from "../../component/shared/pageHeader/PageHeader";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
-import { DatePicker } from "antd";
+import { Button, ConfigProvider, DatePicker } from "antd";
 import MemoCard from "../../component/core/dashboard/MemoCard";
 import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
 import DrawerSideTab from "../../component/shared/drawer/DrawerSideTab";
@@ -23,15 +23,15 @@ const Memo = () => {
   const modifiedData = useMemo(() => {
     if (selected === "all") {
       return data;
-    } else if (selected === "draft") {
-      return data?.filter(
-        (memo) => memo?.created_by === "me" && memo?.status === "draft"
-      );
-    } else if (selected === "approval") {
-      return data?.filter((memo) => memo?.created_by !== "me");
     } else if (selected === "pending") {
       return data?.filter(
         (memo) => memo?.created_by === "me" && memo?.status === "pending"
+      );
+    } else if (selected === "approved") {
+      return data?.filter((memo) => memo?.created_by !== "me");
+    } else if (selected === "declined") {
+      return data?.filter(
+        (memo) => memo?.created_by === "me" && memo?.status === "declined"
       );
     }
   }, [selected]);
@@ -69,22 +69,27 @@ const Memo = () => {
         {/* <div className="mt-5">
           <hr />
         </div>
-        <MemoTopCards memos={data} setSelected={setSelected} /> */}
+        */}
+        <MemoTopCards memos={data} setSelected={setSelected} grid={4}/>
 
         <section className="memos_section mt-3">
-          <div className="flex justify-center items-center flex-col md:flex-row gap-4 mt-12 mb-4 md:w-[80%]">
+          <div className="flex items-center flex-col md:flex-row gap-4 mt-12 mb-4 md:w-[80%]">
             <DatePicker
               placeholder="Start date"
-              className=" w-full border h-[50px] rounded-md focus:outline-none font-medium"
+              className="border rounded-md focus:outline-none font-medium"
             />
             <DatePicker
               placeholder="End date"
-              className=" w-full border h-[50px] rounded-md focus:outline-none font-medium"
+              className="border rounded-md focus:outline-none font-medium"
             />
+            <ConfigProvider theme={{
+              token: {
+                colorPrimary: "#5A6ACF"
+              }
+            }}>
+              <Button type="primary" className="">Search</Button>
+            </ConfigProvider>
 
-            <button className="uppercase h-[47px] text-center rounded-[6px] text-[16px] font-[400] font-[circularstd, sans-serif] leading-[24px] bg-[#00bcc2] w-full text-white">
-              Search
-            </button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-7 lg:gap-5 mt-3">

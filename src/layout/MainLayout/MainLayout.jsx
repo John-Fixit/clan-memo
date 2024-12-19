@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import "../../assets/styles/mainLayout.css";
 import useWindowSize from "../../hooks/useWindowSize";
 import Sidebar from "../../component/core/sidebar/Sidebar";
+import SidebarHeader from "../../component/core/sidebar/SidebarHeader";
 
 const MainLayout = () => {
   const [navIsOpen, setNavIsOpen] = useState(true);
@@ -23,9 +24,10 @@ const MainLayout = () => {
   return (
     <>
       <main style={{ backgroundColor: "#FFFFFF" }}>
-        <Sidebar visible={navIsOpen} show={handleOpenNav} />
+        {/* <Sidebar visible={navIsOpen} show={handleOpenNav} /> */}
+        <SidebarHeader />
         <section
-          className={`md:!px-5 !px-3 ${
+          className={`lg:px-28 px-7 ${
             !navIsOpen ? "page no_sidebar" : "page page-with-navbar"
           }`}
           onClick={() => {
@@ -35,7 +37,7 @@ const MainLayout = () => {
           }}
         >
           <div className="">
-            <div className="my-5 px-3">
+            <div className="my-5">
               <h3 className="text-[18px] font-medium leading-[23px] tracking-[0.5px] text-[#1F384C] capitalize">
                 {current_page}
               </h3>

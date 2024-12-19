@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-
+import { useState } from "react"
 import { Button, ConfigProvider } from "antd";
 
 import { Avatar } from "antd";
@@ -15,11 +15,24 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
 
   // Function to remove HTML tags and retain inline styles
 
+  const [isHovered, setIsHovered] = useState(false);
+
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <>
       <div
         className="card group  py-[18px] px-[20px] h-[400] border-[1px] border-[#ededed] bg-[#fff] rounded-[6px] relative flex justify-between flex-col transition-all duration-700"
         style={{ boxShadow: "0 1px 1px rgba(0,0,0,.2)" }}
+        onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       >
         <div>
           <div className="absolute top-5 right-2">
@@ -50,26 +63,12 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
               </DropdownMenu>
             </Dropdown> */}
           </div>
-          <h4 className="font-[500] text-[18px] text-[#333] font-[circularstd, sans-serif] leading-[21.6px] mb-[5px] text-start">
+          <h4 className="font-[500] text-[16px] text-[#333] font-[circularstd, sans-serif] leading-[21.6px] mb-[5px] text-start">
             {memo?.subject.length < 30
               ? memo?.subject
               : memo?.subject.substring(0, 30) + "..."}
           </h4>
-          <small className="block text-ellipsis mb-[15px]">
-            <span className="text-[13px] text-[rgb(33, 37, 41)] font-[500]">
-              1
-            </span>{" "}
-            <span className="text-gray text-[14px] font-[400]">
-              open tasks,{" "}
-            </span>
-            <span className="text-[13px] text-[rgb(33, 37, 41)] font-[500]">
-              9
-            </span>{" "}
-            <span className="text-gray text-[14] font-[400]">
-              tasks completed
-            </span>
-          </small>
-          <div className="!text-[#8e8e8e] mb-[1rem] font-[circularstd, sans-serif] font-[500] leading-[22px] text-[15px]">
+          <div className="!text-[#8e8e8e] mb-[1rem] font-[circularstd, sans-serif] font-[500] leading-[22px] text-xs">
             <p
               dangerouslySetInnerHTML={{
                 __html:
@@ -79,15 +78,15 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
           </div>
         </div>
         <div>
-          <div className="mb-[12px] text-[15px]">
+          <div className="mb-[5px] text-[15px]">
             <p className="font-medium text-[#333] leading-[22px] my-auto">
               Created At:
             </p>
-            <p className="text-[#8e8e8e] font-[500] leading-[22px] my-auto">
+            <p className="text-[#8e8e8e] text-sm font-[500] leading-[22px] my-auto">
               {memo?.created_at}
             </p>
           </div>
-          <div className="mb-[12px] text-[15px]">
+          <div className="mb-[5px] text-[15px]">
             <p className="font-medium text-[#333] leading-[22px] my-auto">
               Memo Creator:
             </p>
@@ -99,62 +98,72 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
               <span>{memo?.created_by}</span>
             </div>
           </div>
-          <div className="mb-[10px]">
-            <p className="font-medium text-[#333] leading-[22px] my-auto">
-              Approval:
-            </p>
-            <Avatar.Group
-              max={{ count: 3 }}
-              total={memo?.approval?.length - 3}
-              classNames={{
-                base: "border-none border-0 border-red-500",
-              }}
-              size="sm"
-              isBordered={true}
-              className="justify-normal mt-2"
-            >
-              <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-02.jpg" />
-              <Avatar src="	https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-09.jpg" />
-              <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-10.jpg" />
-              <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-05.jpg" />
-              {
-                        memo?.approval?.map((memo, index)=>{
-                          return(
-                            <Avatar key={index+"_approval"} src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-02.jpg" />
-                          )
-                        })
-                      }
-            </Avatar.Group>
-          </div>
-        </div>
-
-        <div className="absolute flex items-center justify-center text-center w-full top-0 right-0 left-0 bottom-0 rounded-[6px] bg-chatoverlay/30 z-1 group-hover:block gap-2 transition ease-in-out hover:scale-100 duration-700">
-          <div className="flex gap-2  w-full transition ease-in-out duration-700 justify-center h-full items-center">
-            {memo?.created_by === "me" && memo?.status === "draft" && (
-              <Button
-                // size="small"
-                className="text-[#00bcc2] border-[#00bcc2] bg-white fw-semibold"
-                onClick={() => openDrawerFn("edit_memo", memo)}
+          <div className="mb-[10px] flex justify-between">
+            <div>
+              <p className="font-medium text-[#333] leading-[22px] my-auto">
+                Approval:
+              </p>
+              <Avatar.Group
+                max={{ count: 3 }}
+                total={memo?.approval?.length - 3}
+                classNames={{
+                  base: "border-none border-0 border-red-500",
+                }}
+                size="sm"
+                isBordered={true}
+                className="justify-normal mt-2"
               >
-                Edit
-              </Button>
-            )}
-            <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  defaultHoverBg: "#00bcc2",
-                  defaultHoverColor: "#fff"
-                }
-              }
-            }}>
-              <Button
-                className="bg-[#00bcc2] hover:bg-[#00bcc2] text-[#fff] fw-semibold"
-                onClick={() => handleOpenDrawer("viewMemo", memo)}
+                <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-02.jpg" />
+                <Avatar src="	https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-09.jpg" />
+                <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-10.jpg" />
+                <Avatar src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-05.jpg" />
+                {memo?.approval?.map((memo, index) => {
+                  return (
+                    <Avatar
+                      key={index + "_approval"}
+                      src="https://smarthr.dreamstechnologies.com/html/template/assets/img/profiles/avatar-02.jpg"
+                    />
+                  );
+                })}
+              </Avatar.Group>
+            </div>
+            {
+              isHovered && (
+            <div className="flex gap-2  transition ease-in-out duration-700h-full items-center">
+              {memo?.created_by === "me" && memo?.status === "draft" && (
+                <ConfigProvider theme={{
+                  token: {
+                    colorPrimary: "#5A6ACF"
+                  }
+                }}>
+                  <Button
+                    className="text-[#5A6ACF] border-[#5A6ACF] bg-white fw-semibold"
+                    onClick={() => openDrawerFn("edit_memo", memo)}
+                  >
+                    Edit
+                  </Button>
+                </ConfigProvider>
+              )}
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Button: {
+                      defaultHoverBg: "#5A6ACF",
+                      defaultHoverColor: "#fff",
+                    },
+                  },
+                }}
               >
-                View
-              </Button>
-            </ConfigProvider>
+                <Button
+                  className="bg-[#5A6ACF] hover:bg-[#5A6ACF] text-[#fff] fw-semibold"
+                  onClick={() => handleOpenDrawer("viewMemo", memo)}
+                >
+                  View
+                </Button>
+              </ConfigProvider>
+            </div>
+              )
+            }
           </div>
         </div>
       </div>

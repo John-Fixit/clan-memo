@@ -6,8 +6,9 @@
     min-height: 90vh;
 }
 .page-with-navbar{
-    width: 82%;
-    margin-left: 18%;
+    width: 100%;
+    /* width: 82%; */
+    /* margin-left: 18%; */
 }
 
 @media only screen and (min-width: 450px) and (max-width: 900px) {

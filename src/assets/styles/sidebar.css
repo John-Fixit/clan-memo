@@ -14,7 +14,6 @@
     transition: transform 0.8s;
     z-index: 99;
     color: #fff;
-    overflow-y: scroll;
 }
 
 .nav_btn{

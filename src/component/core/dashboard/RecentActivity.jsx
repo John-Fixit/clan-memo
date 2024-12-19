@@ -7,10 +7,10 @@ const RecentActivity = () => {
             <div className="flex justify-between items-center px-5">
               <div>
                 <h3 className="text-[14px] text-black tracking-[0.5px] leading-[22px]">
-                  <span>Last Activities</span>
+                  <span>Lastest Received memo</span>
                 </h3>
                 <p className="text-[12px] tracking-[0.5px] leading-[22px] text-[#000000] opacity-50">
-                  Summary of last activities
+                  Summary of lastest recieved memo
                 </p>
               </div>
               <ConfigProvider
