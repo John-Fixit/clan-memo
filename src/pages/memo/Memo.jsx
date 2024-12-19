@@ -13,8 +13,11 @@ import AddNote from "../../component/shared/createMemo/AddNote";
 import MemoNote from "../../component/shared/createMemo/MemoNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
-import ScrollableFolders from "../../component/core/memo/folder";
+import ScrollableFolders, {
+  FolderCard,
+} from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
@@ -22,6 +25,15 @@ const Memo = () => {
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
   const [selectedMemo, setSelectedMemo] = useState("");
+
+
+  const [searchParams] = useSearchParams();
+
+  // Get a specific query parameter
+  const folder = searchParams.get("folder");
+  console.log(folder)
+
+
 
   const modifiedData = useMemo(() => {
     if (selected === "total") {
@@ -56,20 +68,36 @@ const Memo = () => {
     setOpenDrawer({ ...openDrawer, status: false });
   };
 
+  const folders = [
+    { name: "General", fileCount: 45 },
+    { name: "Images", fileCount: 128 },
+    { name: "Projects", fileCount: 23 },
+    { name: "Downloads", fileCount: 67 },
+    { name: "Music", fileCount: 256 },
+    { name: "Videos", fileCount: 89 },
+    { name: "Work", fileCount: 34 },
+    { name: "Personal", fileCount: 78 },
+  ];
+
   return (
     <>
-      <main>
-      <div>
-        <div className="flex gap-x-3 justify-end mb-4">
-         <CreateFolderButton />
-         <CreateMemoButton />
+      <main className="mb-10">
+        <div>
+          <div className="flex gap-x-3 justify-end mb-4">
+            <CreateFolderButton />
+            <CreateMemoButton />
+          </div>
+          {/* <ScrollableFolders /> */}
         </div>
-        <ScrollableFolders/>
-      </div>
-        <MemoTopCards memos={data} setSelected={setSelected} selected={selected} grid={4} />
+        <MemoTopCards
+          memos={data}
+          setSelected={setSelected}
+          selected={selected}
+          grid={4}
+        />
 
         <section className="memos_section mt-3">
-          <div className="flex items-center flex-col md:flex-row gap-4 mt-12 mb-4 md:w-[80%]">
+          <div className="flex items-center flex-wrap gap-4 mt-12 mb-4 md:w-[80%]">
             <DatePicker
               placeholder="Start date"
               className="border rounded-md focus:outline-none font-medium"
@@ -91,23 +119,48 @@ const Memo = () => {
             </ConfigProvider>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-            {modifiedData?.length ? (
-              modifiedData?.map((item, index) => (
-                <MemoCard
-                  key={index + "_memo"}
-                  memo={item}
-                  handleOpenDrawer={handleOpenDrawer}
-                  openDrawerFn={openDrawerFn}
-                />
-              ))
-            ) : (
-              <div className="h-64 flex justify-center items-center col-span-4">
-                <h3 className="text-default-500 text-xl font-medium tracking-wide">
-                  <i>Empty memo found</i>
-                </h3>
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-x-5 gap-y-2">
+            <div className="lg:col-span-3 md:col-span-2 col-span-3">
+              <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
+                {modifiedData?.length ? (
+                  modifiedData?.map((item, index) => (
+                    <MemoCard
+                      key={index + "_memo"}
+                      memo={item}
+                      handleOpenDrawer={handleOpenDrawer}
+                      openDrawerFn={openDrawerFn}
+                    />
+                  ))
+                ) : (
+                  <div className="h-64 flex justify-center items-center col-span-4">
+                    <h3 className="text-default-500 text-xl font-medium tracking-wide">
+                      <i>Empty memo found</i>
+                    </h3>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+            <div className="md:col-span-1 col-span-3">
+              <div className="border w-full rounded-[5px] flex flex-col gap-y-5 pt-3 lg:px-5 px-2">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-[14px] text-black tracking-[0.5px] leading-[22px]">
+                      <span>Folders</span>
+                    </h3>
+                  </div>
+                </div>
+                <div className="min-h-[50vh] overflow-y-auto flex flex-col items-center scrollbar-hid">
+                  {folders.map((folder, index) => (
+                    <div key={index} className="snap-start">
+                      <FolderCard
+                        name={folder.name}
+                        fileCount={folder.fileCount}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -117,99 +170,68 @@ const Memo = () => {
         onClose={closeDrawerFn}
         maxWidth={"47rem"}
       >
-        {
-          // openDrawer.type === "viewMemo" || openDrawer === "viewNote" ? (
-          //   <div className="mt-5 mb-5">
-          //     {openDrawer.type === "viewNote" ? (
-          //       <ViewNotes />
-          //     ) : (
-          //       <SignMemo
-          //         memo={selectedMemo}
-          //         openDrawerFn={openDrawerFn}
-          //         handleOpenDrawer={handleOpenDrawer}
-          //       />
-          //     )}
-          //   </div>
-          // ) :
-          <DrawerSideTab
-            tabs={
-              openDrawer?.type === "create_memo"
-                ? [
-                    {
-                      title: "Create Memo",
-                      component: <MemoForm handleCloseDrawer={closeDrawerFn} />,
-                      header_text: "Create Memo",
-                      subText: "",
-                    },
-                    {
-                      title: "Add Attachment",
-                      component: <Attachment />,
-                      header_text: "Attachment",
-                    },
-                    // {
-                    //   title: "Add Approval",
-                    //   component: <MemoApproval />,
-                    //   header_text: "Approvals",
-                    // },
-                    // {
-                    //   title: "Add Note",
-                    //   component: <AddNote />,
-                    //   header_text: "Add Note",
-                    // },
-                  ]
-                : openDrawer?.type === "edit_memo"
-                ? [
-                    {
-                      title: "Edit Memo",
-                      component: <MemoForm />,
-                      header_text: "Edit Memo",
-                      sub_text: "",
-                    },
-                    {
-                      title: "Attachment",
-                      component: <Attachment />,
-                      header_text: "Attachment",
-                      sub_text: "",
-                    },
-                    // {
-                    //   title: "Approval",
-                    //   component: <MemoApproval />,
-                    //   header_text: "Approval History",
-                    // },
-                    // { title: "Note", component: <AddNote /> }
-                  ]
-                : openDrawer.type === "addNote"
-                ? [
-                    {
-                      title: "Add Note",
-                      component: <AddNote />,
-                      header_text: "Add Note",
-                    },
-                  ]
-                : openDrawer.type === "viewNote"
-                ? [
-                    {
-                      title: "Notes",
-                      component: <MemoNote />,
-                      header_text: "Notes",
-                    },
-                    // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
-                    // { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
-                  ]
-                : openDrawer.type === "approval_history" && [
-                    //   { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
-                    {
-                      title: "Notes",
-                      component: <MemoNote />,
-                      header_text: "Notes",
-                    },
-                    // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
-                  ]
-            }
-          >
-            <MemoForm />
-          </DrawerSideTab>
-        }
+        <DrawerSideTab
+          tabs={
+            openDrawer?.type === "create_memo"
+              ? [
+                  {
+                    title: "Create Memo",
+                    component: <MemoForm handleCloseDrawer={closeDrawerFn} />,
+                    header_text: "Create Memo",
+                    subText: "",
+                  },
+                  {
+                    title: "Add Attachment",
+                    component: <Attachment />,
+                    header_text: "Attachment",
+                  },
+                ]
+              : openDrawer?.type === "edit_memo"
+              ? [
+                  {
+                    title: "Edit Memo",
+                    component: <MemoForm />,
+                    header_text: "Edit Memo",
+                    sub_text: "",
+                  },
+                  {
+                    title: "Attachment",
+                    component: <Attachment />,
+                    header_text: "Attachment",
+                    sub_text: "",
+                  },
+                ]
+              : openDrawer.type === "addNote"
+              ? [
+                  {
+                    title: "Add Note",
+                    component: <AddNote />,
+                    header_text: "Add Note",
+                  },
+                ]
+              : openDrawer.type === "viewNote"
+              ? [
+                  {
+                    title: "Notes",
+                    component: <MemoNote />,
+                    header_text: "Notes",
+                  },
+                  // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
+                  // { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
+                ]
+              : openDrawer.type === "approval_history" && [
+                  //   { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
+                  {
+                    title: "Notes",
+                    component: <MemoNote />,
+                    header_text: "Notes",
+                  },
+                  // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
+                ]
+          }
+        >
+          <MemoForm />
+        </DrawerSideTab>
       </ExpandedDrawer>
 
       <ExpandedDrawer isOpen={open.status} onClose={handleCloseDrawer}>

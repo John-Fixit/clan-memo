@@ -23,11 +23,11 @@ const MainLayout = () => {
 
   return (
     <>
-      <main style={{ backgroundColor: "#FFFFFF" }}>
+      <main>
         {/* <Sidebar visible={navIsOpen} show={handleOpenNav} /> */}
         <SidebarHeader />
         <section
-          className={`lg:px-28 px-7 ${
+          className={`lg:!px-28 !px-7 ${
             !navIsOpen ? "page no_sidebar" : "page page-with-navbar"
           }`}
           onClick={() => {
@@ -38,7 +38,7 @@ const MainLayout = () => {
         >
           <div className="">
             <div className="my-5">
-              <h3 className="text-[18px] font-medium leading-[23px] tracking-[0.5px] text-[#1F384C] capitalize">
+              <h3 className="text-[22px] font-medium leading-[23px] tracking-[0.5px] text-[#1F384C] capitalize">
                 {current_page}
               </h3>
             </div>

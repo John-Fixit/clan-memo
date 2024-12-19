@@ -1,17 +1,14 @@
 /* eslint-disable no-unused-vars */
-import "react-quill/dist/quill.snow.css";
-import { Input, Label } from "antd";
+import { Input } from "antd";
 import { useForm } from "react-hook-form";
 
 
 const FolderForm = () => {
 
 
-
   const {
     handleSubmit,
     register,
-    watch,
     formState: { errors },
   } = useForm(
     {

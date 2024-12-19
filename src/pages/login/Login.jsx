@@ -28,30 +28,37 @@ const Login = () => {
   return (
     <>
       <main
-        className={`relative w-full bg-gray-100 flex flex-col space-y-5 items-center justify-center h-[100vh] px-3`}
-        // style={{
-        //   backgroundImage: `url(${logo})`,
-        //   backgroundPosition: "top left",
-        //   backgroundSize: "100px",
-        //   backgroundRepeat: "repeat",
-        // }}
+        className={`relative w-full bg-gray-300 flex flex-col space-y-5 items-center justify-center h-[100vh] px-3`}
       >
          <div
     className="absolute inset-0"
     style={{
       backgroundImage: `url(${logo})`,
-      backgroundPosition: "top left",
-      backgroundSize: "100px",
+      backgroundPosition: "center",
+      backgroundSize: "100%",
       backgroundRepeat: "repeat",
-      filter: "blur(1.5px)", // Blurs the background image
+      filter: "blur(10px)", // Blurs the background image
     }}
   ></div>
-        <section className="absolute form_section w-[85%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-md p-10">
-        <div className="form_header text-center pb-3">
-            <h4 className="text-gray-700 text-2xl font-medium">Login</h4>
-            <p className="text-gray-400 font-medium text-sm mb-[1.5rem]">
-              Access to our dashboard
-            </p>
+  
+        <section className="absolute form_section w-[85%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-lg p-10">
+        <div className="form_header flex flex-col items-center gap-y-4 text-center pb-3">
+        <div className="flex items-center gap-x-1">
+                    <img
+                      src={logo}
+                      alt="communeety logo"
+                      width={40}
+                      className="cursor-pointer"
+                    />
+                    <span className="font-bold leading-3 text-lg text-[#2c3679]">EDAP</span>
+                  </div>
+                  <div>
+                <h4 className="text-gray-700 text-xl font-medium">Login</h4>
+                <p className="text-gray-400 font-medium text-xs mb-[1.5rem]">
+                Access to our dashboard
+                </p>
+
+                  </div>
           </div>
           <form
             className="flex flex-col space-y-[20px]"

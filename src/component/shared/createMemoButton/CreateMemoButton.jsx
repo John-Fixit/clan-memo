@@ -31,7 +31,7 @@ const CreateMemoButton = () => {
                         },
                       }}
                     >
-                      <Button type="primary" onClick={handleOpenCreateMemo}>Create Memo</Button>
+                      <Button type="primary" size='large' onClick={handleOpenCreateMemo}>Create Memo</Button>
                     </ConfigProvider>
     <ExpandedDrawer
         isOpen={openDrawer}

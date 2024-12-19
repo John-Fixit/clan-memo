@@ -1,19 +1,32 @@
 import { Avatar, Button, ConfigProvider } from "antd"
-
+import { IoChevronBackOutline } from "react-icons/io5";
+import { IoChevronForwardOutline } from "react-icons/io5";
 const RecentActivity = () => {
   return (
     <>
-        <div className="border w-full rounded-[5px] flex flex-col gap-y-5 py-3">
+        <div className="border w-full rounded-[5px] flex flex-col gap-y-5 pt-3">
             <div className="flex justify-between items-center px-5">
               <div>
                 <h3 className="text-[14px] text-black tracking-[0.5px] leading-[22px]">
-                  <span>Lastest Received memo</span>
+                  <span>Last Activity</span>
                 </h3>
                 <p className="text-[12px] tracking-[0.5px] leading-[22px] text-[#000000] opacity-50">
-                  Summary of lastest recieved memo
+                  Summary of your latest activities
                 </p>
               </div>
-              <ConfigProvider
+              <div className="flex gap-x-1">
+                <ConfigProvider theme={{
+                  token: {
+                    colorPrimary: "#5A6ACF",
+                  }
+                }}>
+                  <Button shape="circle" type="primary" icon={<IoChevronBackOutline color="white" size={20}/>} />
+                  <Button shape="circle" type="primary" icon={<IoChevronForwardOutline color="white" size={20}/>} />
+                </ConfigProvider>
+              </div>
+              
+
+              {/* <ConfigProvider
                 theme={{
                   components: {
                     Button: {
@@ -28,7 +41,7 @@ const RecentActivity = () => {
                 <Button className="text-[13px] text-[#5A6ACF] tracking-[0.5px] leading-[20px] font-medium rounded-[5px]">
                   See All
                 </Button>
-              </ConfigProvider>
+              </ConfigProvider> */}
             </div>
             <div>
               {[

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CiFolderOn } from 'react-icons/ci';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 
 // const FolderCard = ({ name, fileCount }) => (
@@ -24,8 +25,14 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 //     </div>
 //   );
 
-const FolderCard = ({ name, fileCount }) => (
-    <div className="relative w-52 h-40">
+export const FolderCard = ({ name, fileCount }) =>{
+
+
+  const navigate = useNavigate();
+
+  return   (
+
+    <div className="relative w-52 h-40 cursor-pointer" onClick={()=>navigate(`/memo?folder=${name}`)}>
       {/* Folder shape */}
       <svg
         viewBox="0 0 200 120"
@@ -60,6 +67,8 @@ const FolderCard = ({ name, fileCount }) => (
       </div>
     </div>
   );
+} 
+
 
 const ScrollableFolders = () => {
   const scrollRef = useRef(null);
@@ -132,7 +141,7 @@ const ScrollableFolders = () => {
   
   // Sample folder data
   const folders = [
-    { name: "Documents", fileCount: 45 },
+    { name: "General", fileCount: 45 },
     { name: "Images", fileCount: 128 },
     { name: "Projects", fileCount: 23 },
     { name: "Downloads", fileCount: 67 },
@@ -167,9 +176,9 @@ const ScrollableFolders = () => {
       )}
       
       {/* Scrollable container */}
-      <div 
+      <div
         ref={scrollRef}
-        className="overflow-x-auto scrollbar-hide py-4 px-8 flex gap-4 snap-x"
+        className="overflow-x-auto scrollbar-hide pb-4 px-8 flex gap-4 snap-x"
         onScroll={checkScroll}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >

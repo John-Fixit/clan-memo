@@ -57,14 +57,16 @@ const RecentMemo = () => {
             <Table aria-label="Example static collection table" className="w-full">
             <TableHeader>
                 <TableColumn className="text-sm opacity-70">NAME</TableColumn>
+                <TableColumn className="text-sm opacity-70">FOLDER</TableColumn>
                 <TableColumn className="text-sm opacity-70">DATE CREATED</TableColumn>
                 <TableColumn className="text-sm opacity-70">ACTION</TableColumn>
             </TableHeader>
             <TableBody>
                 {[1, 2, 3, 4, 5].map((item, index) => (
                 <TableRow key={index}>
-                    <TableCell className="text-[0.85rem]">Tony Reichert</TableCell>
-                    <TableCell className="text-[0.85rem]">2024-11-06</TableCell>
+                    <TableCell className="text-[0.85rem] opacity-65">Tony Reichert</TableCell>
+                    <TableCell className="text-[0.85rem] opacity-65">General</TableCell>
+                    <TableCell className="text-[0.85rem] opacity-65">2024-11-06</TableCell>
                     <TableCell>
                     <Action />
                     </TableCell>

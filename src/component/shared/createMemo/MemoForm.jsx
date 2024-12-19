@@ -39,7 +39,6 @@ const recipientOptions = [
 ];
 
 const MemoForm = () => {
-
   const quillRef = useRef(null);
 
   const {
@@ -48,26 +47,25 @@ const MemoForm = () => {
     getValues,
     setValue,
     watch,
-    formState: { errors },
-  } = useForm(
-    {
-      defaultValues: {
-        from: "personal",
-        senderName: "",
-        recipient_type: "",
-        recipient: "",
-        subject: "",
-        approval: [],
-        body: "",
-        recipient_value_array: null,
-        recipients: [],
-        to_value: null,
-      },
-    }
-  );
+    formState: { errors, touchedFields },
+  } = useForm({
+    defaultValues: {
+      from: "personal",
+      senderName: "",
+      recipient_type: "",
+      recipient: "",
+      subject: "",
+      approval: [],
+      body: "",
+      folder: "general",
+      recipient_value_array: null,
+      recipients: [],
+      to_value: null,
+    },
+  });
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log("data: ", data);
   };
 
   useEffect(() => {
@@ -102,7 +100,7 @@ const MemoForm = () => {
             </label>
             <Select
               placeholder="Search Recipient"
-              size={"large"}
+              size={"small"}
               defaultValue={getValues("from")}
               onChange={(value) => {
                 setValue("from", value);
@@ -144,13 +142,47 @@ const MemoForm = () => {
             size="large"
             placeholder="Subject"
             status={errors.subject ? "error" : ""}
-            // {...register("subject", {
-            //   required: "This field is required",
-            // })}
-
-            onChange={(e)=>setValue('subject', e.target.value)}
-
+            {...register("subject", {
+              required: "This field is required",
+            })}
+            onChange={(e) => setValue("subject", e.target.value)}
           />
+          <small className="text-danger-500">{ touchedFields.subject && errors?.subject?.message}</small>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
+            Folder
+          </label>
+          <Select
+            size={"large"}
+            placeholder="Select folder"
+            className="border-gray-300 rounded-md"
+            style={{
+              width: "100%",
+            }}
+            status={errors.folder ? "error" : ""}
+            {...register("folder", {
+              required: "This field is required",
+            })}
+            options={[
+              { label: "General", value: "general" },
+              { label: "Office", value: "office" },
+              { label: "New", value: "new" },
+            ]}
+            onChange={(value)=>setValue("folder", value)}
+          />
+          {watch("folder") === "new" && (
+            <Input
+              size="large"
+              placeholder="Enter name of your folder"
+              status={errors.new_folder ? "error" : ""}
+              className="mt-2"
+              // {...register("subject", {
+              //   required: "This field is required",
+              // })}
+              onChange={(e) => setValue("new_folder", e.target.value)}
+            />
+          )}
         </div>
         <div className="mb-4">
           <label htmlFor="" className="tracking-[0.5px] leading-[22px]">

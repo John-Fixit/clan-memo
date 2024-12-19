@@ -1,15 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useNavigate } from "react-router-dom";
-import { MdOutlineReviews } from "react-icons/md";
-import { TbBuildingMonument } from "react-icons/tb";
-import { MdOutlinePending } from "react-icons/md";
-import { MdOutlineApproval } from "react-icons/md";
 import PropTypes from "prop-types";
 import { IoDocumentOutline } from "react-icons/io5";
 
 const MemoTopCards =({memos, setSelected, selected, grid })=>{
-  const navigate = useNavigate({});
   const handleSelect = (val) => {
     setSelected(val)
   };

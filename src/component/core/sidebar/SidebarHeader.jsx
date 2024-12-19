@@ -78,14 +78,17 @@ const SidebarHeader = () => {
   return (
     <>
       <div className="flex justify-between items-center py-3 shadow lg:px-28 px-5">
-        <div className="flex gap-x-2 items-center">
-          <img
-            src={logo}
-            alt="communeety logo"
-            width={45}
-            className="cursor-pointer"
-            onClick={() => navigate("/")}
-          />
+        <div className="flex gap-x-4 items-center">
+          <div className="flex items-center gap-x-1">
+            <img
+              src={logo}
+              alt="communeety logo"
+              width={40}
+              className="cursor-pointer"
+              onClick={() => navigate("/")}
+            />
+            <span className="font-bold leading-3 text-lg text-[#2c3679]">EDAP</span>
+          </div>
           <div className="relative hidden md:block">
             <label htmlFor="Search" className="sr-only">
               Search
@@ -136,10 +139,10 @@ const SidebarHeader = () => {
             }}
           >
             <Button
-              onClick={() => navigate("/memo")}
+              onClick={() => navigate("/my-approval")}
               className="text-[13px] tracking-[0.5px] leading-[20px] font-medium rounded-[5px]"
             >
-              Memo
+              My Approval
             </Button>
           </ConfigProvider>
 
