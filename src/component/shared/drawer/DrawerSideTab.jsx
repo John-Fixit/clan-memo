@@ -9,6 +9,7 @@ export default function DrawerSideTab({
   children,
   showButton,
   title,
+
 }) {
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -19,8 +20,8 @@ export default function DrawerSideTab({
   return (
     <>
       <p className="font-Exotic font-semibold text-lg overflow-y-auto">{title}</p>
-      <div className="grid grid-cols-1 h-full md:grid-cols-4 gap-4">
-        <div className="my- w-full pl-5 col-span-3 bg-white rounded-[0.25rem] mb-[1rem] form_drawer_body_container order-2 md:order-1 p-4">
+      <div className="grid grid-cols-1 h-fit md:grid-cols-4 gap-4">
+        <div className="my- w-full pl-5 col-span-3 bg-white shadow-md rounded-[0.25rem] mb-[1rem] form_drawer_body_container order-2 md:order-1 p-4">
           {tabs[selectedTab]?.component ?? children}
         </div>
 
