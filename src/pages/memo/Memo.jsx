@@ -92,7 +92,7 @@ const Memo = () => {
 
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
             {modifiedData?.map((item, index) => (
               <MemoCard
                 key={index + "_memo"}
