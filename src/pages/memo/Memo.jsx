@@ -13,6 +13,8 @@ import AddNote from "../../component/shared/createMemo/AddNote";
 import MemoNote from "../../component/shared/createMemo/MemoNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
+import ScrollableFolders from "../../component/core/memo/folder";
+import CreateFolderButton from "../../component/shared/createFolderButton";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
@@ -57,9 +59,13 @@ const Memo = () => {
   return (
     <>
       <main>
-        <div className="flex justify-end mb-4">
+      <div>
+        <div className="flex gap-x-3 justify-end mb-4">
+         <CreateFolderButton />
          <CreateMemoButton />
         </div>
+        <ScrollableFolders/>
+      </div>
         <MemoTopCards memos={data} setSelected={setSelected} selected={selected} grid={4} />
 
         <section className="memos_section mt-3">
