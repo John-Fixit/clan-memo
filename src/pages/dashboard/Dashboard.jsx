@@ -1,25 +1,14 @@
 import { useState } from "react";
-import { Button, ConfigProvider } from "antd";
 import RecentMemo from "../../component/core/dashboard/RecentMemo";
 import RecentActivity from "../../component/core/dashboard/RecentActivity";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
 import { data } from "../../component/core/dashboard/memoDoomyData";
-import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
-import MemoForm from "../../component/shared/createMemo/MemoForm";
-import DrawerSideTab from "../../component/shared/drawer/DrawerSideTab";
 import CreateMemoSvg from "../../component/shared/svg_icons/create_memo";
+import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 
 const Dashboard = () => {
   const [selected, setSelected] = useState("all");
 
-  const [openDrawer, setOpenDrawer] = useState("");
-
-  const handleOpenCreateMemo = () => {
-    setOpenDrawer(true);
-  };
-  const handleCloseCreateMemo = () => {
-    setOpenDrawer(false);
-  };
 
   return (
     <>
@@ -43,21 +32,7 @@ const Dashboard = () => {
                       Create memo to grow their business and serve their customers
                       better. Use this tool to generate reports.
                     </p>
-                    <ConfigProvider
-                      theme={{
-                        token: {
-                          colorPrimary: "#5A6ACF",
-                        },
-                        components: {
-                          Button: {
-                            defaultBg: "#5A6ACF",
-                            colorText: "#D8D9DB",
-                          },
-                        },
-                      }}
-                    >
-                      <Button onClick={handleOpenCreateMemo}>Create Memo</Button>
-                    </ConfigProvider>
+                    <CreateMemoButton />
                   </div>
                 </div>
               </div>
@@ -75,26 +50,6 @@ const Dashboard = () => {
         </section>
       </main>
 
-      <ExpandedDrawer
-        isOpen={openDrawer}
-        onClose={handleCloseCreateMemo}
-        maxWidth={720}
-      >
-        <DrawerSideTab
-          tabs={[
-            {
-              title: "Create Memo",
-              component: <MemoForm />,
-            },
-            // {
-            //   title: "Approval",
-            //   component: <MemoForm />,
-            // },
-          ]}
-        >
-          <MemoForm />
-        </DrawerSideTab>
-      </ExpandedDrawer>
     </>
   );
 };

@@ -82,7 +82,8 @@ const SidebarHeader = () => {
           <img
             src={logo}
             alt="communeety logo"
-            width={50}
+            width={45}
+            className="cursor-pointer"
             onClick={() => navigate("/")}
           />
           <div className="relative hidden md:block">

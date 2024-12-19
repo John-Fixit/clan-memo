@@ -130,7 +130,7 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
             </div>
             {isHovered && (
               <div className="flex gap-2  transition ease-in-out duration-700h-full items-center">
-                {memo?.created_by === "me" && memo?.status === "draft" && (
+                {memo?.created_by === "me" && memo?.status === "pending" && (
                   <ConfigProvider
                     theme={{
                       token: {

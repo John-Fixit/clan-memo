@@ -12,16 +12,17 @@ import Attachment from "../../component/shared/createMemo/Attachment";
 import AddNote from "../../component/shared/createMemo/AddNote";
 import MemoNote from "../../component/shared/createMemo/MemoNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
+import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 
 const Memo = () => {
-  const [selected, setSelected] = useState("all");
+  const [selected, setSelected] = useState("total");
 
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
   const [selectedMemo, setSelectedMemo] = useState("");
 
   const modifiedData = useMemo(() => {
-    if (selected === "all") {
+    if (selected === "total") {
       return data;
     } else if (selected === "pending") {
       return data?.filter(
@@ -56,21 +57,10 @@ const Memo = () => {
   return (
     <>
       <main>
-        {/* <PageHeader
-          header_text={"Memos"}
-          //   breadCrumb_data={[{ name: "Home" }, { name: "Memos" }]}
-          buttonProp={[
-            {
-              button_text: "Create Memo",
-              //   fn: () => openDrawerFn("create_memo"),
-            },
-          ]}
-        /> */}
-        {/* <div className="mt-5">
-          <hr />
+        <div className="flex justify-end mb-4">
+         <CreateMemoButton />
         </div>
-        */}
-        <MemoTopCards memos={data} setSelected={setSelected} grid={4}/>
+        <MemoTopCards memos={data} setSelected={setSelected} selected={selected} grid={4} />
 
         <section className="memos_section mt-3">
           <div className="flex items-center flex-col md:flex-row gap-4 mt-12 mb-4 md:w-[80%]">
@@ -82,25 +72,36 @@ const Memo = () => {
               placeholder="End date"
               className="border rounded-md focus:outline-none font-medium"
             />
-            <ConfigProvider theme={{
-              token: {
-                colorPrimary: "#5A6ACF"
-              }
-            }}>
-              <Button type="primary" className="">Search</Button>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "#5A6ACF",
+                },
+              }}
+            >
+              <Button type="primary" className="">
+                Search
+              </Button>
             </ConfigProvider>
-
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-            {modifiedData?.map((item, index) => (
-              <MemoCard
-                key={index + "_memo"}
-                memo={item}
-                handleOpenDrawer={handleOpenDrawer}
-                openDrawerFn={openDrawerFn}
-              />
-            ))}
+            {modifiedData?.length ? (
+              modifiedData?.map((item, index) => (
+                <MemoCard
+                  key={index + "_memo"}
+                  memo={item}
+                  handleOpenDrawer={handleOpenDrawer}
+                  openDrawerFn={openDrawerFn}
+                />
+              ))
+            ) : (
+              <div className="h-64 flex justify-center items-center col-span-4">
+                <h3 className="text-default-500 text-xl font-medium tracking-wide">
+                  <i>Empty memo found</i>
+                </h3>
+              </div>
+            )}
           </div>
         </section>
       </main>

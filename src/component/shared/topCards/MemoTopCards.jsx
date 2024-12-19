@@ -8,7 +8,7 @@ import { MdOutlineApproval } from "react-icons/md";
 import PropTypes from "prop-types";
 import { IoDocumentOutline } from "react-icons/io5";
 
-const MemoTopCards =({memos, setSelected, grid })=>{
+const MemoTopCards =({memos, setSelected, selected, grid })=>{
   const navigate = useNavigate({});
   const handleSelect = (val) => {
     setSelected(val)
@@ -58,7 +58,7 @@ const MemoTopCards =({memos, setSelected, grid })=>{
           return (
             <div
               key={index}
-              className="py-4 -top border-[1px] border-[#dfe2e6] bg-white shadow flex rounded-t-[0.5rem] items-center justify-between px-4 gap-3 cursor-pointer"
+              className={`py-4 -top border-[1px] border-[#dfe2e6] transition-background ${selected===item?.key? "bg-default-100": "bg-white"} shadow flex rounded-t-[0.5rem] items-center justify-between px-4 gap-3 cursor-pointer`}
               onClick={() => handleSelect(item?.key)}
               style={{
                 boxShadow: "0 3px 3px -2px rgba(39,44,51,.1), 0 3px 4px 0 rgba(39,44,51,.04), 0 1px 8px 0 rgba(39,44,51,.02)"
