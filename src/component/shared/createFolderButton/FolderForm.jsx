@@ -18,6 +18,8 @@ const FolderForm = () => {
     register,
     reset,
     setValue,
+    getValues,
+    trigger,
     formState: { errors },
   } = useForm(
     {
@@ -28,6 +30,8 @@ const FolderForm = () => {
   );
 
   const onSubmit = (data) => {
+
+
 
       const json = {
           "staff_id":userData?.data?.STAFF_ID,
@@ -48,6 +52,7 @@ const FolderForm = () => {
         // 
         reset()
         setValue("folderName", "")
+        trigger("folderName")
        }
       });
   };
@@ -65,7 +70,12 @@ const FolderForm = () => {
                 {...register("folderName", {
                   required: "This field is required",
                 })}
-                onChange={(e) => setValue("folderName", e.target.value)}
+                value={getValues("folderName")}
+                onChange={(e) => {
+                    setValue("folderName", e.target.value)
+                    trigger("folderName")
+                } 
+            }
               />
             </div>
           

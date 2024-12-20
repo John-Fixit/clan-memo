@@ -193,7 +193,7 @@ const ScrollableFolders = () => {
         onScroll={checkScroll}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {data?.map((folder) => (
+        {status_value?.map((folder) => (
           <div key={folder?.ID} className="snap-start">
             <FolderCard name={folder.NAME} folderID={folder?.ID} fileCount={folder?.MEMO_COUNT} />
           </div>
