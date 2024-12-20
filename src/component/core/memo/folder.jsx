@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { CiFolderOn } from 'react-icons/ci';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 // const FolderCard = ({ name, fileCount }) => (
