@@ -7,8 +7,13 @@ import CreateMemoSvg from "../../component/shared/svg_icons/create_memo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 import ScrollableFolders from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 const Dashboard = () => {
+
+
+  const {userData} = useCurrentUser();
+
   const [selected, setSelected] = useState("all");
 
 
@@ -47,14 +52,14 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="md:col-span-1 col-span-3">
-            <RecentActivity />
+            <RecentActivity userData={userData}/>
           </div>
         </section>
         <div className="my-5">
           <hr />
         </div>
         <section className="">
-          <RecentMemo />
+          <RecentMemo userData={userData}/>
         </section>
       </main>
 
