@@ -5,13 +5,13 @@ import { CiStar } from "react-icons/ci";
 
 const Stamp = ({
   institutionName = "NIGERIA CIVIL",
-  department = "REGISTRAR",
+  designation,
   date = "03 DEC 2023",
   address = "AVIATION AUTHORITY",
   logoUrl = "src/assets/images/ncaa_logo.png",
 }) => {
   return (
-    <div className="relative w-60 h-40 animate-drip-expand  transform rotate-[-15deg] translate-x-4 translate-y-6">
+    <div className="relative w-30 h-20 animate-drip-expand  transform rotate-[-5deg] translate-x-4 translate-y-1">
       <svg
         viewBox="0 0 300 180"
         className="w-full h-full"
@@ -77,24 +77,25 @@ const Stamp = ({
 
         {/* Department text */}
         <text
-          x="150"
-          y="62"
+          x="160"
+          y="80"
           textAnchor="middle"
           fontSize="16"
           fontFamily="Arial"
           fill="#000066"
         >
-          {department}
+          {designation}
         </text>
 
         {/* Date text */}
         <text
           x="150"
-          y="100"
+          y="120"
           textAnchor="middle"
           fontSize="20"
           fontFamily="Arial"
-          fill="#b91722"
+          fill="#000066"
+          // fill="#b91722"
           fontWeight="bold"
           className="transform rotate-[-2deg]"
         >

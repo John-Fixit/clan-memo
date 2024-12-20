@@ -72,9 +72,12 @@ import { IoNotifications } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/ncaa_logo.png";
 import DropdownNotification from "../../../layout/components/DropdownNotification.jsx";
+import useCurrentUser from "../../../hooks/useCurrentUser.js";
 
 const SidebarHeader = () => {
   const navigate = useNavigate();
+
+  const { userData } = useCurrentUser();
 
 
   return (
@@ -99,7 +102,7 @@ const SidebarHeader = () => {
               type="text"
               id="Search"
               placeholder="Search"
-              className="w-96 rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm outline-none bg-[#F6F6FB] px-4 placeholder:text-[12px] placeholder:text-[#1F384C]"
+              className="rounded-md border-gray-200 py-2.5 pe-10 shadow-sm sm:text-sm outline-none bg-[#F6F6FB] px-4 placeholder:text-[12px] placeholder:text-[#1F384C]"
             />
 
             <span className="absolute inset-y-0 end-0 grid w-10 place-content-center">
@@ -149,15 +152,20 @@ const SidebarHeader = () => {
           </ConfigProvider>
 
           <div className="flex items-center gap-x-2">
+            <div>
             <Avatar
               style={{
                 backgroundColor: "#fde3cf",
                 color: "#f56a00",
               }}
             >
-              U
+              {userData?.data?.FIRST_NAME?.trim()[0]}
+              {userData?.data?.LAST_NAME?.trim()[0]}
             </Avatar>
-            <span>John Doe</span>
+
+            </div>
+            <span>{userData?.data?.FIRST_NAME}{" "}
+            {userData?.data?.LAST_NAME}</span>
           </div>
           {/* <Badge dot>
             <IoNotifications className="text-[#B0C3CC]" size={20} />

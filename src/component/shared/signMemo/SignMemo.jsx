@@ -27,6 +27,9 @@ import { useApproveMemo } from "../../../services/API/memo";
 import { errorToast, successToast } from "../../../utils/toastPopUp";
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
 import EditMemo from "./EditMemo";
+import Stamp from "../../core/memo/stamp";
+import logo from "../../../assets/images/ncaa_logo.png";
+import moment from "moment";
 
 const TextArea = Input.TextArea;
 
@@ -197,7 +200,7 @@ const SignMemo = ({
 
   const formattedBody = memoDetail?.MEMO_CONTENT?.split("\n").map(
     (paragraph, index) => (
-      <span key={index} className="font-Exotic">
+      <span key={index} className="">
         {paragraph}
         <br />
       </span>
@@ -305,54 +308,59 @@ const SignMemo = ({
                   setMemoSubject={setMemoSubject}
                 />
               ) : (
-                <div ref={targetRef}>
-                  {/* <div className="my-5"> */}
+                <div
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(${logo})`,
+                    backgroundSize: "600px",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "bottom",
+                  }}
+                  ref={targetRef}
+                >
                   <div className="header_address">
-                    <p className="font-semibold font-Exotic text-base my-1">
-                      Internal Memorandum
+                    <div className="flex justify-center items-center gap-x-2">
+                      <img
+                        src={logo}
+                        alt="communeety logo"
+                        width={40}
+                        className="cursor-pointer"
+                      />
+                      <span className="font-bold leading-3 text-">
+                        Nigeria Civil Aviation Authority
+                      </span>
+                    </div>
+                    <p className="font-semibold  text-2xl my-2 text-center uppercase">
+                      Internal Memo
                     </p>
-                    <table border={0} className="leading-10 w-full relative">
+                    <table border={0} className="leading-7 relative">
                       <tbody>
-                        <tr>
-                          <td className="font-semibold font-Exotic ">To: </td>
+                        {/* <tr>
+                          <td className="font-semibold uppercase ">To: </td>
                           <td className="leading-5">{formattedRecipients}</td>
+                        </tr> */}
+                        <tr>
+                          <td className="font-semibold uppercase">From: </td>
+                          <td className="font-medium">{memoDetail?.MEMO_FROM}</td>
                         </tr>
                         <tr>
-                          <td className="font-semibold font-Exotic ">From: </td>
-                          <td>{memoDetail?.MEMO_FROM}</td>
+                          <td className="font-semibold uppercase ">Date: </td>
+                          <td className="font-medium">{moment(memoDetail?.DATE_CREATED)?.format("MMMM DD, YYYY")}</td>
                         </tr>
                         <tr>
-                          <td className="font-semibold font-Exotic ">Date: </td>
-                          <td>{memoDetail?.DATE_CREATED ?? "31/01/2024"}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold font-Exotic ">
+                          <td className="font-semibold uppercase ">
                             Subject:{" "}
                           </td>
-                          <td className="font-bold text-base font-Exotic">
+                          <td className="font-bold text-base ">
                             {memoDetail?.SUBJECT}
                           </td>
                         </tr>
-                        <tr>
-                          <td colSpan={2}>
-                            <hr className="my-3 border-t-2 border-gray-500" />
-                          </td>
-                        </tr>
                       </tbody>
-                      {/* <div className="absolute top-0 right-0 flex h-5/6 items-center">
-                  <img
-                    src={memo?.logo}
-                    alt="logo"
-                    className="rounded-full object-cover"
-                    width={150}
-                    height={150}
-                  />
-                </div> */}
                     </table>
+                    <hr className="my-3 border-t-2 border-gray-500 w-full" />
                   </div>
                   <div className="body_of_memo !text-black !text-md">
                     <div
-                      className="text-sm text-justify text-default-800"
+                      className="text-[0.9rem] leading-6 text-justify text-default-900"
                       dangerouslySetInnerHTML={{
                         __html: memoDetail?.MEMO_CONTENT,
                       }}
@@ -360,32 +368,63 @@ const SignMemo = ({
 
                     {/* {formattedBody} */}
                     <br />
-                    <p>Kind regards,</p>
+                    {/* <p>Kind regards,</p>
                     <span className="text-[rgba(39, 44, 51, 0)] font-medium">
                       {memoDetail?.FIRST_NAME} {memoDetail?.LAST_NAME}
-                    </span>
+                    </span> */}
                   </div>
                   <div className="mt-7 mb-5">
                     <div className="flex gap-x-9 gap-y-2 flex-wrap items-end">
-                      {memoApprovers?.map((item, index) => (
-                        <div
-                          className="flex flex-col items-center"
-                          key={index + "_"}
-                        >
-                          <div className="border-b-1 flex justify-center border-b-black w-full">
-                            <img
-                              src={item?.APPROVERS?.SIGNATURE}
-                              alt=""
-                              className="max-h-[100%] max-w-[100%]"
-                            />
-                            
+                      {memoApprovers?.map((item, index) =>
+                        item?.IS_APPROVED ? (
+                          <div
+                            className="flex flex-col items-center relative"
+                            key={index + "_"}
+                          >
+                            <div className="border-b-1 flex justify-center border-b-black w-full">
+                              <img
+                                src={item?.APPROVERS?.SIGNATURE}
+                                alt=""
+                                style={{
+                                  height: "50%",
+                                  width: "50%",
+                                }}
+                                // className="max-h-[100%] max-w-[100%]"
+                              />
+                            </div>
+                            <div className="mt-2">
+                              {item?.APPROVERS?.RANK ? (
+                                <span className="text-xs text-default-700 flex">
+                                  {item?.APPROVERS?.RANK}
+                                </span>
+                              ) : (
+                                <div className="h-3.5"></div>
+                              )}
+                            </div>
+
+                            <span className="text-xs text-default-700 flex capitalize">
+                              {item?.APPROVERS?.DEPARTMENT?.toLowerCase()}
+                            </span>
+
+                            <span className=" text-default-700 flex">
+                              {item?.APPROVERS?.FIRST_NAME}{" "}
+                              {item?.APPROVERS?.LAST_NAME}
+                            </span>
+
+                            <div className="absolute bottom-12">
+                              <Stamp
+                                designation={
+                                  item?.APPROVERS?.RANK ||
+                                  item?.APPROVERS?.DEPARTMENT
+                                }
+                                date={moment(item?.DATE_DONE)?.format(
+                                  "DD MMM YYYY"
+                                )}
+                              />
+                            </div>
                           </div>
-                          <span className="font-Exotic text-default-700 pb-2 font-medium flex">
-                            {item?.APPROVERS?.FIRST_NAME}{" "}
-                            {item?.APPROVERS?.LAST_NAME}
-                          </span>
-                        </div>
-                      ))}
+                        ) : null
+                      )}
                     </div>
                   </div>
                 </div>
@@ -393,7 +432,7 @@ const SignMemo = ({
             </div>
           </div>
 
-          {(is_approve && !isApprovedOrDeclined) && (
+          {is_approve && !isApprovedOrDeclined && (
             <div className="flex justify-between">
               <ConfigProvider
                 theme={{

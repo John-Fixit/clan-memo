@@ -16,6 +16,7 @@ import { useGetLatestMemo, useGetMyApprovals } from "../../services/API/memo";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import moment from "moment";
 import { useViewMemoHook } from "../../hooks/useViewMemoHook";
+import MemoCard from "../../component/core/dashboard/MemoCard";
 
 const MyApproval = () => {
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
@@ -48,7 +49,7 @@ const MyApproval = () => {
 
 
   const approvalMemo = useMemo(()=>(
-    latestMemo || getApprovalMemo?.data?.requests
+    getApprovalMemo?.data?.requests
   ), [getApprovalMemo?.data?.requests])
 
 
@@ -56,6 +57,7 @@ const MyApproval = () => {
   const handleCloseDrawer = () => {
     setOpen({ status: false });
   };
+
 
   return (
     <>
@@ -66,14 +68,15 @@ const MyApproval = () => {
           //   selected={selected}
           grid={4}
         />
-        {/* <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-                        {folderMemo?.length ? (
-                          folderMemo?.map((item, index) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
+                        {approvalMemo?.length ? (
+                          approvalMemo?.map((item, index) => (
                             <MemoCard
+                            is_approve={true}
                               key={index + "_memo"}
                               memo={item}
-                              handleOpenDrawer={handleOpenDrawer}
-                              openDrawerFn={openDrawerFn}
+                              // handleOpenDrawer={handleOpenDrawer}
+                              // openDrawerFn={openDrawerFn}
                             />
                           ))
                         ) : (
@@ -83,8 +86,8 @@ const MyApproval = () => {
                             </h3>
                           </div>
                         )}
-                      </div> */}
-        <div className="bg-white shadow rounded-xl p-3 mt-5">
+                      </div>
+        {/* <div className="bg-white shadow rounded-xl p-3 mt-5">
           <Table
             aria-label="Example static collection table"
             className="w-full"
@@ -121,7 +124,7 @@ const MyApproval = () => {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </div> */}
       </main>
 
       <ExpandedDrawer

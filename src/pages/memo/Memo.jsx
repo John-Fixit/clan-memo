@@ -20,16 +20,14 @@ import { useSearchParams } from "react-router-dom";
 import MemoApprovalHistory from "../../component/shared/createMemo/MemoApprovalHistory";
 import { useViewFolder } from "../../services/API/memo.js"
 import useCurrentUser from "../../hooks/useCurrentUser";
-import MemoDrawer from "../../component/core/memo/memoDrawer.jsx";
 import { useListFolderStatus } from "../../services/API/folder";
-import useCurrentUser from "../../hooks/useCurrentUser";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
 
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
-  const [selectedMemo, setSelectedMemo] = useState("");
+  const [selectedMemo, setSelectedMemo] = useState("Pending");
   const {userData} = useCurrentUser()
   const {data:folders}  =  useListFolderStatus({
     staff_id:userData?.data?.STAFF_ID
@@ -59,8 +57,6 @@ const Memo = () => {
     getFolderMemo?.data?.requests
   ), [getFolderMemo?.data?.requests])
 
-
-  console.log(folderMemo)
 
 
 
@@ -184,6 +180,7 @@ const Memo = () => {
                       <FolderCard
                         name={folder?.NAME}
                         fileCount={folder?.MEMO_COUNT}
+                        folderID={folder?.ID}
                       />
                     </div>
                   ))}

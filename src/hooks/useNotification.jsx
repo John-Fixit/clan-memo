@@ -1,5 +1,4 @@
 // import { createWithEqualityFn } from 'zustand';
-import { shallow } from 'zustand/shallow';
 import { create } from 'zustand';
 
 const useNotification = create(
@@ -11,7 +10,6 @@ const useNotification = create(
     },
     updateData: (payload) => set((state) => ({ data: { ...state.data, ...payload } })),
   }),
-  shallow
 );
 
 export default useNotification;

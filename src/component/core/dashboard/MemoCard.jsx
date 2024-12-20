@@ -9,7 +9,8 @@ import AvatarGroup from "../../shared/avatar_group/AvatarGroup";
 import moment from "moment";
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
 
-export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
+export default function MemoCard({ is_approve, memo, handleOpenDrawer, openDrawerFn }) {
+
 
 const { handleOpenMemo } = useViewMemoHook()
 
@@ -32,7 +33,7 @@ const { handleOpenMemo } = useViewMemoHook()
 
 
   const handleOpenViewMemo=()=>{
-    handleOpenMemo({memo})
+    handleOpenMemo({memo, is_approve})
   }
 
 
@@ -127,7 +128,7 @@ const { handleOpenMemo } = useViewMemoHook()
                   >
                     <Button
                       className="text-[#5A6ACF] border-[#5A6ACF] bg-white fw-semibold"
-                      onClick={() => openDrawerFn("edit_memo", memo)}
+                      // onClick={() => openDrawerFn("edit_memo", memo)}
                     >
                       Edit
                     </Button>
