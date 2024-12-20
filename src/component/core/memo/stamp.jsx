@@ -11,7 +11,7 @@ const Stamp = ({
   logoUrl = "src/assets/images/ncaa_logo.png",
 }) => {
   return (
-    <div className="relative w-60 h-40 animate-  transform rotate-[-15deg] translate-x-4 translate-y-6">
+    <div className="relative w-60 h-40 animate-drip-expand  transform rotate-[-15deg] translate-x-4 translate-y-6">
       <svg
         viewBox="0 0 300 180"
         className="w-full h-full"
@@ -96,6 +96,7 @@ const Stamp = ({
           fontFamily="Arial"
           fill="#b91722"
           fontWeight="bold"
+          className="transform rotate-[-2deg]"
         >
           {date}
         </text>
