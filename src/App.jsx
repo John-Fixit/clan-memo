@@ -6,6 +6,7 @@ import Login from "./pages/login/Login";
 import MyApproval from "./pages/myApproval/MyApproval";
 import useCurrentUser from "./hooks/useCurrentUser";
 import { useEffect } from "react";
+import GlobalProviders from "./lib/GlobalProvider";
 
 const App = () => {
   
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/my-approval" element={<MyApproval />} />
         </Route>
       </Routes>
+      <GlobalProviders/>
     </>
   );
 };
