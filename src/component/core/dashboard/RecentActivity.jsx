@@ -50,41 +50,48 @@ const RecentActivity = ({ userData }) => {
               <StarLoader />
             </div>
           ) : (
-            [
-              { color: "#f56a00", initial: "U" },
-              { color: "#F2383A", initial: "F" },
-              { color: "#5A6ACF", initial: "AP" },
-              { color: "#F99C30", initial: "UT" },
-            ].map((item, index) => (
-              <div
-                key={index + "__activities"}
-                className={`flex items-start gap-x-3 py-4 ${
-                  index !== 0 && "border-t"
-                } border-[#DBE5EB] cursor-pointer hover:bg-[#f1f1f1] transition-all px-5`}
-              >
-                <div>
-                  <Avatar
-                    size={"large"}
-                    className={`${item?.color}`}
-                    style={{
-                      backgroundColor: `${item.color}`,
-                      opacity: 0.7,
-                    }}
-                  >
-                    {item.initial}
-                  </Avatar>
+            // [
+            //   { color: "#f56a00", initial: "U" },
+            //   { color: "#F2383A", initial: "F" },
+            //   { color: "#5A6ACF", initial: "AP" },
+            //   { color: "#F99C30", initial: "UT" },
+            // ]
+            activities?.length? (
+              activities.map((item, index) => (
+                <div
+                  key={index + "__activities"}
+                  className={`flex items-start gap-x-3 py-4 ${
+                    index !== 0 && "border-t"
+                  } border-[#DBE5EB] cursor-pointer hover:bg-[#f1f1f1] transition-all px-5`}
+                >
+                  <div>
+                    <Avatar
+                      size={"large"}
+                      className={`${item?.color}`}
+                      style={{
+                        backgroundColor: `${item.color}`,
+                        opacity: 0.7,
+                      }}
+                    >
+                      {item.initial}
+                    </Avatar>
+                  </div>
+                  <div>
+                    <p className="text-[13px] text-[#273240] leading-[20px] tracking-[0.5px]">
+                      sojiaye@yahoo.com from Lagos viewed this memo
+                    </p>
+                    <p className="text-[#273240] opacity-70 leading-[20px] tracking-[0.5px] text-[12px]">
+                      {" "}
+                      Today at 10:57 AM
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[13px] text-[#273240] leading-[20px] tracking-[0.5px]">
-                    sojiaye@yahoo.com from Lagos viewed this memo
-                  </p>
-                  <p className="text-[#273240] opacity-70 leading-[20px] tracking-[0.5px] text-[12px]">
-                    {" "}
-                    Today at 10:57 AM
-                  </p>
-                </div>
+              ))
+            ): (
+              <div className="h-32 flex justify-center items-center">
+                  <h2 className="text-default-500"><i>No Recent Activity</i></h2>
               </div>
-            ))
+            )
           )}
         </div>
       </div>

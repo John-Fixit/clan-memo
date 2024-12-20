@@ -2,33 +2,11 @@
 /* eslint-disable react/prop-types */
 import { Avatar } from "@nextui-org/react";
 import { Fragment, useState } from "react";
+import { filePrefix } from "../../../utils/filePrefix";
 
-const MemoApprovalHistory = ({ currentView, role }) => {
-  // const [currentTabName, setCurrentTabName] = useState("Leave");
+const MemoApprovalHistory = ({ memoApprovers, currentView, role }) => {
 
-  // const tabs = [{ name: "Leave" }, { name: "Attachments" }, { name: "Note" }];
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
-    };
-    const formattedDate = date.toLocaleDateString("en-US", options);
-
-    // Convert the day to the correct ordinal suffix (e.g., 1st, 2nd, 3rd, 4th)
-    const day = date.getDate();
-    const suffix = ["th", "st", "nd", "rd"];
-    const daySuffix = day % 10 < 4 ? suffix[day % 10] : suffix[0];
-
-    return formattedDate.replace(/\d{1,2}(?=,)/, `$&${daySuffix}`);
-  };
+  console.log(memoApprovers)
 
   const data = {
     _id: 3,
@@ -118,12 +96,12 @@ const MemoApprovalHistory = ({ currentView, role }) => {
       <div className="shadow border rounded p-4 bg-white">
         <div className="my-4 w-full">
           <ol className="ms-12 my-4 text-gray-500 border-s-2 border-gray-200 dark:border-gray-700 dark:text-gray-400">
-            {notes?.map((item, index) => (
+            {memoApprovers?.map((item, index) => (
               <li key={index + "___note"} className="mb-10 ms-4 relative group">
                 {/* <p className="font-medium text-xs uppercase">Handover</p> */}
                 <div className="border p-2 rounded">
                   <Avatar
-                    src={item?.img}
+                    src={filePrefix + item?.APPROVERS?.FILE_NAME}
                     classNames={{
                       base: "rounded-full",
                       img: "rounded-full",
@@ -134,12 +112,12 @@ const MemoApprovalHistory = ({ currentView, role }) => {
                   <div className="">
                     <div className="flex justify-between items-between">
                       <p className=" text-blue-500">
-                        {item.name}
+                        {item.APPROVERS?.FIRST_NAME} {item?.APPROVERS?.LAST_NAME}
                       </p>
                     </div>
                     <p className="flex flex-col gap-2">
-                      <span className="text-[0.82rem]">{item?.text}</span>
-                      <span className="text-xs">{item?.duration}</span>
+                      {/* <span className="text-[0.82rem]">{item?.text}</span> */}
+                      <span className="text-xs">{item?.DATE_DONE}</span>
                     </p>
                   </div>
                 </div>

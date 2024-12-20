@@ -4,6 +4,7 @@ import "../../assets/styles/mainLayout.css";
 import useWindowSize from "../../hooks/useWindowSize";
 import Sidebar from "../../component/core/sidebar/Sidebar";
 import SidebarHeader from "../../component/core/sidebar/SidebarHeader";
+import MemoDrawer from "../../component/core/memo/memoDrawer";
 
 const MainLayout = () => {
   const [navIsOpen, setNavIsOpen] = useState(true);
@@ -48,6 +49,10 @@ const MainLayout = () => {
           </div>
         </section>
       </main>
+
+
+
+      <MemoDrawer />
     </>
   );
 };

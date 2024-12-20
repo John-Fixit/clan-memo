@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { useCreateMemo } from "../../../services/API/createMemo";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import ApprovalForm from "../createMemo/ApprovalForm";
-import { errorToast } from "../../../utils/toastPopUp";
+import { errorToast, successToast } from "../../../utils/toastPopUp";
 import toast from "react-hot-toast";
 import { useHandleMemo } from "../../../hooks/useHandleMemo";
 
@@ -27,10 +27,11 @@ const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
     setValue,
     watch,
     trigger,
+    reset,
     formState: { errors, touchedFields },
   } = useForm({
     defaultValues: {
-      from: draftMemoData?.for===userData?.data?.STAFF_ID? "personal":"others",
+      from: "personal", //draftMemoData?.for===userData?.data?.STAFF_ID? "personal":"others",
       senderName: draftMemoData?.for || "",
       recipient_type: draftMemoData?.recipient_type || "",
       recipient: draftMemoData?.recipient || "",
@@ -83,11 +84,9 @@ const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
       approvals: approval,
       is_draft: values?.is_draft || 0, // 1 means save as draft, 0 means submit for approval
       folder: values?.folder, // or whatever name of folder chosen or created
-      "memo_id": "56"
+      // "memo_id": "56"
     };
 
-
-    console.log(values)
 
 
     if (Object.keys(errors).length > 0) {
@@ -99,17 +98,20 @@ const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
       errorToast(errorMessages.join("\n"));
     } else {
       console.log("payload: ", payload);
-      // mutate(payload, {
-      //  onError:(error)=>{
-      //   const errMessage = error?.response?.data?.message || error?.message;
+      mutate(payload, {
+       onError:(error)=>{
+        const errMessage = error?.response?.data?.message || error?.message;
 
-      //   errorToast(errMessage);
+        errorToast(errMessage);
 
-      //  },
-      //  onSuccess:(response)=>{
-      //   console.log(response);
-      //  }
-      // });
+       },
+       onSuccess:(response)=>{
+        const resMsg = response?.data?.message;
+        successToast(resMsg)
+        reset()
+        handleClose();
+       }
+      });
     }
   };
 

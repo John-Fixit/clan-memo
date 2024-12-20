@@ -2,23 +2,62 @@
 /* eslint-disable no-unused-vars */
 import { Button, Tooltip } from "@nextui-org/react";
 import styles from "../../../assets/styles/signMemo.module.css";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import SignatureView from "./SignatureView";
 import generatePDF, { Margin } from "react-to-pdf";
 import { MdSaveAlt } from "react-icons/md";
 import { LuDelete } from "react-icons/lu";
 import { Spinner } from "@nextui-org/react";
 
+import { useDisclosure } from "@nextui-org/react";
 import {
-  useDisclosure,
-} from "@nextui-org/react";
-import { Modal } from "antd";
-import { FaPlus } from "react-icons/fa6";
+  Modal,
+  Result,
+  Button as AntButton,
+  ConfigProvider,
+  Input,
+} from "antd";
 import ExpandedDrawer from "../drawer/ExpandedDrawer";
 import AddNote from "../createMemo/AddNote";
+import StarLoader from "../../core/loaders/StarLoader";
+import useCurrentUser from "../../../hooks/useCurrentUser";
+import { useCheckSignature } from "../../../services/API/signature";
+import { uploadFileData } from "../../../utils/uploadFile";
+import { useApproveMemo } from "../../../services/API/memo";
+import { errorToast, successToast } from "../../../utils/toastPopUp";
+import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
+import EditMemo from "./EditMemo";
 
-const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
-  const selfMemo = memo?.created_by === "me";
+const TextArea = Input.TextArea;
+
+const SignMemo = ({
+  getMemoLoading,
+  isError,
+  memoDetail,
+  memoApprovers,
+  selfMemo,
+  is_approve,
+  memo,
+}) => {
+  const { userData } = useCurrentUser();
+
+  const { data: getSignature } = useCheckSignature({
+    approving_staff_id: userData?.data?.STAFF_ID,
+  });
+
+  const maxRecipientDisplay = 5;
+
+  const displayedNames = memoDetail?.RECIPIENT?.slice(
+    0,
+    maxRecipientDisplay
+  ).map((recipient) => `${recipient?.FIRST_NAME} ${recipient?.LAST_NAME}`);
+
+  const extraCount = memoDetail?.RECIPIENT?.length - maxRecipientDisplay;
+
+  const formattedRecipients =
+    extraCount > 0
+      ? `${displayedNames?.join(", ")} and +${extraCount} others`
+      : displayedNames?.join(", ");
 
   const targetRef = useRef();
 
@@ -26,15 +65,37 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [approvals, setApprovals] = useState(memo?.approval ?? []);
+  const [approvals, setApprovals] = useState(memoApprovers || []);
   const [open, setOpen] = useState({ status: false, type: "" });
-  const [hasSignature, setHasSignature] = useState(false); //Not signed by default
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  const hasSignature = getSignature?.SIGNATURE;
+
+  const [openApprove, setOpenApprove] = useState(false);
+
+  const [confirmationNote, setConfirmationNote] = useState("");
+  const [memoContent, setMemoContent] = useState(
+    memoDetail?.MEMO_CONTENT || ""
+  );
+  const [memoSubject, setMemoSubject] = useState(memoDetail?.SUBJECT || "");
+  const [isApprove, setIsApprove] = useState(null);
+
+  useEffect(() => {
+    if (memoDetail) {
+      setMemoSubject(memoDetail.SUBJECT);
+      setMemoContent(memoDetail?.MEMO_CONTENT);
+    }
+  }, [memoDetail]);
+
+  const { mutateAsync } = useApproveMemo(isApprove);
+  const { handleCloseMemo } = useViewMemoHook();
 
   const sigCanvas = useRef({});
 
   const handleOpenPinModal = () => {
     if (!hasSignature && sigCanvas?.current?._sigPad?._isEmpty) {
-    //   formatError("Signature can not be empty!!!");
+      //   formatError("Signature can not be empty!!!");
       console.log("Signature can not be empty!!!");
     } else {
       onOpen();
@@ -45,19 +106,51 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
   via a method given by react-signature-canvas */
   const clear = () => sigCanvas.current.clear();
 
-  /* a function that uses the canvas ref to trim the canvas 
+  const confirmApproveOrDecline = async (signatureID) => {
+    const payload = {
+      decline: {
+        staff_id: userData?.data?.STAFF_ID,
+        memo_id: memoDetail?.MEMO_ID,
+        note: confirmationNote,
+      },
+      approve: {
+        staff_id: userData?.data?.STAFF_ID,
+        memo_id: memoDetail?.MEMO_ID,
+        memo_content: memoContent,
+        memo_subject: memoSubject,
+        memo_signature: signatureID,
+        note: confirmationNote,
+      },
+    };
+
+    try {
+      const res = await mutateAsync(
+        isApprove ? payload.approve : payload.decline
+      );
+      successToast(res?.message);
+
+      clear();
+      setConfirmationNote("");
+
+      handleCloseDrawer();
+      handleCloseMemo();
+      setIsEdit(false);
+    } catch (error) {
+      const errMsg = error?.response?.data?.message || error?.message;
+      errorToast(errMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /* a function that uses the canvas ref to trim the canvas
   from white spaces via a method given by react-signature-canvas
   then saves it in our state */
-  const save = () => {
+  const save = async () => {
+    setIsLoading(true);
     if (hasSignature) {
-      setApprovals((prev) => [
-        ...prev,
-        {
-          signature:
-            "https://artlogo.co/cdn/shop/files/Group_4c46736d-b4cd-4bc3-bff2-7700e63e314c_480x.svg?v=1681759898",
-          name: "John Fixit",
-        },
-      ]);
+      console.log(hasSignature);
+      confirmApproveOrDecline(hasSignature);
     } else {
       const base64String = sigCanvas.current
         .getTrimmedCanvas()
@@ -65,6 +158,12 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
 
       // Convert data URL to Blob
       const blob = dataURItoBlob(base64String);
+
+      const file = new File([blob], "signature.png", { type: "image/png" });
+
+      const res = await uploadFileData(file, userData?.token);
+
+      confirmApproveOrDecline(res?.file_url_id);
 
       // Create Object URL
       const url = URL.createObjectURL(blob);
@@ -74,18 +173,9 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
         ...prev,
         { signature: url, name: "Femi Bejide" },
       ]);
-      closeDrawer();
     }
 
     // setImageURL(base64String);
-  };
-
-  const openDrawer = (type) => {
-    if (hasSignature) {
-      handleOpenPinModal();
-    } else {
-      setOpen({ ...open, status: true, type });
-    }
   };
 
   const closeDrawer = () => {
@@ -105,15 +195,17 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
     return blob;
   }
 
-  const formattedBody = memo?.body.split("\n").map((paragraph, index) => (
-    <span key={index} className="font-Exotic">
-      {paragraph}
-      <br />
-    </span>
-  ));
+  const formattedBody = memoDetail?.MEMO_CONTENT?.split("\n").map(
+    (paragraph, index) => (
+      <span key={index} className="font-Exotic">
+        {paragraph}
+        <br />
+      </span>
+    )
+  );
 
   const options = {
-    filename: `${memo?.created_by}.pdf`,
+    filename: `${memoDetail?.MEMO_SUBJECT}.pdf`,
     method: "save",
     page: {
       // margin is in MM, default is Margin.NONE = 0
@@ -138,21 +230,6 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
     }
   };
 
-  useEffect(() => {
-    if (otp[3] !== "") {
-      const otpValue = parseInt(otp.join(""));
-      setIsLoading(true);
-      setTimeout(() => {
-        console.log(otpValue);
-        save();
-        onClose();
-        setIsLoading(false);
-        setOTP(["", "", "", ""]);
-      }, 2000);
-    }
-  }, [otp]);
-
-  // Function to handle delete button click
   const handleDeleteButtonClick = () => {
     const updatedOTP = [...otp]; // Create a copy of the current OTP array
     const lastNonEmptyIndex = updatedOTP
@@ -167,103 +244,102 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
 
   //================================ the end of the pin input functions
 
+  const handleCloseDrawer = () => {
+    setOpenApprove(false);
+  };
+
+  const approveStatus = memoApprovers?.find(
+    (item) => item?.APPROVER === userData?.data?.STAFF_ID
+  );
+  const isApprovedOrDeclined =
+    approveStatus?.IS_APPROVED || approveStatus?.IS_DECLINED;
+
   return (
     <>
-      <div className="bg-white p-3 w-full d-flex gap-3 flex-wrap rounded-md">
-        {!selfMemo && (
-          <>
-            {/* <Button onClick={() => openDrawer("addNote")}>Add Note</Button> */}
-            <button
-              className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
-              onClick={() => openDrawer("signature")}
-            >
-              Apply my Signature
-            </button>
-          </>
-        )}
-        {/* <button
-          className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
-          onClick={()=>handleOpenDrawer(
-            memo?.created_by ==='me'? 'viewNote' : 'addNote'
-          )}
-        >
-          {
-            memo?.created_by ==='me'? "View Notes" : <span className="flex font-helvetica items-center"><FaPlus />Add Note</span>
-          }
-        </button>
-        <button
-          className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
-          onClick={()=>handleOpenDrawer('approval_history')}
-        >
-          Approval history
-        </button> */}
-      </div>
-      <div
-        className={`flex-1 shadow-md p-3 mb-10 overflow-y-scroll ${styles.custom_scrollbar}`}
-      >
-        <div className="bg-white p-8 relative">
-          <div className="absolute top-2 right-2 mb-3 flex gap-3">
-            {/* button to open signature modal */}
-            {/* <Button size="sm" onClick={() => openDrawer("viewNote")}>
-                  View Notes
-                </Button>
-                <Button size="sm" onClick={() => openDrawer("viewNote")}>
-                  Attachments
-                </Button> */}
-            {selfMemo && (
-              <>
-                <Tooltip
-                  showArror={true}
-                  content="Download as PDF"
-                  placement="bottom"
-                >
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    onClick={downloadPDF}
-                    className="bg-blue-100 text-cyan-600"
+      {getMemoLoading ? (
+        <main className="h-32 flex items-center justify-center">
+          <StarLoader />
+        </main>
+      ) : isError ? (
+        <Result
+          status={"error"}
+          title={<p className="font-[300] text-[18px]">An error occurred</p>}
+        />
+      ) : (
+        <>
+          <div
+            className={`flex-1 shadow-md p-3 mb-5 overflow-y-scroll ${styles.custom_scrollbar}`}
+          >
+            <div className="bg-white p-8 relative">
+              <div className="absolute top-2 right-2 mb-3 flex gap-3">
+                {is_approve && (
+                  <button
+                    className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[4px] mx-2 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
+                    onClick={() => setIsEdit(!isEdit)}
                   >
-                    <MdSaveAlt size={"1.5rem"} />
-                  </Button>
-                </Tooltip>
-              </>
-            )}
-          </div>
-          <div ref={targetRef}>
-            {/* <div className="my-5"> */}
-            <div className="header_address">
-              <p className="font-semibold font-Exotic text-base my-1">
-                Internal Memorandum
-              </p>
-              <table border={0} className="leading-10 w-full relative">
-                <tbody>
-                  <tr>
-                    <td className="font-semibold font-Exotic ">To: </td>
-                    <td>{memo?.recipient}Wanda Paul, Chief of Operations</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold font-Exotic ">From: </td>
-                    <td>
-                      {memo?.from} Michael Singleton, Chief, Internal Audit
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold font-Exotic ">Date: </td>
-                    <td>{memo?.created_at ?? "31/01/2024"}</td>
-                  </tr>
-                  <tr>
-                    <td className="font-semibold font-Exotic ">Subject: </td>
-                    <td className="font-bold text-base font-Exotic">
-                      {memo?.subject}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>
-                      <hr className="my-3 border-t-2 border-gray-500" />
-                    </td>
-                  </tr>
-                </tbody>
-                {/* <div className="absolute top-0 right-0 flex h-5/6 items-center">
+                    {isEdit ? "Undo" : "Edit"}
+                  </button>
+                )}
+                {selfMemo && (
+                  <>
+                    <Tooltip
+                      showArror={true}
+                      content="Download as PDF"
+                      className="text-xs"
+                    >
+                      <AntButton
+                        size="sm"
+                        onClick={downloadPDF}
+                        className="bg-blue-100 text-cyan-600"
+                        icon={<MdSaveAlt size={"1.5rem"} />}
+                      />
+                    </Tooltip>
+                  </>
+                )}
+              </div>
+              {isEdit ? (
+                <EditMemo
+                  memoContent={memoContent}
+                  memoSubject={memoSubject}
+                  setMemoContent={setMemoContent}
+                  setMemoSubject={setMemoSubject}
+                />
+              ) : (
+                <div ref={targetRef}>
+                  {/* <div className="my-5"> */}
+                  <div className="header_address">
+                    <p className="font-semibold font-Exotic text-base my-1">
+                      Internal Memorandum
+                    </p>
+                    <table border={0} className="leading-10 w-full relative">
+                      <tbody>
+                        <tr>
+                          <td className="font-semibold font-Exotic ">To: </td>
+                          <td className="leading-5">{formattedRecipients}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold font-Exotic ">From: </td>
+                          <td>{memoDetail?.MEMO_FROM}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold font-Exotic ">Date: </td>
+                          <td>{memoDetail?.DATE_CREATED ?? "31/01/2024"}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold font-Exotic ">
+                            Subject:{" "}
+                          </td>
+                          <td className="font-bold text-base font-Exotic">
+                            {memoDetail?.SUBJECT}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colSpan={2}>
+                            <hr className="my-3 border-t-2 border-gray-500" />
+                          </td>
+                        </tr>
+                      </tbody>
+                      {/* <div className="absolute top-0 right-0 flex h-5/6 items-center">
                   <img
                     src={memo?.logo}
                     alt="logo"
@@ -272,83 +348,136 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
                     height={150}
                   />
                 </div> */}
-              </table>
-            </div>
-            <div className="body_of_memo !text-black !text-medium font-Exotic text-base">
-              {/* <p className="indent-6">
-                  I trust this letter finds you well. We would like to inform
-                  you of the outcomes of our recent annual warehouse physical
-                  inventory observation, conducted on [Date] at [Warehouse
-                  Location].{" "}
-                </p>
-                <p className="indent-6">
-                  The purpose of this annual inventory check was to ensure
-                  accuracy and accountability in our inventory management
-                  processes.{" "}
-                </p>
-                <p className="indent-6">
-                  We are pleased to report that the physical inventory count
-                  aligned closely with our recorded inventory levels,
-                  demonstrating a high level of accuracy in our tracking
-                  systems. Our dedicated team worked diligently to conduct
-                  thorough checks, reconcile discrepancies, and address any
-                  issues promptly.
-                </p> */}
+                    </table>
+                  </div>
+                  <div className="body_of_memo !text-black !text-md">
+                    <div
+                      className="text-sm text-justify text-default-800"
+                      dangerouslySetInnerHTML={{
+                        __html: memoDetail?.MEMO_CONTENT,
+                      }}
+                    />
 
-              {/* This will be used when they using react-quill to create the body because it will come with tags and style */}
-              {/* <div  dangerouslySetInnerHTML={{
-                                  __html: memo.body,
-                                }}/> */}
-
-              {formattedBody}
-              <br />
-              <p>Kind regards,</p>
-              <span className="text-[rgba(39, 44, 51, 0)]">
-                {(memo?.created_by === "me"
-                  ? "Femi Bejide"
-                  : memo?.created_by) ?? "[Your Name]"}
-              </span>
-            </div>
-            <div className="my-5">
-              <div className="flex gap-9 flex-wrap items-end">
-                {approvals?.map((item, index) => (
-                  <div
-                    className="flex flex-col items-center w-[9rem] "
-                    key={index + "_"}
-                  >
-                    <div className="border-b-2 flex justify-center border-b-black w-full">
-                      <img
-                        src={item?.signature}
-                        alt=""
-                        className="max-h-[100%] max-w-[100%]"
-                      />
-                    </div>
-                    <span className="font-Exotic text-black pb-2 font-semibold">
-                      {item?.name}
+                    {/* {formattedBody} */}
+                    <br />
+                    <p>Kind regards,</p>
+                    <span className="text-[rgba(39, 44, 51, 0)] font-medium">
+                      {memoDetail?.FIRST_NAME} {memoDetail?.LAST_NAME}
                     </span>
                   </div>
-                ))}
-              </div>
-              {/* </div> */}
+                  <div className="mt-7 mb-5">
+                    <div className="flex gap-x-9 gap-y-2 flex-wrap items-end">
+                      {memoApprovers?.map((item, index) => (
+                        <div
+                          className="flex flex-col items-center"
+                          key={index + "_"}
+                        >
+                          <div className="border-b-1 flex justify-center border-b-black w-full">
+                            <img
+                              src={item?.APPROVERS?.SIGNATURE}
+                              alt=""
+                              className="max-h-[100%] max-w-[100%]"
+                            />
+                            
+                          </div>
+                          <span className="font-Exotic text-default-700 pb-2 font-medium flex">
+                            {item?.APPROVERS?.FIRST_NAME}{" "}
+                            {item?.APPROVERS?.LAST_NAME}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* <div className="shadow-md bg-white p-3 mx-3">
-        <h3 className="text-2xl mb-3">Signed</h3>
-        <div className="flex space-x-7 flex-wrap">
-          {[1, 2]?.map((item, index) => (
-            <div className="flex flex-col space-y-1 items-center" key={index + "_"}>
-              <Avatar
-                src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-                className="w-[4rem] h-[4rem] text-large"
-              />
-              <span className="font-Exotic font-medium">Adebisi Salami</span>
+          {(is_approve && !isApprovedOrDeclined) && (
+            <div className="flex justify-between">
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: "red",
+                  },
+                }}
+              >
+                <AntButton
+                  type="primary"
+                  onClick={() => {
+                    setOpenApprove(true);
+                  }}
+                >
+                  Decline
+                </AntButton>
+              </ConfigProvider>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: "#5A6ACF",
+                  },
+                }}
+              >
+                <AntButton
+                  type="primary"
+                  onClick={() => {
+                    setIsApprove(true);
+                    setOpenApprove(true);
+                  }}
+                >
+                  Approve
+                </AntButton>
+              </ConfigProvider>
             </div>
-          ))}
+          )}
+        </>
+      )}
+
+      <ExpandedDrawer
+        isOpen={openApprove}
+        onClose={handleCloseDrawer}
+        maxWidth={500}
+        title={
+          <div className="text-center">
+            Confirm {isApprove ? "Approve" : "Decline"}
+          </div>
+        }
+      >
+        <div>
+          {isApprove && (
+            <SignatureView
+              save={save}
+              clear={clear}
+              sigCanvas={sigCanvas}
+              openPinModal={handleOpenPinModal}
+            />
+          )}
+          <div className="mt-3">
+            <TextArea
+              placeholder="Add Note here"
+              onChange={(e) => setConfirmationNote(e.target.value)}
+            />
+          </div>
         </div>
-      </div> */}
+        <div className="flex justify-end mt-5 w-full">
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#5A6ACF",
+              },
+            }}
+          >
+            <AntButton
+              size="large"
+              type="primary"
+              onClick={save}
+              loading={isLoading}
+            >
+              Confirm
+            </AntButton>
+          </ConfigProvider>
+        </div>
+      </ExpandedDrawer>
 
       <ExpandedDrawer isOpen={open.status} onClose={closeDrawer} maxWidth={700}>
         <div className="mt-10 mx-5">
@@ -361,9 +490,8 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
             />
           ) : open.type === "viewNote" ? (
             <>
-                <h3>View Notes</h3>
-                {/* <ViewNotes /> */}
-            
+              <h3>View Notes</h3>
+              {/* <ViewNotes /> */}
             </>
           ) : open.type === "addNote" ? (
             <AddNote />
@@ -429,7 +557,6 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
           </div>
         </div>
       </Modal>
-     
     </>
   );
 };

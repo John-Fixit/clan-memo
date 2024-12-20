@@ -28,6 +28,7 @@ const ExpandedDrawer = ({
         width={maxWidth ?? 920}  //620 for shopping and services
         onClose={onClose}
         open={isOpen}
+        title={title}
         className="bg-[#F5F7FA] z-[10]"
         classNames={{
           body: `${withBg ? 'bg-[#F7F7F7]' : ''}    `,

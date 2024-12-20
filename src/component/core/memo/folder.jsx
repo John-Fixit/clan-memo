@@ -27,14 +27,14 @@ import useCurrentUser from '../../../hooks/useCurrentUser';
 //     </div>
 //   );
 
-export const FolderCard = ({ name, fileCount }) =>{
+export const FolderCard = ({ name, fileCount, folderID }) =>{
 
 
   const navigate = useNavigate();
 
   return   (
 
-    <div className="relative w-52 h-40 cursor-pointer" onClick={()=>navigate(`/memo?folder=${name}`)}>
+    <div className="relative w-52 h-40 cursor-pointer" onClick={()=>navigate(`/memo?folder=${folderID}`)}>
       {/* Folder shape */}
       <svg
         viewBox="0 0 200 120"
@@ -195,7 +195,7 @@ const ScrollableFolders = () => {
       >
         {data?.map((folder) => (
           <div key={folder?.ID} className="snap-start">
-            <FolderCard name={folder.NAME} fileCount={folder?.MEMO_COUNT} />
+            <FolderCard name={folder.NAME} folderID={folder?.ID} fileCount={folder?.MEMO_COUNT} />
           </div>
         ))}
       </div>

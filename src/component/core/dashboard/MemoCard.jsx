@@ -6,8 +6,13 @@ import { Button, ConfigProvider } from "antd";
 import { Avatar } from "antd";
 import { removeHTMLTagsAndStyles } from "../../../utils/removeHTMLTagsAndStyles";
 import AvatarGroup from "../../shared/avatar_group/AvatarGroup";
+import moment from "moment";
+import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
 
 export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
+
+const { handleOpenMemo } = useViewMemoHook()
+
   //icon class
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -25,6 +30,13 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
     setIsHovered(false);
   };
 
+
+  const handleOpenViewMemo=()=>{
+    handleOpenMemo({memo})
+  }
+
+
+
   return (
     <>
       <div
@@ -38,15 +50,15 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
            
           </div>
           <h4 className="font-[500] text-[16px] text-[#333] font-[circularstd, sans-serif] leading-[21.6px] mb-[5px] text-start">
-            {memo?.subject.length < 30
-              ? memo?.subject
-              : memo?.subject.substring(0, 30) + "..."}
+            {memo?.SUBJECT?.length < 30
+              ? memo?.SUBJECT
+              : memo?.SUBJECT?.substring(0, 30) + "..."}
           </h4>
           <div className="!text-[#8e8e8e] mb-[1rem] font-[circularstd, sans-serif] font-[500] leading-[22px] text-xs">
             <p
               dangerouslySetInnerHTML={{
                 __html:
-                  removeHTMLTagsAndStyles(memo.body).substring(0, 200) + "...",
+                  removeHTMLTagsAndStyles(memo?.MEMO_CONTENT)?.substring(0, 200) + "...",
               }}
             />
           </div>
@@ -58,10 +70,10 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
                 Created At:
               </p>
               <p className="text-[#8e8e8e] text-xs font-[500] leading-[22px] my-auto">
-                {memo?.created_at}
+                {moment(memo?.DATE_CREATED).format("DD MMM YYYY")}
               </p>
             </div>
-            <div className="mb-[5px] text-[15px]">
+            {/* <div className="mb-[5px] text-[15px]">
               <p className="font-medium text-[0.83rem] text-[#333] leading-[22px] my-auto">
                 Memo Creator:
               </p>
@@ -72,10 +84,10 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
                 />
                 <span>{memo?.created_by}</span>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="mb-[10px] flex justify-between gap-y-3 flex-wrap">
-            <div>
+            {/* <div>
               <p className="font-medium text-[0.83rem] text-[#333] leading-[22px] my-auto">
                 Approval:
               </p>
@@ -102,10 +114,10 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
                   );
                 })}
               </Avatar.Group>
-            </div>
+            </div> */}
             {isHovered && (
               <div className="flex gap-2  transition ease-in-out duration-700h-full items-center">
-                {memo?.created_by === "me" && memo?.status === "pending" && (
+                {memo?.IS_DRAFT ? (
                   <ConfigProvider
                     theme={{
                       token: {
@@ -120,7 +132,7 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
                       Edit
                     </Button>
                   </ConfigProvider>
-                )}
+                ): null}
                 <ConfigProvider
                   theme={{
                     components: {
@@ -133,7 +145,7 @@ export default function MemoCard({ memo, handleOpenDrawer, openDrawerFn }) {
                 >
                   <Button
                     className="bg-[#5A6ACF] hover:bg-[#5A6ACF] text-[#fff] fw-semibold"
-                    onClick={() => handleOpenDrawer("viewMemo", memo)}
+                    onClick={handleOpenViewMemo}
                   >
                     View
                   </Button>

@@ -11,19 +11,26 @@ import { Button, ConfigProvider } from "antd";
 import { DeleteIcon, EditIcon, EyeIcon } from "../../shared/svg_icons";
 import { useGetLatestMemo } from "../../../services/API/memo";
 import PropTypes from "prop-types"
+import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
+import MemoDrawer from "../memo/memoDrawer";
 
 const Action = ({memo}) => {
+const { handleOpenMemo } = useViewMemoHook()
+
+
+
+
   return (
     <div className="relative flex items-center justify-end gap-2">
-        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+        <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={()=>handleOpenMemo({memo})}>
           <EyeIcon />
         </span>
         {
-          memo?.IS_DRAFT && (
+          memo?.IS_DRAFT ? (
           <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
             <EditIcon />
           </span>
-          )
+          ): null
 }
         {/* <span className="text-lg text-danger cursor-pointer active:opacity-50">
           <DeleteIcon />
@@ -84,7 +91,7 @@ const RecentMemo = ({userData}) => {
                     <TableCell className="text-[0.85rem] opacity-65">{item?.FOLDER_NAME}</TableCell>
                     <TableCell className="text-[0.85rem] opacity-65">{item?.DATE_CREATED}</TableCell>
                     <TableCell>
-                    <Action />
+                    <Action memo={item}/>
                     </TableCell>
                 </TableRow>
                 ))}
@@ -92,6 +99,9 @@ const RecentMemo = ({userData}) => {
             </Table>
         </div>
      </div>
+
+
+     
     </>
   );
 };

@@ -9,6 +9,7 @@ import useCurrentUser from "../../../hooks/useCurrentUser";
 import { Avatar } from "antd";
 import { filePrefix } from "../../../utils/filePrefix";
 import { useGetAllStaff } from "../../../services/get_data";
+import { useListFolder } from "../../../services/API/folder";
 
 const quillModules = {
   // Add any custom modules if needed
@@ -33,13 +34,7 @@ const quillModules = {
   ],
 };
 
-const recipientOptions = [
-  { label: "CEO", value: "ceo" },
-  { label: "HR", value: "HR" },
-  { label: "Product Manager", value: "product manager" },
-  { label: "COO", value: "COO" },
-  { label: "CTO", value: "CTO" },
-];
+
 
 const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, trigger}) => {
   const quillRef = useRef(null);
@@ -48,6 +43,18 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
   const { userData } = useCurrentUser();
 
   const { data: allStaff, isLoading: getStaffLoading } = useGetAllStaff(userData?.data?.COMPANY_ID);
+
+  const {data: getFolderList, isLoading: getFolderLoading} = useListFolder(userData?.data?.STAFF_ID)
+
+
+  const folderList = getFolderList?.map((folder) => {
+    return {
+      ...folder,
+      value: folder?.NAME,
+      label: folder?.NAME,
+    };
+  })
+
 
   const staff =
     allStaff?.length > 0
@@ -182,16 +189,13 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
             style={{
               width: "100%",
             }}
+            loading={getFolderLoading}
             status={errors.folder ? "error" : ""}
             value={getValues("folder")}
             {...register("folder", {
               required: "This field is required",
             })}
-            options={[
-              { label: "General", value: "general" },
-              { label: "Office", value: "office" },
-              { label: "New", value: "new" },
-            ]}
+            options={folderList}
             onChange={(value)=>setValue("folder", value)}
           />
           {watch("folder") === "new" && (

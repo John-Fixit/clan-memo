@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { data } from "../../component/core/dashboard/memoDoomyData";
 import PageHeader from "../../component/shared/pageHeader/PageHeader";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
@@ -12,12 +12,15 @@ import Attachment from "../../component/shared/createMemo/Attachment";
 import AddNote from "../../component/shared/createMemo/AddNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
-import ScrollableFolders, {
+import {
   FolderCard,
 } from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
 import { useSearchParams } from "react-router-dom";
 import MemoApprovalHistory from "../../component/shared/createMemo/MemoApprovalHistory";
+import { useViewFolder } from "../../services/API/memo.js"
+import useCurrentUser from "../../hooks/useCurrentUser";
+import MemoDrawer from "../../component/core/memo/memoDrawer.jsx";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
@@ -26,20 +29,41 @@ const Memo = () => {
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
   const [selectedMemo, setSelectedMemo] = useState("");
 
+  const { userData } = useCurrentUser()
+
 
   const [searchParams] = useSearchParams();
 
   // Get a specific query parameter
   const folder = searchParams.get("folder");
-  console.log(folder)
+
+  const { mutate, data: getFolderMemo, isPending } = useViewFolder()
+
+  useEffect(()=>{
+    mutate(
+      {
+        "staff_id": userData?.data?.STAFF_ID,
+        "folder_id": folder,
+        "status": selected,
+        "start_date":"",
+        "end_date":""
+    })
+  }, [userData?.data?.STAFF_ID, folder, mutate, selected])
+
+  const folderMemo=useMemo(()=>(
+    getFolderMemo?.data?.requests
+  ), [getFolderMemo?.data?.requests])
+
+
+  console.log(folderMemo)
 
 
 
   const modifiedData = useMemo(() => {
     if (selected === "total") {
-      return data;
+      return folderMemo;
     } else if (selected === "pending") {
-      return data?.filter(
+      return folderMemo?.filter(
         (memo) => memo?.created_by === "me" && memo?.status === "pending"
       );
     } else if (selected === "approved") {
@@ -122,8 +146,8 @@ const Memo = () => {
           <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-x-5 gap-y-2">
             <div className="lg:col-span-3 md:col-span-2 col-span-3">
               <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-                {modifiedData?.length ? (
-                  modifiedData?.map((item, index) => (
+                {folderMemo?.length ? (
+                  folderMemo?.map((item, index) => (
                     <MemoCard
                       key={index + "_memo"}
                       memo={item}
@@ -172,44 +196,45 @@ const Memo = () => {
       >
         <DrawerSideTab
           tabs={
-            openDrawer?.type === "create_memo"
-              ? [
-                  {
-                    title: "Create Memo",
-                    component: <MemoForm handleCloseDrawer={closeDrawerFn} />,
-                    header_text: "Create Memo",
-                    subText: "",
-                  },
-                  {
-                    title: "Add Attachment",
-                    component: <Attachment />,
-                    header_text: "Attachment",
-                  },
-                ]
-              : openDrawer?.type === "edit_memo"
-              ? [
-                  {
-                    title: "Edit Memo",
-                    component: <MemoForm />,
-                    header_text: "Edit Memo",
-                    sub_text: "",
-                  },
-                  {
-                    title: "Attachment",
-                    component: <Attachment />,
-                    header_text: "Attachment",
-                    sub_text: "",
-                  },
-                ]
-              : openDrawer.type === "addNote"
-              ? [
-                  {
-                    title: "Add Note",
-                    component: <AddNote />,
-                    header_text: "Add Note",
-                  },
-                ]
-              : openDrawer.type === "viewNote"
+            // openDrawer?.type === "create_memo"
+            //   ? [
+            //       {
+            //         title: "Create Memo",
+            //         component: <MemoForm handleCloseDrawer={closeDrawerFn} />,
+            //         header_text: "Create Memo",
+            //         subText: "",
+            //       },
+            //       {
+            //         title: "Add Attachment",
+            //         component: <Attachment />,
+            //         header_text: "Attachment",
+            //       },
+            //     ]
+            //   : openDrawer?.type === "edit_memo"
+            //   ? [
+            //       {
+            //         title: "Edit Memo",
+            //         component: <MemoForm />,
+            //         header_text: "Edit Memo",
+            //         sub_text: "",
+            //       },
+            //       {
+            //         title: "Attachment",
+            //         component: <Attachment />,
+            //         header_text: "Attachment",
+            //         sub_text: "",
+            //       },
+            //     ]
+            //   : openDrawer.type === "addNote"
+            //   ? [
+            //       {
+            //         title: "Add Note",
+            //         component: <AddNote />,
+            //         header_text: "Add Note",
+            //       },
+            //     ]
+            //   : 
+              openDrawer.type === "viewNote"
               ? [
                   // {
                   //   title: "Notes",
@@ -217,7 +242,7 @@ const Memo = () => {
                   //   header_text: "Notes",
                   // },
                   // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
-                  // { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
+                  { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
                 ]
               : openDrawer.type === "approval_history" && [
                     { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
@@ -233,6 +258,9 @@ const Memo = () => {
       <ExpandedDrawer isOpen={open.status} onClose={handleCloseDrawer} maxWidth={700}>
         <SignMemo memo={selectedMemo} handleOpenDrawer={openDrawerFn} />
       </ExpandedDrawer>
+
+
+
     </>
   );
 };
