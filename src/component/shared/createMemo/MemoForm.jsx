@@ -41,7 +41,7 @@ const recipientOptions = [
   { label: "CTO", value: "CTO" },
 ];
 
-const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields}) => {
+const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, trigger}) => {
   const quillRef = useRef(null);
 
 
@@ -85,7 +85,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
             <Select
               placeholder="Search Recipient"
               size={"small"}
-              defaultValue={getValues("from")}
+              value={getValues("from")}
               onChange={(value) => {
                 setValue("from", value);
               }}
@@ -102,6 +102,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
                   size={"large"}
                   loading={getStaffLoading}
                   placeholder="Select Staff Name"
+                  value={getValues("senderName")}
                   onChange={(value)=>setValue("senderName", value)}
                   className="rounded-md"
                   style={{
@@ -142,17 +143,6 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
                     </Space>
                   )}
                 />
-              {/* <Input
-                size="large"
-                placeholder="Enter Name"
-                status={errors.senderName ? "error" : ""}
-                {...register("senderName", {
-                  required:
-                    watch("from") === "personal"
-                      ? "This field is required"
-                      : false,
-                })}
-              /> */}
             </div>
           )}
         </div>
@@ -170,10 +160,14 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
             size="large"
             placeholder="Subject"
             status={errors.subject ? "error" : ""}
+            defaultValue={getValues("subject")}
             {...register("subject", {
               required: "This field is required",
             })}
-            onChange={(e) => setValue("subject", e.target.value)}
+            onChange={(e) => {
+              trigger()
+              setValue("subject", e.target.value)
+            }}
           />
           <small className="text-danger-500">{ touchedFields.subject && errors?.subject?.message}</small>
         </div>
@@ -189,6 +183,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
               width: "100%",
             }}
             status={errors.folder ? "error" : ""}
+            value={getValues("folder")}
             {...register("folder", {
               required: "This field is required",
             })}
@@ -205,6 +200,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
               placeholder="Enter name of your folder"
               status={errors.new_folder ? "error" : ""}
               className="mt-2"
+              value={getValues("mew_folder")}
               // {...register("subject", {
               //   required: "This field is required",
               // })}
@@ -233,12 +229,12 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields})
         </div>
         <div className="flex justify-end pb-5">
 
-          <button
+          {/* <button
             type="submit"
             className={`bg-[#5A6ACF] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[20px] uppercase `}
           >
             Continue
-          </button>
+          </button> */}
         </div>
       </main>
     </>

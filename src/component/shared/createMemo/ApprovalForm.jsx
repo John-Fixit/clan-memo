@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React, { Fragment, useState } from "react";
 // import { Avatar } from "@nextui-org/react";
 import { Avatar, Button, ConfigProvider, Input, Select, Space } from "antd";
-import { useGetAllStaff } from "../../../services/get_data";
+import { useGetAllStaff, useGetApprovalStaff } from "../../../services/get_data";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import { filePrefix } from "../../../utils/filePrefix";
 import { errorToast } from "../../../utils/toastPopUp";
@@ -20,7 +20,8 @@ const ApprovalForm = ({
   handleSubmit,
   handleSaveAsDraft,
   goToNextTab,
-  isPending
+  isPending,
+  isDraft,
 }) => {
   const [currentValue, setCurrentValue] = useState("");
 
@@ -30,9 +31,31 @@ const ApprovalForm = ({
     userData?.data?.COMPANY_ID
   );
 
+  const { data: approvalStaff, isLoading: approvalLoading } = useGetApprovalStaff(
+    {
+      company_id: userData?.data?.COMPANY_ID,
+        staff_id: userData?.data?.STAFF_ID,
+        selection: "DEPARTMENT HEAD"
+    }
+  );
+
+
+
+
+
+  const designationSelection = [
+    { value: "Head of Department", label: "HEAD OF DEPARTMENT" },
+    { value: "Head of Region", label: "HEAD OF REGION" },
+    { value: "Head of Unit", label: "HEAD OF UNIT" },
+    { value: "Head of Directorate", label: "HEAD OF DIRECTORATE" },
+    { value: "General Manager", label: "GENERAL MANAGER" },
+    { value: "Deputy General Manager", label: "DEPUTY GENERAL MANAGER" },
+    { value: "Assistant General Manager", label: "ASSISTANT GENERAL MANAGER" },
+  ];
+
   const staff =
-    allStaff?.length > 0
-      ? allStaff?.map((current) => {
+    approvalStaff?.length > 0
+      ? approvalStaff?.map((current) => {
           return {
             ...current,
             value: current?.STAFF_ID,
@@ -40,10 +63,6 @@ const ApprovalForm = ({
           };
         })
       : [];
-
-  const handleChange = (e) => {
-    setCurrentValue(e.target.value);
-  };
 
   let approvals = watch("approvalDetail");
 
@@ -84,13 +103,20 @@ const ApprovalForm = ({
               <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
                 Designation
               </label>
-              <div className="w-full md:col-span-2">
-                <Input
-                  size="large"
-                  value={currentValue}
-                  placeholder="Enter Staff Designation"
-                  onChange={handleChange}
-                />
+              <div className="w-full">
+              <Select
+              placeholder="Select Designation"
+              defaultValue={currentValue}
+              value={currentValue}
+              onChange={(value) => {
+                setCurrentValue(value);
+              }}
+              size="large"
+              style={{
+                width: "100%",
+              }}
+              options={designationSelection}
+            />
               </div>
             </div>
             <div className="my-4 items-center gap-1">
@@ -219,8 +245,8 @@ const ApprovalForm = ({
               }
             }}
           >
-            <Button size="large" onClick={handleSaveAsDraft} loading={isPending}>Save as draft</Button>
-            <Button size="large" type="primary" onClick={handleSubmit} loading={isPending}>
+            <Button size="large" onClick={handleSaveAsDraft} loading={isDraft && isPending}>Save as draft</Button>
+            <Button size="large" type="primary" onClick={handleSubmit} loading={!isDraft && isPending}>
               Save
             </Button>
           </ConfigProvider>
