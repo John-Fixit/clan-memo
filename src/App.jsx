@@ -1,11 +1,22 @@
 import MainLayout from "./layout/MainLayout/MainLayout";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Memo from "./pages/memo/Memo";
 import Login from "./pages/login/Login";
 import MyApproval from "./pages/myApproval/MyApproval";
+import useCurrentUser from "./hooks/useCurrentUser";
+import { useEffect } from "react";
 
 const App = () => {
+  
+  const { userData } = useCurrentUser();
+
+  useEffect(()=>{
+    if(!userData){
+      <Navigate to="/login" />
+    }
+  }, [userData])
+
   return (
     <>
       <Routes>

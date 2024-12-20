@@ -4,11 +4,20 @@ import logo from "../../assets/images/ncaa_logo.png";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { Spinner } from "@nextui-org/react";
+import { useLogin } from "../../services/API/login";
+import { Button, ConfigProvider } from "antd";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import { useNavigate } from "react-router-dom";
+import { errorToast } from "../../utils/toastPopUp";
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setloading] = useState(false);
-  const [passwordDrawer, setPasswordDrawer] = useState(false);
+
+  const { mutate, isPending} = useLogin();
+
+  const { setCurrentUser } = useCurrentUser();
+
+  const navigate = useNavigate()
 
   const {
     register,
@@ -17,7 +26,25 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (values) => {
-    console.log(values);
+    const payload = {
+        username: values?.username,
+        password: values?.password
+    }
+
+    mutate(payload, {
+        onError: (error)=>{
+            console.log(error)
+            const errMsg = error?.response?.data?.message || error?.message
+            errorToast(errMsg)
+        },
+        onSuccess: (response)=>{
+            const resData = response?.data
+
+            setCurrentUser(resData);
+            navigate("/")
+        }
+    })
+
   };
 
   //password visible function
@@ -30,35 +57,36 @@ const Login = () => {
       <main
         className={`relative w-full bg-gray-300 flex flex-col space-y-5 items-center justify-center h-[100vh] px-3`}
       >
-         <div
-    className="absolute inset-0"
-    style={{
-      backgroundImage: `url(${logo})`,
-      backgroundPosition: "center",
-      backgroundSize: "100%",
-      backgroundRepeat: "repeat",
-      filter: "blur(10px)", // Blurs the background image
-    }}
-  ></div>
-  
-        <section className="absolute form_section w-[85%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-lg p-10">
-        <div className="form_header flex flex-col items-center gap-y-4 text-center pb-3">
-        <div className="flex items-center gap-x-1">
-                    <img
-                      src={logo}
-                      alt="communeety logo"
-                      width={40}
-                      className="cursor-pointer"
-                    />
-                    <span className="font-bold leading-3 text-lg text-[#2c3679]">EDAP</span>
-                  </div>
-                  <div>
-                <h4 className="text-gray-700 text-xl font-medium">Login</h4>
-                <p className="text-gray-400 font-medium text-xs mb-[1.5rem]">
-                Access to our dashboard
-                </p>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${logo})`,
+            backgroundPosition: "center",
+            backgroundSize: "100%",
+            backgroundRepeat: "repeat",
+            filter: "blur(10px)", // Blurs the background image
+          }}
+        ></div>
 
-                  </div>
+        <section className="absolute form_section w-[85%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-lg p-10">
+          <div className="form_header flex flex-col items-center gap-y-4 text-center pb-3">
+            <div className="flex items-center gap-x-1">
+              <img
+                src={logo}
+                alt="communeety logo"
+                width={40}
+                className="cursor-pointer"
+              />
+              <span className="font-bold leading-3 text-lg text-[#2c3679]">
+                EDAP
+              </span>
+            </div>
+            <div>
+              <h4 className="text-gray-700 text-xl font-medium">Login</h4>
+              <p className="text-gray-400 font-medium text-xs mb-[1.5rem]">
+                Access to our dashboard
+              </p>
+            </div>
           </div>
           <form
             className="flex flex-col space-y-[20px]"
@@ -126,25 +154,15 @@ const Login = () => {
                 </span>
               )}
             </div>
-            <div className="submit_btn">
-              <button
-                disabled={loading}
-                type="submit"
-                className="text-lg  w-full bg-[#5A6ACF] hover:bg-[#5A6ACF]/40 active:bg-[#5A6ACF]/80 p-[4px] text-white rounded-md"
-              >
-                <div className="flex items-center justify-center gap-x-2">
-                  {loading ? (
-                    <Spinner
-                      size="sm"
-                      classNames={{ circle1: "border-white/80" }}
-                    />
-                  ) : (
-                    ""
-                  )}
-                  Login
-                </div>
-              </button>
-            </div>
+            <ConfigProvider theme={{
+                token: {
+                    colorPrimary: "#5A6ACF",
+                },
+            }}>
+                <Button htmlType="submit" type="primary" size="large" loading={isPending}>
+                    Login
+                </Button>
+            </ConfigProvider>
             <div className="dont_have_acc text-center text-[15px] font-medium text-black">
               {/* <p>
                 Don&apos;t have an account yet?{" "}
@@ -154,8 +172,6 @@ const Login = () => {
           </form>
         </section>
       </main>
-
-
     </>
   );
 };

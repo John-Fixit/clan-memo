@@ -10,14 +10,14 @@ import DrawerSideTab from "../../component/shared/drawer/DrawerSideTab";
 import MemoForm from "../../component/shared/createMemo/MemoForm";
 import Attachment from "../../component/shared/createMemo/Attachment";
 import AddNote from "../../component/shared/createMemo/AddNote";
-import MemoNote from "../../component/shared/createMemo/MemoNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 import ScrollableFolders, {
   FolderCard,
 } from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import MemoApprovalHistory from "../../component/shared/createMemo/MemoApprovalHistory";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
@@ -168,7 +168,7 @@ const Memo = () => {
       <ExpandedDrawer
         isOpen={openDrawer.status}
         onClose={closeDrawerFn}
-        maxWidth={"47rem"}
+        maxWidth={700}
       >
         <DrawerSideTab
           tabs={
@@ -211,21 +211,17 @@ const Memo = () => {
                 ]
               : openDrawer.type === "viewNote"
               ? [
-                  {
-                    title: "Notes",
-                    component: <MemoNote />,
-                    header_text: "Notes",
-                  },
+                  // {
+                  //   title: "Notes",
+                  //   component: <MemoNote />,
+                  //   header_text: "Notes",
+                  // },
                   // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
                   // { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
                 ]
               : openDrawer.type === "approval_history" && [
-                  //   { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
-                  {
-                    title: "Notes",
-                    component: <MemoNote />,
-                    header_text: "Notes",
-                  },
+                    { title: "Approval", component: <MemoApprovalHistory />, header_text: "Memo Approval History" },
+                 
                   // { title: "Attachment", component: <MemoAttachment />, header_text: "Memo Attachment" },
                 ]
           }
@@ -234,7 +230,7 @@ const Memo = () => {
         </DrawerSideTab>
       </ExpandedDrawer>
 
-      <ExpandedDrawer isOpen={open.status} onClose={handleCloseDrawer}>
+      <ExpandedDrawer isOpen={open.status} onClose={handleCloseDrawer} maxWidth={700}>
         <SignMemo memo={selectedMemo} handleOpenDrawer={openDrawerFn} />
       </ExpandedDrawer>
     </>

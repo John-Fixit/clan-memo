@@ -3,9 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { Input, Select } from "antd";
-import { useForm } from "react-hook-form";
+import { Input, Select, Space } from "antd";
 import MemoRecipient from "./MemoRecipient";
+import useCurrentUser from "../../../hooks/useCurrentUser";
+import { Avatar } from "antd";
+import { filePrefix } from "../../../utils/filePrefix";
+import { useGetAllStaff } from "../../../services/get_data";
 
 const quillModules = {
   // Add any custom modules if needed
@@ -38,35 +41,25 @@ const recipientOptions = [
   { label: "CTO", value: "CTO" },
 ];
 
-const MemoForm = () => {
+const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields}) => {
   const quillRef = useRef(null);
 
-  const {
-    handleSubmit,
-    register,
-    getValues,
-    setValue,
-    watch,
-    formState: { errors, touchedFields },
-  } = useForm({
-    defaultValues: {
-      from: "personal",
-      senderName: "",
-      recipient_type: "",
-      recipient: "",
-      subject: "",
-      approval: [],
-      body: "",
-      folder: "general",
-      recipient_value_array: null,
-      recipients: [],
-      to_value: null,
-    },
-  });
 
-  const onSubmit = (data) => {
-    console.log("data: ", data);
-  };
+  const { userData } = useCurrentUser();
+
+  const { data: allStaff, isLoading: getStaffLoading } = useGetAllStaff(userData?.data?.COMPANY_ID);
+
+  const staff =
+    allStaff?.length > 0
+      ? allStaff?.map((current) => {
+          return {
+            ...current,
+            value: current?.STAFF_ID,
+            label: `${current.FIRST_NAME} ${current.LAST_NAME}`,
+          };
+        })
+      : [];
+
 
   useEffect(() => {
     // Access the Quill instance
@@ -80,19 +73,10 @@ const MemoForm = () => {
     }
   }, []);
 
-  const handleSaveAsDraft = () => {
-    // localStorage.setItem(`DRAFT_MEMO`, JSON.stringify(data));
-    // setSubject("");
-    // setRecipients([]);
-    // setMemo_body("");
-    // handleCloseDrawer();
-    console.log("Memo saved as draft");
-    // showSuccess("Memo saved as draft");
-  };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <main>
         <div className="mb-4">
           <div className="flex gap-3">
             <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
@@ -114,7 +98,51 @@ const MemoForm = () => {
 
           {watch("from") === "others" && (
             <div className="mt-2">
-              <Input
+              <Select
+                  size={"large"}
+                  loading={getStaffLoading}
+                  placeholder="Select Staff Name"
+                  onChange={(value)=>setValue("senderName", value)}
+                  className="rounded-md"
+                  style={{
+                    width: "100%",
+                  }}
+                  optionFilterProp="label"
+                  showSearch
+                  options={staff}
+                  optionRender={(user) => (
+                    <Space className="cursor-pointer  w-full  px-2 rounded-xl">
+                      {
+                        <div className="flex gap-2 items-center  cursor-pointer px-2 py-1">
+                          {user?.data?.FILE_NAME ? (
+                            <Avatar
+                              alt={user?.data?.name}
+                              className="flex-shrink-0"
+                              size="sm"
+                              src={filePrefix + user?.data?.FILE_NAME}
+                            />
+                          ) : (
+                            <Avatar
+                              alt={user?.data?.name}
+                              className="flex-shrink-0"
+                              size="sm"
+                            >{user?.data?.label?.trim()[0]}</Avatar>
+                          )}
+
+                          <div className="flex flex-col">
+                            <span className="font-medium uppercase font-helvetica">
+                              {user?.data?.label}
+                            </span>
+                            <span className="text-xs font-medium text-gray-400 uppercase font-helvetica">
+                              {user?.data?.DEPARTMENT}
+                            </span>
+                          </div>
+                        </div>
+                      }
+                    </Space>
+                  )}
+                />
+              {/* <Input
                 size="large"
                 placeholder="Enter Name"
                 status={errors.senderName ? "error" : ""}
@@ -124,7 +152,7 @@ const MemoForm = () => {
                       ? "This field is required"
                       : false,
                 })}
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -186,32 +214,16 @@ const MemoForm = () => {
         </div>
         <div className="mb-4">
           <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
-            Approval
-          </label>
-          <Select
-            mode="multiple"
-            size={"large"}
-            placeholder="Select Approvals"
-            className="border-1 border-gray-300 rounded-md"
-            style={{
-              width: "100%",
-            }}
-            variant="borderless"
-            options={recipientOptions}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
             Body
           </label>
           <div className="flex flex-col rounded mb-4">
             <ReactQuill
               ref={quillRef}
               theme="snow"
-              // value={memo_body}
+              value={getValues("body")}
               placeholder="Write Something Here..."
-              onChange={(e) => {
-                setValue("body", e.target.value);
+              onChange={(value) => {
+                setValue("body", value);
               }}
               style={{ height: "500px" }}
               className="flex-1 border-none h-[280px] rounded-md w-full"
@@ -219,23 +231,16 @@ const MemoForm = () => {
             />
           </div>
         </div>
-        <div className="flex justify-between pb-5">
-          <button
-            type="button"
-            className={`header_btnStyle bg-[#fff] rounded text-[#5A6ACF] border border-[#5A6ACF] font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
-            onClick={handleSaveAsDraft}
-          >
-            Save as draft
-          </button>
+        <div className="flex justify-end pb-5">
 
           <button
             type="submit"
             className={`bg-[#5A6ACF] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[20px] uppercase `}
           >
-            Save
+            Continue
           </button>
         </div>
-      </form>
+      </main>
     </>
   );
 };

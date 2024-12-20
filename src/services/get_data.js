@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import API from "./axiosInstance"
+import {API} from "./axiosInstance"
 
 
 export const useGetAllStaff  = (company_id) => {

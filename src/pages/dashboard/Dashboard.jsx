@@ -6,6 +6,7 @@ import { data } from "../../component/core/dashboard/memoDoomyData";
 import CreateMemoSvg from "../../component/shared/svg_icons/create_memo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 import ScrollableFolders from "../../component/core/memo/folder";
+import CreateFolderButton from "../../component/shared/createFolderButton";
 
 const Dashboard = () => {
   const [selected, setSelected] = useState("all");
@@ -36,7 +37,10 @@ const Dashboard = () => {
                         better. Use this tool to generate reports.
                       </p>
                     </div>
-                    <CreateMemoButton />
+                    <div className="flex gap-3 flex-wrap">
+                      <CreateMemoButton />
+                      <CreateFolderButton />
+                    </div>
                   </div>
                 </div>
               </div>

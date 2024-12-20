@@ -19,13 +19,13 @@ const CreateFolderButton = () => {
   return (
     <>
     <ConfigProvider
-                      // theme={{
-                      //   token: {
-                      //     colorPrimary: "#5A6ACF",
-                      //   },
-                      // }}
+                      theme={{
+                        token: {
+                          colorPrimary: "#5A6ACF",
+                        },
+                      }}
                     >
-                      <Button size='large' variant='outlined' type='default' onClick={handleOpenCreateFolder}>Create Folder</Button>
+                      <Button size='large' type='default' onClick={handleOpenCreateFolder}>Create Folder</Button>
                     </ConfigProvider>
     <ExpandedDrawer
         isOpen={openDrawer}

@@ -28,7 +28,7 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
 
   const [approvals, setApprovals] = useState(memo?.approval ?? []);
   const [open, setOpen] = useState({ status: false, type: "" });
-  const [hasSignature, setHasSignature] = useState(true);
+  const [hasSignature, setHasSignature] = useState(false); //Not signed by default
 
   const sigCanvas = useRef({});
 
@@ -181,7 +181,7 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
             </button>
           </>
         )}
-        <button
+        {/* <button
           className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
           onClick={()=>handleOpenDrawer(
             memo?.created_by ==='me'? 'viewNote' : 'addNote'
@@ -196,7 +196,7 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
           onClick={()=>handleOpenDrawer('approval_history')}
         >
           Approval history
-        </button>
+        </button> */}
       </div>
       <div
         className={`flex-1 shadow-md p-3 mb-10 overflow-y-scroll ${styles.custom_scrollbar}`}
@@ -350,7 +350,7 @@ const SignMemo = ({ showEditBtn, handleOpenDrawer, memo }) => {
         </div>
       </div> */}
 
-      <ExpandedDrawer isOpen={open.status} onClose={closeDrawer}>
+      <ExpandedDrawer isOpen={open.status} onClose={closeDrawer} maxWidth={700}>
         <div className="mt-10 mx-5">
           {open.type === "signature" ? (
             <SignatureView

@@ -82,12 +82,12 @@ const SidebarHeader = () => {
           <div className="flex items-center gap-x-1">
             <img
               src={logo}
-              alt="communeety logo"
+              alt="logo"
               width={40}
               className="cursor-pointer"
               onClick={() => navigate("/")}
             />
-            <span className="font-bold leading-3 text-lg text-[#2c3679]">EDAP</span>
+            <span className="font-bold leading-3 text-lg hidden sm:block text-[#2c3679]">EDAP</span>
           </div>
           <div className="relative hidden md:block">
             <label htmlFor="Search" className="sr-only">
