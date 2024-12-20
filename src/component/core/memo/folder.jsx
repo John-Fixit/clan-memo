@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { CiFolderOn } from 'react-icons/ci';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useListFolder, useListFolderStatus } from '../../../services/API/folder';
+import useCurrentUser from '../../../hooks/useCurrentUser';
 
 
 // const FolderCard = ({ name, fileCount }) => (
@@ -74,6 +76,15 @@ const ScrollableFolders = () => {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const {userData} = useCurrentUser()
+  const {data} =  useListFolder({
+    staff_id:userData?.data?.STAFF_ID
+  })
+  const {data: status_value} =  useListFolderStatus({
+    staff_id:userData?.data?.STAFF_ID
+  })
+
+//   console.log(data, status_value)
 
 
 
@@ -182,9 +193,9 @@ const ScrollableFolders = () => {
         onScroll={checkScroll}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {folders.map((folder, index) => (
-          <div key={index} className="snap-start">
-            <FolderCard name={folder.name} fileCount={folder.fileCount} />
+        {data?.map((folder) => (
+          <div key={folder?.ID} className="snap-start">
+            <FolderCard name={folder.NAME} fileCount={folder?.MEMO_COUNT} />
           </div>
         ))}
       </div>

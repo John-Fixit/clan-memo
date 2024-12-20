@@ -13,9 +13,19 @@ export const useCreateFolder = () => {
 export const useListFolder  = (json) => {
     return useQuery({
         queryFn: async () => {
-            const res = await API.post(`/memoai/list_folder/`, json)
+            const res = await API.post(`/memoai/list_folder`, json)
             return res?.data?.data
           },
           queryKey: ["list_folder"]
+    })
+  }
+
+export const useListFolderStatus  = (json) => {
+    return useQuery({
+        queryFn: async () => {
+            const res = await API.post(`/memoai/list_folder_status`, json)
+            return res?.data?.data
+          },
+          queryKey: ["list_folder_status"]
     })
   }

@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import { useCreateFolder } from "../../../services/API/folder";
 import { errorToast, successToast } from "../../../utils/toastPopUp";
 import useCurrentUser from "../../../hooks/useCurrentUser";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 
 const FolderForm = () => {
     const { mutate, isPending } = useCreateFolder();
     const {userData} = useCurrentUser()
+    const queryClient = useQueryClient();
 
 
   const {
@@ -26,12 +28,13 @@ const FolderForm = () => {
   );
 
   const onSubmit = (data) => {
+
       const json = {
           "staff_id":userData?.data?.STAFF_ID,
           "folder":data?.folderName
         }
-        // console.log(json);
-        mutate(data, {
+
+        mutate(json, {
        onError:(error)=>{
         const errMessage = error?.response?.data?.message || error?.message;
 
@@ -39,8 +42,10 @@ const FolderForm = () => {
 
        },
        onSuccess:(response)=>{
-        console.log(response);
+        // console.log(response);
         successToast('Folder created successfuly')
+        queryClient.invalidateQueries('list_folder_status')
+        // 
         reset()
         setValue("folderName", "")
        }
