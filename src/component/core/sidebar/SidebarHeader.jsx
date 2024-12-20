@@ -71,9 +71,11 @@ import { Avatar, Badge, Button, ConfigProvider } from "antd";
 import { IoNotifications } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/ncaa_logo.png";
+import DropdownNotification from "../../../layout/components/DropdownNotification.jsx";
 
 const SidebarHeader = () => {
   const navigate = useNavigate();
+
 
   return (
     <>
@@ -157,9 +159,10 @@ const SidebarHeader = () => {
             </Avatar>
             <span>John Doe</span>
           </div>
-          <Badge dot>
+          {/* <Badge dot>
             <IoNotifications className="text-[#B0C3CC]" size={20} />
-          </Badge>
+          </Badge> */}
+            <DropdownNotification/>
         </div>
       </div>
     </>
