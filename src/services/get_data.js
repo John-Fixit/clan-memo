@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import {API} from "./axiosInstance"
 
 
@@ -52,4 +52,15 @@ export const useGetAllDepartment  = (company_id) => {
           },
           queryKey: ["directo"]
     })
+  }
+
+  export const useGetApprovalStaff = (payload) => {
+    const approvalStaff = useQuery({
+      queryKey: ["get_approval", ],
+      queryFn: async()=>{
+        const res = await API.post(`leave/getApprovalStaff`, payload)
+        return res?.data?.data
+      }
+    })
+    return approvalStaff;
   }

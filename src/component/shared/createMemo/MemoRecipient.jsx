@@ -164,7 +164,6 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
       const userIDs = val?.map((each) => each?.value);
 
       
-
       const data = { recipients: userIDs, recipient_value_array: val, to_value: null, recipient_value: null };
 
       Object.entries(data).forEach(([key, value]) => {
@@ -226,7 +225,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             style={{
               width: "100%",
             }}
-            // value={watch("recipient_type") === "STAFF" ? data?.recipients : data?.recipient_value}
+            defaultValue={watch("recipient_type") === "STAFF" ? getValues()?.recipients : getValues()?.recipient_value}
             optionFilterProp="label"
             loading={isLoading}
             variant="borderless"
