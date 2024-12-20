@@ -18,6 +18,8 @@ import ScrollableFolders, {
 import CreateFolderButton from "../../component/shared/createFolderButton";
 import { useSearchParams } from "react-router-dom";
 import MemoApprovalHistory from "../../component/shared/createMemo/MemoApprovalHistory";
+import { useListFolderStatus } from "../../services/API/folder";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
@@ -25,6 +27,10 @@ const Memo = () => {
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
   const [selectedMemo, setSelectedMemo] = useState("");
+  const {userData} = useCurrentUser()
+  const {data:folders}  =  useListFolderStatus({
+    staff_id:userData?.data?.STAFF_ID
+  })
 
 
   const [searchParams] = useSearchParams();
@@ -68,16 +74,16 @@ const Memo = () => {
     setOpenDrawer({ ...openDrawer, status: false });
   };
 
-  const folders = [
-    { name: "General", fileCount: 45 },
-    { name: "Images", fileCount: 128 },
-    { name: "Projects", fileCount: 23 },
-    { name: "Downloads", fileCount: 67 },
-    { name: "Music", fileCount: 256 },
-    { name: "Videos", fileCount: 89 },
-    { name: "Work", fileCount: 34 },
-    { name: "Personal", fileCount: 78 },
-  ];
+  // const folders = [
+  //   { name: "General", fileCount: 45 },
+  //   { name: "Images", fileCount: 128 },
+  //   { name: "Projects", fileCount: 23 },
+  //   { name: "Downloads", fileCount: 67 },
+  //   { name: "Music", fileCount: 256 },
+  //   { name: "Videos", fileCount: 89 },
+  //   { name: "Work", fileCount: 34 },
+  //   { name: "Personal", fileCount: 78 },
+  // ];
 
   return (
     <>
@@ -150,11 +156,11 @@ const Memo = () => {
                   </div>
                 </div>
                 <div className="min-h-[50vh] overflow-y-auto flex flex-col items-center scrollbar-hid">
-                  {folders.map((folder, index) => (
-                    <div key={index} className="snap-start">
+                  {folders?.map((folder) => (
+                    <div key={folder?.ID} className="snap-start">
                       <FolderCard
-                        name={folder.name}
-                        fileCount={folder.fileCount}
+                        name={folder?.NAME}
+                        fileCount={folder?.MEMO_COUNT}
                       />
                     </div>
                   ))}
