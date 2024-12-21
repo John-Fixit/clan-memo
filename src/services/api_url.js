@@ -1,5 +1,6 @@
 export const API_URL = {
     create_memo: "/memoai/create_memo",
+    update_draft_memo: "/memoai/update_draft",
     latestMemo: "/memoai/latest",
     activityTimeline: "/memoai/activities",
     view_folder: "/memoai/view_folder",

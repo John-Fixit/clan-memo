@@ -7,16 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { Button, ConfigProvider } from "antd";
-import { DeleteIcon, EditIcon, EyeIcon } from "../../shared/svg_icons";
+import { EditIcon, EyeIcon } from "../../shared/svg_icons";
 import { useGetLatestMemo } from "../../../services/API/memo";
 import PropTypes from "prop-types"
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
-import MemoDrawer from "../memo/memoDrawer";
+import { useHandleMemo } from "../../../hooks/useHandleMemo";
 
 const Action = ({memo}) => {
 const { handleOpenMemo } = useViewMemoHook()
 
+const {handleOpenCreateMemo} = useHandleMemo()
 
 
 
@@ -27,7 +27,7 @@ const { handleOpenMemo } = useViewMemoHook()
         </span>
         {
           memo?.IS_DRAFT ? (
-          <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+          <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={()=>handleOpenCreateMemo({draftedMemo: memo})}>
             <EditIcon />
           </span>
           ): null

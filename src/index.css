@@ -7,6 +7,16 @@
     background-color: #faf6f69c !important;
   }
 }
+@layer components {
+  .rendered-html-content ul {
+    list-style: disc !important; /* Bullet points for unordered lists */
+    margin-left: 1.5rem; /* Indentation for unordered lists */
+  }
+  .rendered-html-content ol {
+    list-style: decimal !important; /* Numbers for ordered lists */
+    margin-left: 1.5rem; /* Indentation for ordered lists */
+  }
+}
 *{
   scroll-behavior: smooth;
   font-family: Poppins !important;

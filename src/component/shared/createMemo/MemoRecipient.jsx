@@ -1,4 +1,4 @@
-import { Avatar, Select, Space } from "antd";
+import { Avatar, Checkbox, Select, Space } from "antd";
 import PropTypes from "prop-types";
 import {
   useGetAllDepartment,
@@ -184,6 +184,10 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
 
 
 
+  // const handleSelectAllStaff = (e) => {
+  //   setValue("selectAllStaff", e.target.checked)
+  // }
+
 
 
   return (
@@ -210,6 +214,10 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
       </div>
 
       {watch("recipient_type") && (
+        <>
+        {/* <Checkbox checked={getValues("selectAllStaff")} onChange={handleSelectAllStaff} className="mb-4">
+          All Staff
+        </Checkbox> */}
         <div className="_compose_to mb-4">
           <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
             Select Recipient
@@ -221,6 +229,9 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             size={"large"}
             placeholder="Search Recipient"
             onChange={onSelectrecipient}
+            {...register(getValues('recipient_type') === 'STAFF'? "recipients":"recipient_value", {
+              required: "This field is required",
+            })}
             className="border-1 border-gray-300 rounded-md"
             style={{
               width: "100%",
@@ -274,6 +285,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             )}
           />
         </div>
+      </>
       )}
     </>
   );

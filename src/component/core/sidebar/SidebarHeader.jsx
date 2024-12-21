@@ -84,13 +84,13 @@ const SidebarHeader = () => {
     <>
       <div className="flex justify-between items-center py-3 shadow lg:px-28 px-5">
         <div className="flex gap-x-4 items-center">
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => navigate("/")}>
             <img
               src={logo}
               alt="logo"
               width={40}
               className="cursor-pointer"
-              onClick={() => navigate("/")}
+              
             />
             <span className="font-bold leading-3 text-lg hidden sm:block text-[#2c3679]">EDAP</span>
           </div>
@@ -164,7 +164,7 @@ const SidebarHeader = () => {
             </Avatar>
 
             </div>
-            <span>{userData?.data?.FIRST_NAME}{" "}
+            <span className="text-sm">{userData?.data?.FIRST_NAME}{" "}
             {userData?.data?.LAST_NAME}</span>
           </div>
           {/* <Badge dot>

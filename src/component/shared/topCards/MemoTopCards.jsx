@@ -3,60 +3,72 @@
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { IoDocumentOutline } from "react-icons/io5";
+import StarLoader from "../../core/loaders/StarLoader";
 
-const MemoTopCards =({memos, setSelected, selected, grid })=>{
+const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
   const handleSelect = (val) => {
-    setSelected(val)
+    setSelected(val);
   };
-
 
   const memoData = [
     {
       name: "Total",
-      key: "total",
+      key: "",
       icon: IoDocumentOutline,
-      total: memos?.length ?? 0,
-      b_color: 'bg-amber-100',
-      t_color: 'text-amber-600'
+      b_color: "bg-amber-100",
+      t_color: "text-amber-600",
     },
     {
-        name: "Pending",
-        key: "pending",
+      name: "Pending",
+      key: "pending",
       icon: IoDocumentOutline,
-      total: memos?.filter(memo=>memo?.created_by==='me' && memo?.status==='draft').length ?? 0,
-      b_color: 'bg-cyan-100',
-      t_color: 'text-cyan-600'
+      b_color: "bg-cyan-100",
+      t_color: "text-cyan-600",
+    },
+
+    {
+      name: "Draft",
+      key: "draft",
+      icon: IoDocumentOutline,
+      b_color: "bg-cyan-100",
+      t_color: "text-cyan-600",
     },
     {
-        name: "Approved",
-        key: "approved",
-        icon: IoDocumentOutline,
-        total: memos?.filter(memo=>memo?.created_by !== 'me').length ?? 0,
-        b_color: 'bg-green-100',
-      t_color: 'text-green-600'
-      },
-      {
-        name: "Declined",
-        key: "declined",
-        icon: IoDocumentOutline,
-        total: memos?.filter(memo=>memo?.created_by==='me' && memo?.status==='declined')?.length,
-        b_color: 'bg-red-100',
-      t_color: 'text-red-600'
-      },
-  ]
+      name: "Approved",
+      key: "approved",
+      icon: IoDocumentOutline,
+      b_color: "bg-green-100",
+      t_color: "text-green-600",
+    },
+    {
+      name: "Declined",
+      key: "declined",
+      icon: IoDocumentOutline,
+      b_color: "bg-red-100",
+      t_color: "text-red-600",
+    },
+  ];
 
 
   return (
     <>
-      <div className={`grid grid-cols-1 gap-4 ${grid===4? "lg:grid-cols-4 md:grid-cols-2": "lg:grid-cols-2"} lg:gap-6`}>
+      <div
+        className={`grid grid-cols-1 gap-4 ${
+          grid === 4 ? "lg:grid-cols-4 md:grid-cols-2" : "lg:grid-cols-2"
+        } lg:gap-6`}
+      >
         {memoData?.map((item, index) => {
           return (
+            statusData?.[item?.key] &&
             <div
               key={index}
-              className={`py-4 -top border-[1px] border-[#dfe2e6] transition-background ${selected===item?.key? "bg-default-100": "bg-white"} shadow flex rounded-t-[0.5rem] items-center justify-between px-4 gap-3 cursor-pointer`}
+              className={`py-4 -top border-[1px] border-[#dfe2e6] transition-background ${
+                selected === item?.key ? "bg-default-100" : "bg-white"
+              } shadow flex rounded-t-[0.5rem] items-center justify-between px-4 gap-3 cursor-pointer`}
               onClick={() => handleSelect(item?.key)}
               style={{
-                boxShadow: "0 3px 3px -2px rgba(39,44,51,.1), 0 3px 4px 0 rgba(39,44,51,.04), 0 1px 8px 0 rgba(39,44,51,.02)"
+                boxShadow:
+                  "0 3px 3px -2px rgba(39,44,51,.1), 0 3px 4px 0 rgba(39,44,51,.04), 0 1px 8px 0 rgba(39,44,51,.02)",
               }}
             >
               <div className="flex gap-2 items-center">
@@ -73,18 +85,18 @@ const MemoTopCards =({memos, setSelected, selected, grid })=>{
                 </span>
               </div>
               <span className="text-[16px] leading-[19.5px] text-[rgba(39, 44, 51, 0.5)] font-[400] font-Roboto">
-                  {item?.total}
-                </span>
+                {
+                  statusData?.[item?.key]?.loading ? (
+                    <StarLoader />
+                  ): statusData?.[item?.key]?.count
+                }
+              </span>
             </div>
           );
         })}
       </div>
     </>
   );
-}
+};
 
 export default MemoTopCards;
-
-MemoTopCards.propTypes = {
-  memos: PropTypes.array,
-}

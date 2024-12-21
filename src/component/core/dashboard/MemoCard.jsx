@@ -8,11 +8,17 @@ import { removeHTMLTagsAndStyles } from "../../../utils/removeHTMLTagsAndStyles"
 import AvatarGroup from "../../shared/avatar_group/AvatarGroup";
 import moment from "moment";
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
+import { useHandleMemo } from "../../../hooks/useHandleMemo";
 
-export default function MemoCard({ is_approve, memo, handleOpenDrawer, openDrawerFn }) {
+export default function MemoCard({
+  is_approve,
+  memo,
+  handleOpenDrawer,
+  openDrawerFn,
+}) {
+  const { handleOpenMemo } = useViewMemoHook();
 
-
-const { handleOpenMemo } = useViewMemoHook()
+  const {handleOpenCreateMemo} = useHandleMemo()
 
   //icon class
   const iconClasses =
@@ -31,12 +37,13 @@ const { handleOpenMemo } = useViewMemoHook()
     setIsHovered(false);
   };
 
+  const handleOpenViewMemo = () => {
+    handleOpenMemo({ memo, is_approve });
+  };
 
-  const handleOpenViewMemo=()=>{
-    handleOpenMemo({memo, is_approve})
+  const handleEditDraftedMemo=(draftedMemo)=>{
+    handleOpenCreateMemo({draftedMemo})
   }
-
-
 
   return (
     <>
@@ -47,9 +54,6 @@ const { handleOpenMemo } = useViewMemoHook()
         onMouseLeave={handleMouseLeave}
       >
         <div>
-          <div className="absolute top-5 right-2">
-           
-          </div>
           <h4 className="font-[500] text-[16px] text-[#333] font-[circularstd, sans-serif] leading-[21.6px] mb-[5px] text-start">
             {memo?.SUBJECT?.length < 30
               ? memo?.SUBJECT
@@ -59,7 +63,10 @@ const { handleOpenMemo } = useViewMemoHook()
             <p
               dangerouslySetInnerHTML={{
                 __html:
-                  removeHTMLTagsAndStyles(memo?.MEMO_CONTENT)?.substring(0, 200) + "...",
+                  removeHTMLTagsAndStyles(memo?.MEMO_CONTENT)?.substring(
+                    0,
+                    200
+                  ) + "...",
               }}
             />
           </div>
@@ -128,12 +135,12 @@ const { handleOpenMemo } = useViewMemoHook()
                   >
                     <Button
                       className="text-[#5A6ACF] border-[#5A6ACF] bg-white fw-semibold"
-                      // onClick={() => openDrawerFn("edit_memo", memo)}
+                      onClick={() => handleEditDraftedMemo(memo)}
                     >
                       Edit
                     </Button>
                   </ConfigProvider>
-                ): null}
+                ) : null}
                 <ConfigProvider
                   theme={{
                     components: {

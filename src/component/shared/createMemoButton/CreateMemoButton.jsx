@@ -1,16 +1,13 @@
-import { useState } from "react";
+
 import { Button, ConfigProvider } from "antd";
 import CreateMemoDrawer from "./CreateMemoDrawer";
+import { useHandleMemo } from "../../../hooks/useHandleMemo";
 
 const CreateMemoButton = () => {
-  const [openDrawer, setOpenDrawer] = useState("");
 
-  const handleOpenCreateMemo = () => {
-    setOpenDrawer(true);
-  };
-  const handleCloseCreateMemo = () => {
-    setOpenDrawer(false);
-  };
+
+  const {handleOpenCreateMemo} = useHandleMemo()
+
   
 
 
@@ -39,7 +36,7 @@ const CreateMemoButton = () => {
           Create Memo
         </Button>
       </ConfigProvider>
-      <CreateMemoDrawer openDrawer={openDrawer} handleClose={handleCloseCreateMemo}/>
+      <CreateMemoDrawer />
 
     </>
   );

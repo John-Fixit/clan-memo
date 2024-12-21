@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState} from "react"
+import { useEffect, useMemo, useState } from "react";
 import ExpandedDrawer from "../drawer/ExpandedDrawer";
 import DrawerSideTab from "../drawer/DrawerSideTab";
 import MemoForm from "../createMemo/MemoForm";
@@ -8,20 +8,63 @@ import { useCreateMemo } from "../../../services/API/createMemo";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import ApprovalForm from "../createMemo/ApprovalForm";
 import { errorToast, successToast } from "../../../utils/toastPopUp";
-import toast from "react-hot-toast";
 import { useHandleMemo } from "../../../hooks/useHandleMemo";
+import { useViewMemo } from "../../../services/API/memo";
 
-const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
-  const { mutate, isPending } = useCreateMemo();
-
-  const [isDraft, setIsDraft] = useState(false)
+const CreateMemoDrawer = () => {
+  const [isDraft, setIsDraft] = useState(false);
 
   const { userData } = useCurrentUser();
 
-  const { data: {draftMemoData}} = useHandleMemo()
+  const {
+    isOpen,
+    data: { draftedMemo },
+    handleCloseCreateMemo,
+  } = useHandleMemo();
+
+  const { mutate, isPending } = useCreateMemo({
+    updateDraft: draftedMemo ? true : false,
+  });
+
+  const { data: getMemoDetail, refetch } = useViewMemo({
+    memo_id: draftedMemo?.MEMO_ID,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, draftedMemo?.MEMO_ID]);
+
+  const memoData = useMemo(() => getMemoDetail?.data, [getMemoDetail?.data]);
+  const memoApprovers = useMemo(
+    () => getMemoDetail?.approvers,
+    [getMemoDetail?.approvers]
+  );
+
+  const approvers = useMemo(
+    () => memoApprovers?.map((item) => item.APPROVER),
+    [memoApprovers]
+  );
+  const recipients = useMemo(
+    () => memoData?.RECIPIENT?.map((item) => item.STAFF_ID),
+    [memoData?.RECIPIENT]
+  );
+  const approvalDetail = useMemo(
+    () =>
+      memoApprovers?.map((item) => ({
+        DEPARTMENT: item.APPROVERS.DEPARTMENT,
+        FILE_NAME: item.APPROVERS.FILE_NAME,
+        FIRST_NAME: item.APPROVERS.FIRST_NAME,
+        LAST_NAME: item.APPROVERS.LAST_NAME,
+        STAFF_ID: item.APPROVER,
+        STAFF_NUMBER: item.APPROVERS.STAFF_NUMBER,
+        designation: item.DESIGNATION,
+        label: `${item.APPROVERS.FIRST_NAME} ${item.APPROVERS.LAST_NAME}`,
+        value: item.APPROVER,
+      })),
+    [memoApprovers]
+  );
 
   const {
-    handleSubmit,
     register,
     getValues,
     setValue,
@@ -31,25 +74,49 @@ const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
     formState: { errors, touchedFields },
   } = useForm({
     defaultValues: {
-      from: "personal", //draftMemoData?.for===userData?.data?.STAFF_ID? "personal":"others",
-      senderName: draftMemoData?.for || "",
-      recipient_type: draftMemoData?.recipient_type || "",
-      recipient: draftMemoData?.recipient || "",
-      subject: draftMemoData?.memo_subject || "",
-      approvalDetail: draftMemoData?.approval || [],
-      approval: draftMemoData?.approval || [],
-      body: draftMemoData?.content || "",
-      folder: draftMemoData?.folder || "General",
-      recipient_value_array: draftMemoData?.recipient_value || null,
-      recipients: draftMemoData?.recipients || [],
+      from: "personal", //draftedMemo?.for===userData?.data?.STAFF_ID? "personal":"others",
+      senderName: memoData?.for || "",
+      recipient_type: memoData?.RECIPIENT_TYPE || "",
+      subject: memoData?.SUBJECT || "",
+      approvalDetail: approvalDetail || [],
+      approval: approvers || [],
+      body: memoData?.MEMO_CONTENT || "",
+      folder: draftedMemo?.FOLDER_NAME || "General",
+      recipient_value_array: draftedMemo?.recipient_value || null,
+      recipient_value: memoData?.RECIPIENT_VALUE || null,
+      recipients: recipients || [],
       to_value: null,
-      isDraftMemo: draftMemoData ? true: false
+      isDraftMemo: draftedMemo ? true : false,
     },
   });
 
+  console.log(errors);
+
   useEffect(() => {
-    trigger();
-  }, [])
+    reset({
+      from: "personal", //draftedMemo?.for===userData?.data?.STAFF_ID? "personal":"others",
+      senderName: memoData?.for || "",
+      recipient_type: memoData?.RECIPIENT_TYPE || "",
+      subject: memoData?.SUBJECT || "",
+      approvalDetail: approvalDetail || [],
+      approval: [],
+      body: memoData?.MEMO_CONTENT || "",
+      folder: draftedMemo?.FOLDER_NAME || "General",
+      recipient_value_array: draftedMemo?.recipient_value || null,
+      recipient_value: Number(memoData?.RECIPIENT_VALUE) || null,
+      recipients: recipients || [],
+      to_value: null,
+      isDraftMemo: draftedMemo ? true : false,
+    });
+  }, [
+    approvalDetail,
+    approvers,
+    draftedMemo,
+    memoData,
+    recipients,
+    reset,
+    trigger,
+  ]);
 
   const formatFieldName = (fieldName) => {
     // Replace underscores with spaces and capitalize the first letter
@@ -58,72 +125,164 @@ const CreateMemoDrawer = ({ openDrawer, handleClose }) => {
       .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter
   };
 
-  console.log(errors)
+  // const onSubmit = async({ is_draft }) => {
+
+  //   // const isValid = await trigger()
+
+  //   console.log(errors)
+
+  //   const values = { ...getValues(), is_draft };
+  //   const approval = values?.approvalDetail?.map((item) => {
+  //     return {
+  //       STAFF_ID: item?.STAFF_ID,
+  //       DESIGNATION: item?.designation,
+  //     };
+  //   });
+
+  //   const payload = {
+  //     memo_subject: values.subject,
+  //     content: values.body,
+  //     staff_id: userData?.data?.STAFF_ID,
+  //     company_id: userData?.data.COMPANY_ID,
+  //     for: values?.senderName || userData?.data?.STAFF_ID, //"5678",
+  //     recipient_type: values?.recipient_type,
+  //     recipient_value: values?.recipient_value, //DirectorateID, deparmentID, regionID, unitID
+  //     recipients: values?.recipients, // If staff is picked as recipient type
+  //     approvals: approval,
+  //     is_draft: values?.is_draft || 0, // 1 means save as draft, 0 means submit for approval
+  //     folder: values?.folder, // or whatever name of folder chosen or created
+  //     memo_id: memoData?.MEMO_ID || null,
+  //   };
+
+  //   if (Object.keys(errors).length > 0) {
+  //     const errorMessages = Object.entries(errors).map(([field]) => {
+  //       const formattedField = formatFieldName(field);
+  //       return `${formattedField} is required.`;
+  //     });
+
+  //     errorToast(errorMessages.join("\n"));
+  //   } else {
+  //     console.log("payload: ", payload);
+  //     // mutate(payload, {
+  //     //   onError: (error) => {
+  //     //     const errMessage = error?.response?.data?.message || error?.message;
+
+  //     //     errorToast(errMessage);
+  //     //   },
+  //     //   onSuccess: (response) => {
+  //     //     const resMsg = response?.data?.message;
+  //     //     successToast(resMsg);
+  //     //     reset();
+  //     //     handleCloseCreateMemo();
+  //     //   },
+  //     // });
+  //   }
+  // };
+
+
+
 
   const onSubmit = ({ is_draft }) => {
-
-    trigger()
-
     const values = { ...getValues(), is_draft };
+  
+    // Mapping approval details
     const approval = values?.approvalDetail?.map((item) => {
       return {
         STAFF_ID: item?.STAFF_ID,
         DESIGNATION: item?.designation,
       };
     });
-
+  
+    // Construct the payload
     const payload = {
       memo_subject: values.subject,
       content: values.body,
       staff_id: userData?.data?.STAFF_ID,
       company_id: userData?.data.COMPANY_ID,
-      for: values?.senderName || userData?.data?.STAFF_ID, //"5678",
+      for: values?.senderName || userData?.data?.STAFF_ID,
       recipient_type: values?.recipient_type,
-      recipient_value: values?.recipient_value, //DirectorateID, deparmentID, regionID, unitID
-      recipients: values?.recipients, // If staff is picked as recipient type
+      recipient_value: values?.recipient_value,
+      recipients: values?.recipients,
       approvals: approval,
-      is_draft: values?.is_draft || 0, // 1 means save as draft, 0 means submit for approval
-      folder: values?.folder, // or whatever name of folder chosen or created
-      // "memo_id": "56"
+      is_draft: values?.is_draft || 0,
+      folder: values?.folder,
+      memo_id: memoData?.MEMO_ID || null,
     };
-
-
-
-    if (Object.keys(errors).length > 0) {
-      const errorMessages = Object.entries(errors).map(([field]) => {
-        const formattedField = formatFieldName(field);
-        return `${formattedField} is required.`;
-      });
-
+  
+    // Validation rules and error messages
+    const validationRules = [
+      {
+        condition: !values.subject,
+        message: "Subject is required."
+      },
+      {
+        condition: !isValidContent(values.body),
+        message: "Content is required."
+      },
+      {
+        condition: !values.folder,
+        message: "Folder is required."
+      },
+      {
+        condition: !approval || approval.length === 0,
+        message: "Approval details are required."
+      },
+      {
+        condition: values?.recipient_type === "STAFF" && !values?.recipients?.length,
+        message: "Recipient is required"
+      },
+      {
+        condition: values?.recipient_type !== "STAFF" && !values?.recipient_value,
+        message: "Recipient is required."
+      }
+    ];
+  
+    // Function to check if content is valid (not just empty HTML tags)
+    function isValidContent(content) {
+      const strippedContent = content?.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+      return strippedContent.length > 0; // Check if there's meaningful content
+    }
+  
+    // Collect error messages
+    const errorMessages = validationRules
+      .filter(rule => rule.condition)
+      .map(rule => rule.message);
+  
+    // If validation fails, show errors
+    if (errorMessages.length > 0) {
       errorToast(errorMessages.join("\n"));
     } else {
       console.log("payload: ", payload);
+      // Proceed with mutation or form submission
       mutate(payload, {
-       onError:(error)=>{
-        const errMessage = error?.response?.data?.message || error?.message;
-
-        errorToast(errMessage);
-
-       },
-       onSuccess:(response)=>{
-        const resMsg = response?.data?.message;
-        successToast(resMsg)
-        reset()
-        handleClose();
-       }
+        onError: (error) => {
+          const errMessage = error?.response?.data?.message || error?.message;
+          errorToast(errMessage);
+        },
+        onSuccess: (response) => {
+          const resMsg = response?.data?.message;
+          successToast(resMsg);
+          reset();
+          handleCloseCreateMemo();
+        },
       });
     }
   };
+  
+  
 
   const handleSaveAsDraft = () => {
-    setIsDraft(true)
-    // trigger();
+    setIsDraft(true);
     onSubmit({ is_draft: 1 }); // 1 means it will save as draft
   };
 
   return (
     <>
-      <ExpandedDrawer isOpen={openDrawer} onClose={handleClose} maxWidth={720}>
+      <ExpandedDrawer
+        isOpen={isOpen}
+        onClose={handleCloseCreateMemo}
+        maxWidth={720}
+      >
         <DrawerSideTab
           tabs={[
             {

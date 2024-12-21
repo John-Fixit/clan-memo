@@ -12,7 +12,11 @@ import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import { useEffect, useMemo, useState } from "react";
 import { data } from "../../component/core/dashboard/memoDoomyData";
-import { useGetLatestMemo, useGetMyApprovals } from "../../services/API/memo";
+import {
+  useGetLatestMemo,
+  useGetMyApprovals,
+  useGetMyApprovalsByStatus,
+} from "../../services/API/memo";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import moment from "moment";
 import { useViewMemoHook } from "../../hooks/useViewMemoHook";
@@ -23,70 +27,93 @@ const MyApproval = () => {
   const [selectedMemo, setSelectedMemo] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("pending");
 
+  const { handleOpenMemo } = useViewMemoHook();
 
-  const {handleOpenMemo} = useViewMemoHook();
+  const { userData } = useCurrentUser();
+
+  const {
+    mutate,
+    data: getApprovalMemo,
+    isPending,
+    isError,
+  } = useGetMyApprovalsByStatus();
 
 
-  const {userData} = useCurrentUser();
+  const defaultPayload = {
+    staff_id: userData?.data?.STAFF_ID,
+    status: selectedStatus, // Pending, Declined, Approved
+    start_date: "",
+    end_date: "",
+  };
 
-  const { mutate, data:getApprovalMemo, isPending, isError } = useGetMyApprovals()
+  const { data: allMemo, isLoading: totalLoading } = useGetMyApprovals({
+    ...defaultPayload,
+    status: "",
+  });
+  const { data: pendingMemo, isLoading: pendingLoading } = useGetMyApprovals({
+    ...defaultPayload,
+    status: "pending",
+  });
+  const { data: approvedMemo, isLoading: approvedLoading } = useGetMyApprovals({
+    ...defaultPayload,
+    status: "approved",
+  });
+  const { data: declinedMemo, isLoading: declinedLoading } = useGetMyApprovals({
+    ...defaultPayload,
+    status: "declined",
+  });
 
-   const {data: latestMemo, isLoading} = useGetLatestMemo({
-      staff_id: userData?.data?.STAFF_ID
+  useEffect(() => {
+    mutate({
+      staff_id: userData?.data?.STAFF_ID,
+      status: selectedStatus, // Pending, Declined, Approved
+      start_date: "",
+      end_date: "",
     });
+  }, [mutate, selectedStatus, userData]);
 
-
-  useEffect(()=>{
-    mutate(
-      {
-        "staff_id": userData?.data?.STAFF_ID,
-        "status": selectedStatus,// Pending, Declined, Approved
-        "start_date": "",
-        "end_date":""
-    }
-    )
-  },[mutate, selectedStatus, userData])
-
-
-  const approvalMemo = useMemo(()=>(
-    getApprovalMemo?.data?.requests
-  ), [getApprovalMemo?.data?.requests])
-
-
+  const approvalMemo = useMemo(
+    () => getApprovalMemo?.data?.requests,
+    [getApprovalMemo?.data?.requests]
+  );
 
   const handleCloseDrawer = () => {
     setOpen({ status: false });
   };
 
-
   return (
     <>
       <main>
         <MemoTopCards
-          //   memos={data}
-          //   setSelected={setSelected}
-          //   selected={selected}
+          setSelected={setSelectedStatus}
+          selected={selectedStatus}
           grid={4}
+          statusData={{
+            "": { loading: totalLoading, count: allMemo?.length },
+            pending: { loading: pendingLoading, count: pendingMemo?.length },
+            approved: { loading: approvedLoading, count: approvedMemo?.length },
+            declined: { loading: declinedLoading, count: declinedMemo?.length },
+          }}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-                        {approvalMemo?.length ? (
-                          approvalMemo?.map((item, index) => (
-                            <MemoCard
-                            is_approve={true}
-                              key={index + "_memo"}
-                              memo={item}
-                              // handleOpenDrawer={handleOpenDrawer}
-                              // openDrawerFn={openDrawerFn}
-                            />
-                          ))
-                        ) : (
-                          <div className="h-64 flex justify-center items-center col-span-4">
-                            <h3 className="text-default-500 text-xl font-medium tracking-wide">
-                              <i>Empty memo found</i>
-                            </h3>
-                          </div>
-                        )}
-                      </div>
+          {approvalMemo?.length ? (
+            approvalMemo?.map((item, index) => (
+              <MemoCard
+                is_approve={true}
+                key={index + "_memo"}
+                memo={item}
+                // handleOpenDrawer={handleOpenDrawer}
+                // openDrawerFn={openDrawerFn}
+              />
+            ))
+          ) : (
+            <div className="h-64 flex justify-center items-center col-span-4">
+              <h3 className="text-default-500 text-xl font-medium tracking-wide">
+                <i>Empty memo found</i>
+              </h3>
+            </div>
+          )}
+        </div>
         {/* <div className="bg-white shadow rounded-xl p-3 mt-5">
           <Table
             aria-label="Example static collection table"

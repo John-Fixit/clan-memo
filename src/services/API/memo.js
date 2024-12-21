@@ -23,7 +23,16 @@ export const useGetActivities  = (payload) => {
           queryKey: ["get_activities"]
     })
   }
-export const useViewFolder  = () => {
+export const useViewFolder  = (payload) => {
+    return useQuery({
+        queryFn: async () => {
+            const res = await API.post(API_URL.view_folder, payload)
+            return res?.data?.requests
+          },
+          queryKey: [`${payload?.status}_folder`]
+    })
+  }
+export const useViewFolderByStatus  = () => {
     const viewFolder = useMutation({
         mutationFn:async(payload)=>{
             return await API.post(API_URL.view_folder, payload)
@@ -38,11 +47,23 @@ export const useViewMemo  = (payload) => {
             const res = await API.post(API_URL.view_memo, payload)
             return res?.data
           },
-          queryKey: ["view_memo"]
+          queryKey: ["view_memo"],
+          refetchOnMount: false
     })
   }
 
-  export const useGetMyApprovals  = () => {
+
+  export const useGetMyApprovals  = (payload) => {
+    return useQuery({
+        queryFn: async () => {
+            const res = await API.post(API_URL.my_approvals, payload)
+            return res?.data?.requests
+          },
+          queryKey: [`${payload?.status}_approval`]
+    })
+  }
+
+  export const useGetMyApprovalsByStatus  = () => {
     const getMyApprovals = useMutation({
         mutationFn:async(payload)=>{
             return await API.post(API_URL.my_approvals, payload)

@@ -30,6 +30,7 @@ import EditMemo from "./EditMemo";
 import Stamp from "../../core/memo/stamp";
 import logo from "../../../assets/images/ncaa_logo.png";
 import moment from "moment";
+import { removeHTMLTagsAndStyles } from "../../../utils/removeHTMLTagsAndStyles";
 
 const TextArea = Input.TextArea;
 
@@ -275,7 +276,7 @@ const SignMemo = ({
           >
             <div className="bg-white p-8 relative">
               <div className="absolute top-2 right-2 mb-3 flex gap-3">
-                {is_approve && (
+                {(is_approve && !isApprovedOrDeclined) && (
                   <button
                     className={`header_btnStyle bg-[#00bcc2] rounded text-white font-semibold py-[4px] mx-2 text-[0.7125rem] md:my-0 px-[16px] uppercase `}
                     onClick={() => setIsEdit(!isEdit)}
@@ -325,7 +326,7 @@ const SignMemo = ({
                         width={40}
                         className="cursor-pointer"
                       />
-                      <span className="font-bold leading-3 text-">
+                      <span className="font-bold leading-3">
                         Nigeria Civil Aviation Authority
                       </span>
                     </div>
@@ -334,10 +335,10 @@ const SignMemo = ({
                     </p>
                     <table border={0} className="leading-7 relative">
                       <tbody>
-                        {/* <tr>
+                        <tr>
                           <td className="font-semibold uppercase ">To: </td>
                           <td className="leading-5">{formattedRecipients}</td>
-                        </tr> */}
+                        </tr>
                         <tr>
                           <td className="font-semibold uppercase">From: </td>
                           <td className="font-medium">{memoDetail?.MEMO_FROM}</td>
@@ -360,18 +361,13 @@ const SignMemo = ({
                   </div>
                   <div className="body_of_memo !text-black !text-md">
                     <div
-                      className="text-[0.9rem] leading-6 text-justify text-default-900"
+                      className="text-[0.9rem] leading-6 text-justify text-default-900 rendered-html-content"
                       dangerouslySetInnerHTML={{
                         __html: memoDetail?.MEMO_CONTENT,
                       }}
                     />
 
-                    {/* {formattedBody} */}
                     <br />
-                    {/* <p>Kind regards,</p>
-                    <span className="text-[rgba(39, 44, 51, 0)] font-medium">
-                      {memoDetail?.FIRST_NAME} {memoDetail?.LAST_NAME}
-                    </span> */}
                   </div>
                   <div className="mt-7 mb-5">
                     <div className="flex gap-x-9 gap-y-2 flex-wrap items-end">

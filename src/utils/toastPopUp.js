@@ -8,8 +8,8 @@ export const errorToast=(errMsg)=>{
           border: '2px solid #fff',
         },
         position: 'top-right',
-        duration: 5000,
-        closeButton: true
+        duration: 1000,
+        closeButton: true,
       })
 }
 export const successToast=(successMsg)=>{

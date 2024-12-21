@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { data } from "../../component/core/dashboard/memoDoomyData";
 import PageHeader from "../../component/shared/pageHeader/PageHeader";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
@@ -18,16 +18,19 @@ import {
 import CreateFolderButton from "../../component/shared/createFolderButton";
 import { useSearchParams } from "react-router-dom";
 import MemoApprovalHistory from "../../component/shared/createMemo/MemoApprovalHistory";
-import { useViewFolder } from "../../services/API/memo.js"
+import { useViewFolder, useViewFolderByStatus } from "../../services/API/memo.js"
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { useListFolderStatus } from "../../services/API/folder";
+import StarLoader from "../../component/core/loaders/StarLoader.jsx";
 
 const Memo = () => {
   const [selected, setSelected] = useState("total");
 
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [openDrawer, setOpenDrawer] = useState({ status: false, type: null });
-  const [selectedMemo, setSelectedMemo] = useState("Pending");
+  const [selectedMemo, setSelectedMemo] = useState("");
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
   const {userData} = useCurrentUser()
   const {data:folders}  =  useListFolderStatus({
     staff_id:userData?.data?.STAFF_ID
@@ -40,22 +43,53 @@ const Memo = () => {
   // Get a specific query parameter
   const folder = searchParams.get("folder");
 
-  const { mutate, data: getFolderMemo, isPending } = useViewFolder()
+  // const { mutate: mutateAllMemo, data: getAllMemo} = useViewFolder()
+  const { mutate: mutateMemoByStatus, data: getFolderMemo, isPending } = useViewFolderByStatus()
+
+  const defaultPayload = {
+    "staff_id": userData?.data?.STAFF_ID,
+    "folder_id": folder,
+    "status": "",
+    "start_date": "",
+    "end_date": ""
+}
+
+  const {data:allMemo, isLoading: totalLoading} = useViewFolder(
+    {...defaultPayload, status: ""}
+  );
+  const {data:pendingMemo, isLoading: pendingLoading} = useViewFolder(
+    {...defaultPayload, status: "pending"}
+  );
+  const {data:approvedMemo, isLoading: approvedLoading} = useViewFolder(
+    {...defaultPayload, status: "approved"}
+  );
+  const {data:declinedMemo, isLoading: declinedLoading} = useViewFolder(
+    {...defaultPayload, status: "declined"}
+  );
+  const {data:draftMemo, isLoading: draftLoading} = useViewFolder(
+    {...defaultPayload, status: "draft"}
+  );
+
 
   useEffect(()=>{
-    mutate(
+    mutateMemoByStatus(
       {
         "staff_id": userData?.data?.STAFF_ID,
         "folder_id": folder,
         "status": selected,
-        "start_date":"",
-        "end_date":""
+        "start_date": startDate,
+        "end_date": endDate
     })
-  }, [userData?.data?.STAFF_ID, folder, mutate, selected])
+  }, [userData?.data?.STAFF_ID, folder, mutateMemoByStatus, selected, startDate, endDate])
+
+
+
 
   const folderMemo=useMemo(()=>(
     getFolderMemo?.data?.requests
   ), [getFolderMemo?.data?.requests])
+
+
 
 
 
@@ -93,17 +127,6 @@ const Memo = () => {
     setOpenDrawer({ ...openDrawer, status: false });
   };
 
-  // const folders = [
-  //   { name: "General", fileCount: 45 },
-  //   { name: "Images", fileCount: 128 },
-  //   { name: "Projects", fileCount: 23 },
-  //   { name: "Downloads", fileCount: 67 },
-  //   { name: "Music", fileCount: 256 },
-  //   { name: "Videos", fileCount: 89 },
-  //   { name: "Work", fileCount: 34 },
-  //   { name: "Personal", fileCount: 78 },
-  // ];
-
   return (
     <>
       <main className="mb-10">
@@ -115,10 +138,18 @@ const Memo = () => {
           {/* <ScrollableFolders /> */}
         </div>
         <MemoTopCards
-          memos={data}
           setSelected={setSelected}
           selected={selected}
           grid={4}
+          statusData={
+            {
+              "": {loading: totalLoading, count: allMemo?.length},
+              pending: {loading: pendingLoading, count: pendingMemo?.length},
+              approved: {loading: approvedLoading, count: approvedMemo?.length},
+              declined: {loading: declinedLoading, count: declinedMemo?.length},
+              draft: {loading: draftLoading, count: draftMemo?.length},
+            }
+          }
         />
 
         <section className="memos_section mt-3">
@@ -126,12 +157,14 @@ const Memo = () => {
             <DatePicker
               placeholder="Start date"
               className="border rounded-md focus:outline-none font-medium"
+              onChange={(date, dateString)=>setStartDate(dateString)}
             />
             <DatePicker
               placeholder="End date"
               className="border rounded-md focus:outline-none font-medium"
+              onChange={(date, dateString)=>setEndDate(dateString)}
             />
-            <ConfigProvider
+            {/* <ConfigProvider
               theme={{
                 token: {
                   colorPrimary: "#5A6ACF",
@@ -141,13 +174,19 @@ const Memo = () => {
               <Button type="primary" className="">
                 Search
               </Button>
-            </ConfigProvider>
+            </ConfigProvider> */}
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-x-5 gap-y-2">
             <div className="lg:col-span-3 md:col-span-2 col-span-3">
               <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-                {folderMemo?.length ? (
+                {
+                isPending? (
+                  <div className="h-32 flex justify-center items-center col-span-4">
+                    <StarLoader />
+                  </div>
+                ):
+                folderMemo?.length ? (
                   folderMemo?.map((item, index) => (
                     <MemoCard
                       key={index + "_memo"}

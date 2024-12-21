@@ -44,7 +44,10 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
 
   const { data: allStaff, isLoading: getStaffLoading } = useGetAllStaff(userData?.data?.COMPANY_ID);
 
-  const {data: getFolderList, isLoading: getFolderLoading} = useListFolder(userData?.data?.STAFF_ID)
+  const {data: getFolderList, isLoading: getFolderLoading} = useListFolder({
+    staff_id: userData?.data?.STAFF_ID
+  })
+
 
 
   const folderList = getFolderList?.map((folder) => {
@@ -67,8 +70,13 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
         })
       : [];
 
+useEffect(()=>{
+  trigger()
+}, [trigger])
+
 
   useEffect(() => {
+    
     // Access the Quill instance
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
@@ -79,6 +87,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
       }
     }
   }, []);
+
 
 
   return (
@@ -105,16 +114,20 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
 
           {watch("from") === "others" && (
             <div className="mt-2">
+              
               <Select
                   size={"large"}
                   loading={getStaffLoading}
                   placeholder="Select Staff Name"
-                  value={getValues("senderName")}
+                  defaultValue={getValues("senderName")}
                   onChange={(value)=>setValue("senderName", value)}
                   className="rounded-md"
                   style={{
                     width: "100%",
                   }}
+                  {...register("senderName", {
+                    required: "This field is required",
+                  })}
                   optionFilterProp="label"
                   showSearch
                   options={staff}
@@ -167,12 +180,9 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
             size="large"
             placeholder="Subject"
             status={errors.subject ? "error" : ""}
-            defaultValue={getValues("subject")}
-            {...register("subject", {
-              required: "This field is required",
-            })}
+            value={getValues("subject")}
+           
             onChange={(e) => {
-              trigger()
               setValue("subject", e.target.value)
             }}
           />
