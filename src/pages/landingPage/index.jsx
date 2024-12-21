@@ -64,9 +64,9 @@ const LandingPage = () => {
             {/* <a href="#contact" className="text-gray-300 hover:text-white">Contact</a> */}
    
                 <motion.button
-                //   whileHover={{ scale: 1.05 }}
-                //   whileTap={{ scale: 0.95 }}
-                className="bg-white text-slate-900 px-4 py-2 rounded-lg font-medium cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                className="bg-white text-slate-900 px-4 py-2 rounded-lg font-medium cursor-pointer z-10"
                 onClick={()=>navigate("/login")}
                 >
                 Login

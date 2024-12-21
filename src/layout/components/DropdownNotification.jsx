@@ -11,6 +11,7 @@ import { BiQuestionMark, BiUser } from "react-icons/bi";
 import { ImCancelCircle } from "react-icons/im";
 import { Avatar, Button } from "antd";
 import { IoCheckmarkSharp } from "react-icons/io5";
+import { useViewMemoHook } from "../../hooks/useViewMemoHook";
 
 
 const DropdownNotification = () => {
@@ -21,6 +22,7 @@ const DropdownNotification = () => {
   const { userData } = useCurrentUser();
   const trigger = useRef(null);
   const dropdown = useRef(null);
+  const { handleOpenMemo } = useViewMemoHook()
 
   const { treated_requests, awaiting_approval } = data || {
     data: { treated_requests: [], awaiting_approval: [] },
@@ -58,9 +60,8 @@ const DropdownNotification = () => {
 
   const handleSeen = async (reqId) => {
     const json = {
-      request_id: reqId,
+      memo_id: reqId,
       staff_id: userData?.data?.STAFF_ID,
-      company_id: userData?.data?.COMPANY_ID,
     };
     try {
       const res = await seenNotification(json);
@@ -73,11 +74,11 @@ const DropdownNotification = () => {
     }
   };
 
-  const handleClose = () => {
- 
-  };
-  const openDrawer = () => {
- 
+
+  const openDrawer = async (memo) => {
+    // console.log(memo)
+    handleOpenMemo({memo: {...memo}, is_approve:memo?.is_approved})
+     await handleSeen(memo?.MEMO_ID)
   };
 
 
@@ -163,9 +164,11 @@ const DropdownNotification = () => {
                   <Button
                     onClick={() =>
                       openDrawer(
-                        tappr?.REQUEST_ID,
-                        tappr?.PACKAGE_NAME,
-                        "request"
+                        {
+                          MEMO_ID:tappr?.MEMO_ID,
+                          is_approved: false
+                        }
+                       
                       )
                     }
                     size="sm"
@@ -190,13 +193,13 @@ const DropdownNotification = () => {
                     <span className=" text-default-400 text-xs">
                       {tappr?.requestDate}
                     </span>
-                    <div className="flex gap-1 mt-1">
+                    <div className="flex gap-1 mt-1 items-center">
                         <Avatar
                         size="small"
                         icon={<BiUser />}
-                        className="bg-default-600"
+                        className="bg-default-500"
                       />
-                      <span className="text-default-500 text-xs">
+                      <span className="text-default-500 text-xs truncate">
                         {tappr?.LAST_NAME} {tappr?.FIRST_NAME}
                       </span>
                     </div>
@@ -204,10 +207,10 @@ const DropdownNotification = () => {
                   <Button
               
                     onClick={() =>
-                      openDrawer(
-                        tappr?.REQUEST_ID,
-                        tappr?.PACKAGE_NAME,
-                        "approval"
+                      openDrawer({
+                        MEMO_ID:tappr?.MEMO_ID,
+                        is_approved: true
+                      }
                       )
                     }
                     size="sm"
