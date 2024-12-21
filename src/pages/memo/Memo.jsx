@@ -46,29 +46,46 @@ const Memo = () => {
   // const { mutate: mutateAllMemo, data: getAllMemo} = useViewFolder()
   const { mutate: mutateMemoByStatus, data: getFolderMemo, isPending } = useViewFolderByStatus()
 
-  const defaultPayload = {
-    "staff_id": userData?.data?.STAFF_ID,
-    "folder_id": folder,
-    "status": "",
-    "start_date": "",
-    "end_date": ""
-}
+  const defaultPayload = useMemo(()=>(
+    {
+      "staff_id": userData?.data?.STAFF_ID,
+      "folder_id": folder,
+      "status": "",
+      "start_date": "",
+      "end_date": ""
+  }
+  ), [folder, userData?.data?.STAFF_ID])
 
-  const {data:allMemo, isLoading: totalLoading} = useViewFolder(
+ 
+
+
+
+
+
+  const {data:allMemo, isLoading: totalLoading, refetch: refetchAll} = useViewFolder(
     {...defaultPayload, status: ""}
   );
-  const {data:pendingMemo, isLoading: pendingLoading} = useViewFolder(
+  const {data:pendingMemo, isLoading: pendingLoading, refetch: refetchPending} = useViewFolder(
     {...defaultPayload, status: "pending"}
   );
-  const {data:approvedMemo, isLoading: approvedLoading} = useViewFolder(
+  const {data:approvedMemo, isLoading: approvedLoading, refetch: refetchApprove} = useViewFolder(
     {...defaultPayload, status: "approved"}
   );
-  const {data:declinedMemo, isLoading: declinedLoading} = useViewFolder(
+  const {data:declinedMemo, isLoading: declinedLoading, refetch: refetchDecline} = useViewFolder(
     {...defaultPayload, status: "declined"}
   );
-  const {data:draftMemo, isLoading: draftLoading} = useViewFolder(
+  const {data:draftMemo, isLoading: draftLoading, refetch: refetchDraft} = useViewFolder(
     {...defaultPayload, status: "draft"}
   );
+
+
+  useEffect(()=>{
+    refetchAll()
+    refetchPending()
+    refetchApprove()
+    refetchDecline()
+    refetchDraft()
+  }, [defaultPayload, refetchAll, refetchPending, refetchApprove, refetchDecline, refetchDraft])
 
 
   useEffect(()=>{
@@ -91,24 +108,6 @@ const Memo = () => {
 
 
 
-
-
-
-  const modifiedData = useMemo(() => {
-    if (selected === "total") {
-      return folderMemo;
-    } else if (selected === "pending") {
-      return folderMemo?.filter(
-        (memo) => memo?.created_by === "me" && memo?.status === "pending"
-      );
-    } else if (selected === "approved") {
-      return data?.filter((memo) => memo?.created_by !== "me");
-    } else if (selected === "declined") {
-      return data?.filter(
-        (memo) => memo?.created_by === "me" && memo?.status === "declined"
-      );
-    }
-  }, [selected]);
 
   const handleOpenDrawer = (role, memo) => {
     setOpen({ status: true, role: role });
@@ -164,17 +163,6 @@ const Memo = () => {
               className="border rounded-md focus:outline-none font-medium"
               onChange={(date, dateString)=>setEndDate(dateString)}
             />
-            {/* <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: "#5A6ACF",
-                },
-              }}
-            >
-              <Button type="primary" className="">
-                Search
-              </Button>
-            </ConfigProvider> */}
           </div>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-x-5 gap-y-2">
@@ -237,44 +225,7 @@ const Memo = () => {
       >
         <DrawerSideTab
           tabs={
-            // openDrawer?.type === "create_memo"
-            //   ? [
-            //       {
-            //         title: "Create Memo",
-            //         component: <MemoForm handleCloseDrawer={closeDrawerFn} />,
-            //         header_text: "Create Memo",
-            //         subText: "",
-            //       },
-            //       {
-            //         title: "Add Attachment",
-            //         component: <Attachment />,
-            //         header_text: "Attachment",
-            //       },
-            //     ]
-            //   : openDrawer?.type === "edit_memo"
-            //   ? [
-            //       {
-            //         title: "Edit Memo",
-            //         component: <MemoForm />,
-            //         header_text: "Edit Memo",
-            //         sub_text: "",
-            //       },
-            //       {
-            //         title: "Attachment",
-            //         component: <Attachment />,
-            //         header_text: "Attachment",
-            //         sub_text: "",
-            //       },
-            //     ]
-            //   : openDrawer.type === "addNote"
-            //   ? [
-            //       {
-            //         title: "Add Note",
-            //         component: <AddNote />,
-            //         header_text: "Add Note",
-            //       },
-            //     ]
-            //   : 
+        
               openDrawer.type === "viewNote"
               ? [
                   // {

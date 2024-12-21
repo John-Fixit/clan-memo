@@ -84,7 +84,7 @@ const SidebarHeader = () => {
     <>
       <div className="flex justify-between items-center py-3 shadow lg:px-28 px-5">
         <div className="flex gap-x-4 items-center">
-          <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => navigate("/")}>
+          <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => navigate("/dashboard")}>
             <img
               src={logo}
               alt="logo"

@@ -8,5 +8,6 @@ export const API_URL = {
     my_approvals: "/memoai/my_approvals",
     approve_memo: "/memoai/approveRequest",
     decline_memo: "/memoai/declineRequest",
-    check_signature_exist: "/memoai/check_signature"
+    check_signature_exist: "/memoai/check_signature",
+    list_file_status: "/memoai/list_file_status"
 }

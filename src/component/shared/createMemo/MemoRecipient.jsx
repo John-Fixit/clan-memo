@@ -229,9 +229,9 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             size={"large"}
             placeholder="Search Recipient"
             onChange={onSelectrecipient}
-            {...register(getValues('recipient_type') === 'STAFF'? "recipients":"recipient_value", {
-              required: "This field is required",
-            })}
+            // {...register(getValues('recipient_type') === 'STAFF'? "recipients":"recipient_value", {
+            //   required: "This field is required",
+            // })}
             className="border-1 border-gray-300 rounded-md"
             style={{
               width: "100%",

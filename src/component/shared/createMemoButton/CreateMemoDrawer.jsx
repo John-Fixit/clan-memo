@@ -28,7 +28,10 @@ const CreateMemoDrawer = () => {
 
   const { data: getMemoDetail, refetch } = useViewMemo({
     memo_id: draftedMemo?.MEMO_ID,
+    staleTime: Infinity,
   });
+
+  console.log(draftedMemo?.MEMO_ID);
 
   useEffect(() => {
     refetch();
@@ -64,6 +67,8 @@ const CreateMemoDrawer = () => {
     [memoApprovers]
   );
 
+ 
+
   const {
     register,
     getValues,
@@ -90,8 +95,6 @@ const CreateMemoDrawer = () => {
     },
   });
 
-  console.log(errors);
-
   useEffect(() => {
     reset({
       from: "personal", //draftedMemo?.for===userData?.data?.STAFF_ID? "personal":"others",
@@ -117,6 +120,8 @@ const CreateMemoDrawer = () => {
     reset,
     trigger,
   ]);
+
+
 
   const formatFieldName = (fieldName) => {
     // Replace underscores with spaces and capitalize the first letter
@@ -179,12 +184,9 @@ const CreateMemoDrawer = () => {
   //   }
   // };
 
-
-
-
   const onSubmit = ({ is_draft }) => {
     const values = { ...getValues(), is_draft };
-  
+
     // Mapping approval details
     const approval = values?.approvalDetail?.map((item) => {
       return {
@@ -192,7 +194,7 @@ const CreateMemoDrawer = () => {
         DESIGNATION: item?.designation,
       };
     });
-  
+
     // Construct the payload
     const payload = {
       memo_subject: values.subject,
@@ -208,51 +210,56 @@ const CreateMemoDrawer = () => {
       folder: values?.folder,
       memo_id: memoData?.MEMO_ID || null,
     };
-  
+
     // Validation rules and error messages
     const validationRules = [
       {
         condition: !values.subject,
-        message: "Subject is required."
+        message: "Subject is required.",
       },
       {
         condition: !isValidContent(values.body),
-        message: "Content is required."
+        message: "Content is required.",
+      },
+      {
+        condition: values.from === "others" && !values.senderName,
+        message: "Please select owner of the memo",
       },
       {
         condition: !values.folder,
-        message: "Folder is required."
+        message: "Folder is required.",
       },
       {
         condition: !approval || approval.length === 0,
-        message: "Approval details are required."
+        message: "Approval details are required.",
       },
       {
-        condition: values?.recipient_type === "STAFF" && !values?.recipients?.length,
-        message: "Recipient is required"
+        condition:
+          values?.recipient_type === "STAFF" && !values?.recipients?.length,
+        message: "Recipient is required",
       },
       {
-        condition: values?.recipient_type !== "STAFF" && !values?.recipient_value,
-        message: "Recipient is required."
-      }
+        condition:
+          values?.recipient_type !== "STAFF" && !values?.recipient_value,
+        message: "Recipient is required.",
+      },
     ];
-  
+
     // Function to check if content is valid (not just empty HTML tags)
     function isValidContent(content) {
-      const strippedContent = content?.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+      const strippedContent = content?.replace(/<[^>]*>/g, "").trim(); // Remove HTML tags
       return strippedContent.length > 0; // Check if there's meaningful content
     }
-  
+
     // Collect error messages
     const errorMessages = validationRules
-      .filter(rule => rule.condition)
-      .map(rule => rule.message);
-  
+      .filter((rule) => rule.condition)
+      .map((rule) => rule.message);
+
     // If validation fails, show errors
     if (errorMessages.length > 0) {
       errorToast(errorMessages.join("\n"));
     } else {
-      console.log("payload: ", payload);
       // Proceed with mutation or form submission
       mutate(payload, {
         onError: (error) => {
@@ -268,8 +275,6 @@ const CreateMemoDrawer = () => {
       });
     }
   };
-  
-  
 
   const handleSaveAsDraft = () => {
     setIsDraft(true);

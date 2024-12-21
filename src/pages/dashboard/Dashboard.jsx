@@ -2,12 +2,12 @@ import { useState } from "react";
 import RecentMemo from "../../component/core/dashboard/RecentMemo";
 import RecentActivity from "../../component/core/dashboard/RecentActivity";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
-import { data } from "../../component/core/dashboard/memoDoomyData";
 import CreateMemoSvg from "../../component/shared/svg_icons/create_memo";
 import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
 import ScrollableFolders from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
 import useCurrentUser from "../../hooks/useCurrentUser";
+import { useGetFileStatus } from "../../services/API/memo";
 
 const Dashboard = () => {
 
@@ -15,6 +15,13 @@ const Dashboard = () => {
   const {userData} = useCurrentUser();
 
   const [selected, setSelected] = useState("all");
+
+
+   const {data:fileStatus, isLoading: fileStatusLoading}  =  useGetFileStatus({
+      staff_id:userData?.data?.STAFF_ID
+    })
+
+    console.log(fileStatus)
 
 
   return (
@@ -25,7 +32,18 @@ const Dashboard = () => {
           <div className="lg:col-span-2 md:col-span-1 col-span-3">
             <div className="grid grid-cols-3 gap-5 items-stretch">
               <div className="col-span-3">
-                <MemoTopCards memos={data} setSelected={setSelected} />
+                <MemoTopCards
+          setSelected={setSelected}
+          selected={selected}
+          statusData={
+            {
+              pending: {loading: fileStatusLoading, count: fileStatus?.PENDING},
+              approved: {loading: fileStatusLoading, count: fileStatus?.APPROVED},
+              declined: {loading: fileStatusLoading, count: fileStatus?.DECLINED},
+              draft: {loading: fileStatusLoading, count: fileStatus?.DRAFT},
+            }
+          }
+        />
               </div>
               <div className="col-span-3">
                 <div className="flex lg:flex-nowrap flex-wrap justify-center items-center p-5 gap-x-5 gap-y-4 border rounded text-center">

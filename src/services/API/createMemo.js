@@ -11,6 +11,7 @@ export const useCreateMemo = ({updateDraft}) => {
     onSuccess:()=>{
       queryClient.invalidateQueries(["latest_memo"])
       queryClient.invalidateQueries(["_folder"])
+      queryClient.invalidateQueries(["list_file_status"])
     }
   });
 };

@@ -6,14 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { EyeIcon } from "../../component/shared/svg_icons";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
 import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
 import { useEffect, useMemo, useState } from "react";
-import { data } from "../../component/core/dashboard/memoDoomyData";
 import {
-  useGetLatestMemo,
   useGetMyApprovals,
   useGetMyApprovalsByStatus,
 } from "../../services/API/memo";
@@ -21,11 +18,12 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import moment from "moment";
 import { useViewMemoHook } from "../../hooks/useViewMemoHook";
 import MemoCard from "../../component/core/dashboard/MemoCard";
+import StarLoader from "../../component/core/loaders/StarLoader";
 
 const MyApproval = () => {
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
   const [selectedMemo, setSelectedMemo] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("pending");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const { handleOpenMemo } = useViewMemoHook();
 
@@ -95,8 +93,14 @@ const MyApproval = () => {
             declined: { loading: declinedLoading, count: declinedMemo?.length },
           }}
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-3">
-          {approvalMemo?.length ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 md:grid-cols-2 gap-7 lg:gap-5 mt-5">
+          {
+          isPending? (
+           <div className="h-32 flex justify-center items-center col-span-4">
+                               <StarLoader />
+                             </div>
+          ):
+          approvalMemo?.length ? (
             approvalMemo?.map((item, index) => (
               <MemoCard
                 is_approve={true}

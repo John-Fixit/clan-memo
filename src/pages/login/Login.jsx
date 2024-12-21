@@ -41,7 +41,7 @@ const Login = () => {
             const resData = response?.data
 
             setCurrentUser(resData);
-            navigate("/")
+            navigate("/dashboard")
         }
     })
 

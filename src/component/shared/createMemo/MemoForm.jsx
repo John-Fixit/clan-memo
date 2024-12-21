@@ -34,21 +34,26 @@ const quillModules = {
   ],
 };
 
-
-
-const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, trigger}) => {
+const MemoForm = ({
+  register,
+  getValues,
+  setValue,
+  watch,
+  errors,
+  touchedFields,
+  trigger,
+}) => {
   const quillRef = useRef(null);
-
 
   const { userData } = useCurrentUser();
 
-  const { data: allStaff, isLoading: getStaffLoading } = useGetAllStaff(userData?.data?.COMPANY_ID);
+  const { data: allStaff, isLoading: getStaffLoading } = useGetAllStaff(
+    userData?.data?.COMPANY_ID
+  );
 
-  const {data: getFolderList, isLoading: getFolderLoading} = useListFolder({
-    staff_id: userData?.data?.STAFF_ID
-  })
-
-
+  const { data: getFolderList, isLoading: getFolderLoading } = useListFolder({
+    staff_id: userData?.data?.STAFF_ID,
+  });
 
   const folderList = getFolderList?.map((folder) => {
     return {
@@ -56,8 +61,7 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
       value: folder?.NAME,
       label: folder?.NAME,
     };
-  })
-
+  });
 
   const staff =
     allStaff?.length > 0
@@ -70,13 +74,11 @@ const MemoForm = ({register, getValues, setValue, watch, errors, touchedFields, 
         })
       : [];
 
-useEffect(()=>{
-  trigger()
-}, [trigger])
-
+  useEffect(() => {
+    trigger();
+  }, [trigger]);
 
   useEffect(() => {
-    
     // Access the Quill instance
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
@@ -87,8 +89,6 @@ useEffect(()=>{
       }
     }
   }, []);
-
-
 
   return (
     <>
@@ -114,55 +114,57 @@ useEffect(()=>{
 
           {watch("from") === "others" && (
             <div className="mt-2">
-              
               <Select
-                  size={"large"}
-                  loading={getStaffLoading}
-                  placeholder="Select Staff Name"
-                  defaultValue={getValues("senderName")}
-                  onChange={(value)=>setValue("senderName", value)}
-                  className="rounded-md"
-                  style={{
-                    width: "100%",
-                  }}
-                  {...register("senderName", {
-                    required: "This field is required",
-                  })}
-                  optionFilterProp="label"
-                  showSearch
-                  options={staff}
-                  optionRender={(user) => (
-                    <Space className="cursor-pointer  w-full  px-2 rounded-xl">
-                      {
-                        <div className="flex gap-2 items-center  cursor-pointer px-2 py-1">
-                          {user?.data?.FILE_NAME ? (
-                            <Avatar
-                              alt={user?.data?.name}
-                              className="flex-shrink-0"
-                              size="sm"
-                              src={filePrefix + user?.data?.FILE_NAME}
-                            />
-                          ) : (
-                            <Avatar
-                              alt={user?.data?.name}
-                              className="flex-shrink-0"
-                              size="sm"
-                            >{user?.data?.label?.trim()[0]}</Avatar>
-                          )}
+                size={"large"}
+                loading={getStaffLoading}
+                placeholder="Select Staff Name"
+                value={watch("senderName")}
+                
+                className="rounded-md"
+                style={{
+                  width: "100%",
+                }}
+                {...register("senderName", {
+                  required: "This field is required",
+                })}
+                onChange={(value) => setValue("senderName", value)}
+                optionFilterProp="label"
+                showSearch
+                options={staff}
+                optionRender={(user) => (
+                  <Space className="cursor-pointer  w-full  px-2 rounded-xl">
+                    {
+                      <div className="flex gap-2 items-center  cursor-pointer px-2 py-1">
+                        {user?.data?.FILE_NAME ? (
+                          <Avatar
+                            alt={user?.data?.name}
+                            className="flex-shrink-0"
+                            size="sm"
+                            src={filePrefix + user?.data?.FILE_NAME}
+                          />
+                        ) : (
+                          <Avatar
+                            alt={user?.data?.name}
+                            className="flex-shrink-0"
+                            size="sm"
+                          >
+                            {user?.data?.label?.trim()[0]}
+                          </Avatar>
+                        )}
 
-                          <div className="flex flex-col">
-                            <span className="font-medium uppercase font-helvetica">
-                              {user?.data?.label}
-                            </span>
-                            <span className="text-xs font-medium text-gray-400 uppercase font-helvetica">
-                              {user?.data?.DEPARTMENT}
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium uppercase font-helvetica">
+                            {user?.data?.label}
+                          </span>
+                          <span className="text-xs font-medium text-gray-400 uppercase font-helvetica">
+                            {user?.data?.DEPARTMENT}
+                          </span>
                         </div>
-                      }
-                    </Space>
-                  )}
-                />
+                      </div>
+                    }
+                  </Space>
+                )}
+              />
             </div>
           )}
         </div>
@@ -180,13 +182,14 @@ useEffect(()=>{
             size="large"
             placeholder="Subject"
             status={errors.subject ? "error" : ""}
-            value={getValues("subject")}
-           
+            value={watch("subject") || ""} // Use watch to bind the value
             onChange={(e) => {
-              setValue("subject", e.target.value)
+              setValue("subject", e.target.value, { shouldValidate: true }); // Update value and trigger validation
             }}
           />
-          <small className="text-danger-500">{ touchedFields.subject && errors?.subject?.message}</small>
+          <small className="text-danger-500">
+            {touchedFields.subject && errors?.subject?.message}
+          </small>
         </div>
         <div className="mb-4">
           <label htmlFor="" className="tracking-[0.5px] leading-[22px]">
@@ -201,12 +204,12 @@ useEffect(()=>{
             }}
             loading={getFolderLoading}
             status={errors.folder ? "error" : ""}
-            value={getValues("folder")}
+            value={watch("folder")}
             {...register("folder", {
               required: "This field is required",
             })}
             options={folderList}
-            onChange={(value)=>setValue("folder", value)}
+            onChange={(value) => setValue("folder", value)}
           />
           {watch("folder") === "new" && (
             <Input
@@ -242,7 +245,6 @@ useEffect(()=>{
           </div>
         </div>
         <div className="flex justify-end pb-5">
-
           {/* <button
             type="submit"
             className={`bg-[#5A6ACF] rounded text-white font-semibold py-[8px] leading-[19.5px mx-2 my-1 text-[0.7125rem] md:my-0 px-[20px] uppercase `}

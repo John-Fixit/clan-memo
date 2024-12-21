@@ -12,6 +12,8 @@ import { useGetLatestMemo } from "../../../services/API/memo";
 import PropTypes from "prop-types"
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
 import { useHandleMemo } from "../../../hooks/useHandleMemo";
+import moment from "moment";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 const Action = ({memo}) => {
 const { handleOpenMemo } = useViewMemoHook()
@@ -23,12 +25,12 @@ const {handleOpenCreateMemo} = useHandleMemo()
   return (
     <div className="relative flex items-center justify-end gap-2">
         <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={()=>handleOpenMemo({memo})}>
-          <EyeIcon />
+          <MdOutlineRemoveRedEye color="blue"/>
         </span>
         {
           memo?.IS_DRAFT ? (
           <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={()=>handleOpenCreateMemo({draftedMemo: memo})}>
-            <EditIcon />
+            <EditIcon color={"brown"}/>
           </span>
           ): null
 }
@@ -58,22 +60,6 @@ const RecentMemo = ({userData}) => {
                 <span>Recent Memo</span>
             </h3>
             </div>
-            {/* <ConfigProvider
-            theme={{
-                components: {
-                Button: {
-                    defaultHoverBorderColor: "#DDE4F0",
-                    defaultBg: "#FBFCFE",
-                    defaultHoverBg: "#FBFCFE",
-                    defaultHoverColor: "#5A6ACF",
-                },
-                },
-            }}
-            >
-            <Button className="text-[13px] text-[#5A6ACF] tracking-[0.5px] leading-[20px] font-medium rounded-[5px]">
-                See All
-            </Button>
-            </ConfigProvider> */}
         </div>
 
         <div>
@@ -89,7 +75,7 @@ const RecentMemo = ({userData}) => {
                 <TableRow key={index}>
                     <TableCell className="text-[0.85rem] opacity-65">{item?.SUBJECT}</TableCell>
                     <TableCell className="text-[0.85rem] opacity-65">{item?.FOLDER_NAME}</TableCell>
-                    <TableCell className="text-[0.85rem] opacity-65">{item?.DATE_CREATED}</TableCell>
+                    <TableCell className="text-[0.85rem] opacity-65">{moment(item?.DATE_CREATED).format("DD MMM YYYY")}</TableCell>
                     <TableCell>
                     <Action memo={item}/>
                     </TableCell>

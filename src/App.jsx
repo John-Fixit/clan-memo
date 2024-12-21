@@ -8,6 +8,8 @@ import useCurrentUser from "./hooks/useCurrentUser";
 import { useEffect } from "react";
 import GlobalProviders from "./lib/GlobalProvider";
 import LandingPage from "./pages/landingPage";
+import "aos/dist/aos.css";
+import AOS from "aos";
 
 const App = () => {
   
@@ -19,13 +21,19 @@ const App = () => {
     }
   }, [userData])
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+    });
+  }, []);
+
   return (
     <>
       <Routes>
-        <Route path="/home" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="" element={<MainLayout />}>
-          <Route path="" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/memo" element={<Memo />} />
           <Route path="/my-approval" element={<MyApproval />} />
         </Route>

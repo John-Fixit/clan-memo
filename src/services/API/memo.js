@@ -8,7 +8,9 @@ export const useGetLatestMemo  = (payload) => {
     return useQuery({
         queryFn: async () => {
             const res = await API.post(API_URL.latestMemo, payload)
-            return res?.data?.data
+            return res?.data?.data? res?.data?.data?.sort((a, b) => {
+              return new Date(b.DATE_CREATED) - new Date(a.DATE_CREATED);
+            }): []
           },
           queryKey: ["latest_memo"]
     })
@@ -18,7 +20,9 @@ export const useGetActivities  = (payload) => {
     return useQuery({
         queryFn: async () => {
             const res = await API.post(API_URL.activityTimeline, payload)
-            return res?.data?.data
+            return res?.data?.data? res?.data?.data?.sort((a, b) => {
+              return new Date(b.DATE_CREATED) - new Date(a.DATE_CREATED);
+            }): []
           },
           queryKey: ["get_activities"]
     })
@@ -79,4 +83,15 @@ export const useViewMemo  = (payload) => {
         }
     })
     return approveOrDeclineMemo
+  }
+
+
+  export const useGetFileStatus  = (payload) => {
+    return useQuery({
+        queryFn: async () => {
+            const res = await API.post(API_URL.list_file_status, payload)
+            return res?.data?.data
+          },
+          queryKey: [`list_file_status`]
+    })
   }

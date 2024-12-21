@@ -13,10 +13,6 @@ const LandingPage = () => {
     const navigate = useNavigate()
     const images = [
         memo1, memo2, memo1, memo2
-    //   "src/assets/images/memo.png",
-    //   "src/assets/images/memo2.png",
-    //   "src/assets/images/memo.png",
-    //   "src/assets/images/memo2.png"
     ];
 
 

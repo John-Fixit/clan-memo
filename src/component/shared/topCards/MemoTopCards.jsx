@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+import { motion, AnimatePresence } from 'framer-motion';
 import { IoDocumentOutline } from "react-icons/io5";
 import StarLoader from "../../core/loaders/StarLoader";
 
@@ -60,7 +59,7 @@ const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
         {memoData?.map((item, index) => {
           return (
             statusData?.[item?.key] &&
-            <div
+            <motion.div
               key={index}
               className={`py-4 -top border-[1px] border-[#dfe2e6] transition-background ${
                 selected === item?.key ? "bg-default-100" : "bg-white"
@@ -84,14 +83,14 @@ const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
                   {item?.name}
                 </span>
               </div>
-              <span className="text-[16px] leading-[19.5px] text-[rgba(39, 44, 51, 0.5)] font-[400] font-Roboto">
+              <span className="text-[15px] leading-[19.5px] text-[rgba(39, 44, 51, 0.5)] font-[400] font-Roboto">
                 {
                   statusData?.[item?.key]?.loading ? (
-                    <StarLoader />
-                  ): statusData?.[item?.key]?.count
+                    <StarLoader size={20}/>
+                  ): statusData?.[item?.key]?.count || 0
                 }
               </span>
-            </div>
+            </motion.div>
           );
         })}
       </div>

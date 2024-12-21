@@ -144,8 +144,8 @@ const DropdownNotification = () => {
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto px-2">
-          {treated?.map((tappr) => (
-            <li key={tappr?.MEMO_ID}>
+          {treated?.map((tappr, index) => (
+            <li key={tappr?.MEMO_ID+"__"+index}>
               <div className="flex flex-col border-t px-4.5 py-3 ">
                 <div className="flex gap-2 justify-between items-start">
                   {tappr?.IS_APPROVED ? (

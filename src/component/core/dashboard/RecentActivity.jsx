@@ -5,11 +5,12 @@ import { useGetActivities } from "../../../services/API/memo";
 import PropTypes from "prop-types";
 import StarLoader from "../loaders/StarLoader";
 import moment from "moment";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 const RecentActivity = ({ userData }) => {
   const { data: activities, isLoading } = useGetActivities({
     staff_id: userData?.data?.STAFF_ID,
   });
-
 
   const colors = [
     { color: "#f56a00" },
@@ -17,6 +18,30 @@ const RecentActivity = ({ userData }) => {
     { color: "#5A6ACF" },
     { color: "#F99C30" },
   ];
+
+
+  const itemsPerPage = 4; // Number of activities to show per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil((activities?.length || 0) / itemsPerPage);
+
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const currentActivities = activities?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <>
@@ -42,11 +67,15 @@ const RecentActivity = ({ userData }) => {
                 shape="circle"
                 type="primary"
                 icon={<IoChevronBackOutline color="white" size={20} />}
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
               />
               <Button
                 shape="circle"
                 type="primary"
                 icon={<IoChevronForwardOutline color="white" size={20} />}
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
               />
             </ConfigProvider>
           </div>
@@ -56,41 +85,45 @@ const RecentActivity = ({ userData }) => {
             <div className="flex justify-center">
               <StarLoader />
             </div>
-          ) : activities?.length ? (
-            activities.map((item, index) => {
+          ) : currentActivities?.length ? (
+            currentActivities.map((item, index) => {
               const randomIndex = Math.floor(Math.random() * colors.length);
               return (
-                <div
-                  key={index + "__activities"}
-                  className={`flex items-start gap-x-3 py-4 ${
-                    index !== 0 && "border-t"
-                  } border-[#DBE5EB] cursor-pointer hover:bg-[#f1f1f1] transition-all px-5`}
-                >
-                  <div>
-                    <Avatar
-                      size={"large"}
-                      className={`${item?.color}`}
-                      style={{
-                        backgroundColor: `${colors?.[randomIndex]?.color}`,
-                        opacity: 0.7,
-                      }}
-                    >
-                      {item?.FIRST_NAME?.trim()[0]}
-                      {item?.LAST_NAME?.trim()[0]}
-                    </Avatar>
-                  </div>
-                  <div>
-                    <p className="text-[#273240] opacity-70 leading-[15px] tracking-[0.5px] text-[10px]">
-                      {item?.FIRST_NAME} {item?.LAST_NAME}
-                    </p>
-                    <p className="text-[13px] text-[#273240] leading-[20px] tracking-[0.5px]">
-                      {item?.ACTIVITY}
-                    </p>
-                    <p className="text-[#273240] opacity-70 leading-[20px] tracking-[0.5px] text-[12px]">
-                      {moment(item?.DATE_CREATED)?.calendar()}
-                    </p>
-                  </div>
-                </div>
+                <AnimatePresence key={index + "__activities"}>
+                   <motion.div
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { duration: 0.7 } }}
+                exit={{ x: 100, opacity: 0.5, transition: { duration: 0.7 } }}
+                    className={`flex items-start gap-x-3 py-4 ${
+                      index !== 0 && "border-t"
+                    } border-[#DBE5EB] cursor-pointer hover:bg-[#f1f1f1] px-5`}
+                  >
+                    <div>
+                      <Avatar
+                        size={"large"}
+                        className={`${item?.color}`}
+                        style={{
+                          backgroundColor: `${colors?.[randomIndex]?.color}`,
+                          opacity: 0.7,
+                        }}
+                      >
+                        {item?.FIRST_NAME?.trim()[0]}
+                        {item?.LAST_NAME?.trim()[0]}
+                      </Avatar>
+                    </div>
+                    <div>
+                      <p className="text-[#273240] opacity-70 leading-[15px] tracking-[0.5px] text-[10px]">
+                        {item?.FIRST_NAME} {item?.LAST_NAME}
+                      </p>
+                      <p className="text-[13px] text-[#273240] leading-[20px] tracking-[0.5px]">
+                        {item?.ACTIVITY}
+                      </p>
+                      <p className="text-[#273240] opacity-70 leading-[20px] tracking-[0.5px] text-[12px]">
+                        {moment(item?.DATE_CREATED)?.calendar()}
+                      </p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               );
             })
           ) : (

@@ -6,6 +6,7 @@ import DrawerSideTab from "../../shared/drawer/DrawerSideTab";
 import ExpandedDrawer from "../../shared/drawer/ExpandedDrawer";
 import SignMemo from "../../shared/signMemo/SignMemo";
 import useCurrentUser from "../../../hooks/useCurrentUser";
+import MemoNoteHistory from "../../shared/createMemo/MemoNoteHistory";
 
 const MemoDrawer = () => {
   const {
@@ -30,7 +31,6 @@ const MemoDrawer = () => {
        refetch()
   }, [refetch, memo?.MEMO_ID])
 
-  console.log(memo)
 
   const memoDetail = useMemo(() => getMemoDetail?.data, [getMemoDetail?.data]);
   const memoApprovers = useMemo(
@@ -39,7 +39,8 @@ const MemoDrawer = () => {
   );
   const memoNotes = useMemo(() => getMemoDetail?.notes, [getMemoDetail?.notes]);
 
-  const selfMemo = memo?.INITIATOR === userData?.data?.STAFF_ID;
+  const selfMemo = memo?.INITIATOR === userData?.data?.STAFF_ID || !is_approve;
+
 
 
 // console.log(getMemoDetail);
@@ -65,7 +66,7 @@ const MemoDrawer = () => {
                 />
               ),
             },
-            { title: "Notes", component: <></> },
+            { title: "Notes", component: <MemoNoteHistory memoNote={memoNotes}/> },
             {
               title: "Approval History",
               component: <MemoApprovalHistory memoApprovers={memoApprovers} />,
