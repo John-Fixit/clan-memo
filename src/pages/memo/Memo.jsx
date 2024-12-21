@@ -175,7 +175,9 @@ const Memo = () => {
                   </div>
                 ):
                 folderMemo?.length ? (
-                  folderMemo?.map((item, index) => (
+                  folderMemo?.sort((a, b) => {
+                    return new Date(b.DATE_CREATED) - new Date(a.DATE_CREATED);
+                  })?.map((item, index) => (
                     <MemoCard
                       key={index + "_memo"}
                       memo={item}

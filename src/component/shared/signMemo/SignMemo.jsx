@@ -51,7 +51,7 @@ const SignMemo = ({
     approving_staff_id: userData?.data?.STAFF_ID,
   });
 
-  const maxRecipientDisplay = 5;
+  const maxRecipientDisplay = 2;
 
   const displayedNames = memoDetail?.RECIPIENT?.slice(
     0,
@@ -125,6 +125,7 @@ const SignMemo = ({
     }
 
     try {
+      console.log(isApprove ? payload.approve : payload.decline)
       const res = await mutateAsync(
         isApprove ? payload.approve : payload.decline
       );
@@ -132,12 +133,14 @@ const SignMemo = ({
       if (!hasSignature) {
         clear();
       }
+      setIsApprove(false)
       setConfirmationNote("");
 
       handleCloseDrawer();
       handleCloseMemo();
       setIsEdit(false);
     } catch (error) {
+      console.log(error)
       const errMsg = error?.response?.data?.message || error?.message;
       errorToast(errMsg);
     } finally {
@@ -181,14 +184,6 @@ const SignMemo = ({
     return blob;
   }
 
-  const options = {
-    filename: `${memoDetail?.SUBJECT}.pdf`,
-    method: "save",
-    page: {
-      // margin is in MM, default is Margin.NONE = 0
-      margin: Margin.MEDIUM,
-    },
-  };
 
 
   const downloadPDF = useReactToPrint({ contentRef })
@@ -204,6 +199,9 @@ const SignMemo = ({
   );
   const isApprovedOrDeclined =
     approveStatus?.IS_APPROVED || approveStatus?.IS_DECLINED;
+
+
+    console.log(memoApprovers)
 
   return (
     <>
@@ -435,7 +433,7 @@ const SignMemo = ({
         }
       >
         <div>
-          {isApprove && (
+          {(isApprove && !hasSignature) && (
             <>
               <SignatureView save={save} clear={clear} sigCanvas={sigCanvas} />
             </>

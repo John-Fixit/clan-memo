@@ -31,17 +31,19 @@ const CreateMemoDrawer = () => {
     staleTime: Infinity,
   });
 
-  console.log(draftedMemo?.MEMO_ID);
+ 
 
   useEffect(() => {
     refetch();
-  }, [refetch, draftedMemo?.MEMO_ID]);
+  }, [draftedMemo?.MEMO_ID]);
 
   const memoData = useMemo(() => getMemoDetail?.data, [getMemoDetail?.data]);
   const memoApprovers = useMemo(
     () => getMemoDetail?.approvers,
     [getMemoDetail?.approvers]
   );
+
+  console.log(getMemoDetail);
 
   const approvers = useMemo(
     () => memoApprovers?.map((item) => item.APPROVER),
@@ -210,6 +212,7 @@ const CreateMemoDrawer = () => {
       folder: values?.folder,
       memo_id: memoData?.MEMO_ID || null,
     };
+
 
     // Validation rules and error messages
     const validationRules = [

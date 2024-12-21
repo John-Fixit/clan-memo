@@ -38,10 +38,14 @@ const PrintableContent = ({
           </p>
           <table border={0} className="leading-7 relative">
             <tbody>
-              <tr>
-                <td className="font-semibold uppercase ">To: </td>
-                <td className="leading-5">{formattedRecipients}</td>
-              </tr>
+                {
+                    toPrint ? (
+                    <tr>
+                        <td className="font-semibold uppercase ">To: </td>
+                        <td className="leading-5">{formattedRecipients}</td>
+                    </tr>
+                    ): null
+                }
               <tr>
                 <td className="font-semibold uppercase">From: </td>
                 <td className="font-medium">{memoDetail?.MEMO_FROM}</td>
