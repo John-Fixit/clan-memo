@@ -5,7 +5,7 @@ import memo2 from "../../assets/images/memo2.png"
 import memoCardimg from "../../assets/images/memocard.png"
 import folderImg from "../../assets/images/folder.png"
 import formImg from "../../assets/images/form.png"
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from "../../assets/images/ncaa_logo.png"
 
 const LandingPage = () => {

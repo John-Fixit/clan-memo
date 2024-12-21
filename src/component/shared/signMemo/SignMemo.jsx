@@ -4,7 +4,6 @@ import { Button, Tooltip } from "@nextui-org/react";
 import styles from "../../../assets/styles/signMemo.module.css";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import SignatureView from "./SignatureView";
-import generatePDF, { Margin } from "react-to-pdf";
 import { MdSaveAlt } from "react-icons/md";
 
 import { useDisclosure } from "@nextui-org/react";
@@ -16,7 +15,6 @@ import {
   Input,
 } from "antd";
 import ExpandedDrawer from "../drawer/ExpandedDrawer";
-import AddNote from "../createMemo/AddNote";
 import StarLoader from "../../core/loaders/StarLoader";
 import useCurrentUser from "../../../hooks/useCurrentUser";
 import { useCheckSignature } from "../../../services/API/signature";
@@ -25,12 +23,6 @@ import { useApproveMemo } from "../../../services/API/memo";
 import { errorToast, successToast } from "../../../utils/toastPopUp";
 import { useViewMemoHook } from "../../../hooks/useViewMemoHook";
 import EditMemo from "./EditMemo";
-import Stamp from "../../core/memo/stamp";
-import logo from "../../../assets/images/ncaa_logo.png";
-import moment from "moment";
-import { removeHTMLTagsAndStyles } from "../../../utils/removeHTMLTagsAndStyles";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { useReactToPrint } from "react-to-print";
 import PrintableContent from "./PrintableContent";
 

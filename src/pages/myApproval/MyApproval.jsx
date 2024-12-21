@@ -1,11 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
+
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
 import ExpandedDrawer from "../../component/shared/drawer/ExpandedDrawer";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
@@ -15,17 +8,14 @@ import {
   useGetMyApprovalsByStatus,
 } from "../../services/API/memo";
 import useCurrentUser from "../../hooks/useCurrentUser";
-import moment from "moment";
-import { useViewMemoHook } from "../../hooks/useViewMemoHook";
 import MemoCard from "../../component/core/dashboard/MemoCard";
 import StarLoader from "../../component/core/loaders/StarLoader";
 
 const MyApproval = () => {
   const [open, setOpen] = useState({ status: false, role: null, memo: null });
-  const [selectedMemo, setSelectedMemo] = useState("");
+  const [selectedMemo,] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const { handleOpenMemo } = useViewMemoHook();
 
   const { userData } = useCurrentUser();
 
@@ -33,7 +23,6 @@ const MyApproval = () => {
     mutate,
     data: getApprovalMemo,
     isPending,
-    isError,
   } = useGetMyApprovalsByStatus();
 
 
