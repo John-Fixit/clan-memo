@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import "../../assets/styles/mainLayout.css";
 import useWindowSize from "../../hooks/useWindowSize";
-import Sidebar from "../../component/core/sidebar/Sidebar";
 import SidebarHeader from "../../component/core/sidebar/SidebarHeader";
 import MemoDrawer from "../../component/core/memo/memoDrawer";
 
@@ -25,7 +24,6 @@ const MainLayout = () => {
   return (
     <>
       <main>
-        {/* <Sidebar visible={navIsOpen} show={handleOpenNav} /> */}
         <SidebarHeader />
         <section
           className={`lg:!px-28 !px-7 ${
