@@ -7,6 +7,7 @@ import MyApproval from "./pages/myApproval/MyApproval";
 import useCurrentUser from "./hooks/useCurrentUser";
 import { useEffect } from "react";
 import GlobalProviders from "./lib/GlobalProvider";
+import LandingPage from "./pages/landingPage";
 
 const App = () => {
   
@@ -21,6 +22,7 @@ const App = () => {
   return (
     <>
       <Routes>
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="" element={<MainLayout />}>
           <Route path="" element={<Dashboard />} />
