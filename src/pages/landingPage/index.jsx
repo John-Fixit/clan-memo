@@ -6,6 +6,7 @@ import memoCardimg from "../../assets/images/memocard.png"
 import folderImg from "../../assets/images/folder.png"
 import formImg from "../../assets/images/form.png"
 import { Link, useNavigate } from 'react-router-dom';
+import logo from "../../assets/images/ncaa_logo.png"
 
 const LandingPage = () => {
 
@@ -49,7 +50,7 @@ const LandingPage = () => {
             {/* <span className="text-white text-2xl font-bold">MemoSync</span> */}
             <div className="flex items-center gap-x-2">
             <img
-              src={"src/assets/images/ncaa_logo.png"}
+              src={logo}
               alt="logo"
               width={40}
               className="cursor-pointer"
