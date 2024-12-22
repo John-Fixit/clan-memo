@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import "../../assets/styles/mainLayout.css";
 import useWindowSize from "../../hooks/useWindowSize";
 import SidebarHeader from "../../component/core/sidebar/SidebarHeader";
-import MemoDrawer from "../../component/core/memo/memoDrawer";
+import MemoDrawer from "../../component/core/memo/MemoDrawer";
 
 const MainLayout = () => {
   const [navIsOpen, setNavIsOpen] = useState(true);
