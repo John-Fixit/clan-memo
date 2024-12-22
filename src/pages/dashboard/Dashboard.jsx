@@ -3,7 +3,7 @@ import RecentMemo from "../../component/core/dashboard/RecentMemo";
 import RecentActivity from "../../component/core/dashboard/RecentActivity";
 import MemoTopCards from "../../component/shared/topCards/MemoTopCards";
 import CreateMemoSvg from "../../component/shared/svg_icons/create_memo";
-import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
+import CreateMemoButton from "../../component/shared/createMemoButton/CreateMemoButton";
 import ScrollableFolders from "../../component/core/memo/folder";
 import CreateFolderButton from "../../component/shared/createFolderButton";
 import useCurrentUser from "../../hooks/useCurrentUser";
