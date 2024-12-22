@@ -11,7 +11,7 @@ import MemoForm from "../../component/shared/createMemo/MemoForm";
 import Attachment from "../../component/shared/createMemo/Attachment";
 import AddNote from "../../component/shared/createMemo/AddNote";
 import SignMemo from "../../component/shared/signMemo/SignMemo";
-import CreateMemoButton from "../../component/shared/createMemoButton/createMemoButton";
+import CreateMemoButton from "../../component/shared/createMemoButton/CreateMemoButton";
 import {
   FolderCard,
 } from "../../component/core/memo/folder";
