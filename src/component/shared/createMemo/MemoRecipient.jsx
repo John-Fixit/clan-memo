@@ -1,4 +1,4 @@
-import { Avatar, Checkbox, Select, Space } from "antd";
+import { Avatar, Select, Space } from "antd";
 import PropTypes from "prop-types";
 import {
   useGetAllDepartment,
@@ -47,7 +47,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
     switch (recipient_type) {
       case "STAFF":
         value = allStaff?.map((val) => {
-          val.value = val?.STAFF_ID;
+          val.value = val?.STAFF_ID?.toString();
           val.label =
             val?.FIRST_NAME +
             " " +
@@ -61,7 +61,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "DIRECTORATE":
         value = allDirect?.map((val) => {
-          val.value = val?.DIRECTORATE_ID;
+          val.value = val?.DIRECTORATE_ID?.toString();
           val.label = val?.DIRECTORATE_NAME;
           return val;
         });
@@ -70,7 +70,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "DEPARTMENT":
         value = allDept?.map((val) => {
-          val.value = val?.DEPARTMENT_ID;
+          val.value = val?.DEPARTMENT_ID?.toString();
           val.label = val?.DEPARTMENT_NAME;
           return val;
         });
@@ -79,7 +79,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "REGION":
         value = allReg?.map((val) => {
-          val.value = val?.REGION_ID;
+          val.value = val?.REGION_ID?.toString();
           val.label = val?.REGION_NAME;
           // val.value = val?.STAFF_ID;
           // val.label = `${val?.FIRST_NAME} ${val?.LAST_NAME} (${val?.REGION_NAME})`;
@@ -90,7 +90,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "DIRECTORATE HEAD":
         value = []?.map((val) => {
-          val.value = val?.DIRECTORATE_ID;
+          val.value = val?.DIRECTORATE_ID?.toString();
           val.label = val?.DIRECTORATE_NAME;
           // val.label = val?.FIRST_NAME + " " + val?.LAST_NAME;
           return val;
@@ -100,7 +100,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "UNIT":
         value = allUnit?.map((val) => {
-          val.value = val?.UNIT_ID;
+          val.value = val?.UNIT_ID?.toString();
           val.label = val?.UNIT_NAME;
           return val;
         });
@@ -109,7 +109,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "DEPARTMENTAL HEAD":
         value = []?.map((val) => {
-          val.value = val?.DEPARTMENT_ID;
+          val.value = val?.DEPARTMENT_ID?.toString();
           val.label = val?.DEPARTMENT_NAME;
           // val.label = val?.FIRST_NAME + " " + val?.LAST_NAME;
           return val;
@@ -119,7 +119,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
         return value;
       case "UNIT HEAD":
         value = []?.map((val) => {
-          val.value = val?.UNIT_ID;
+          val.value = val?.UNIT_ID?.toString();
           val.label = val?.UNIT_NAME;
           return val;
         });
@@ -129,7 +129,7 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
 
       case "DESIGNATION":
         value = []?.map((val) => {
-          val.value = val?.DESIGNATION_ID;
+          val.value = val?.DESIGNATION_ID?.toString();
           val.label = val?.DESIGNATION_NAME;
           return val;
         });
@@ -172,7 +172,6 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
 
 
     } else {
-      console.log(val)
       const data = { recipient_value: val?.value, to_value: val?.label,  recipients: [], recipient_value_array: []};
 
       Object.entries(data).forEach(([key, value]) => {
@@ -183,10 +182,6 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
   };
 
 
-
-  // const handleSelectAllStaff = (e) => {
-  //   setValue("selectAllStaff", e.target.checked)
-  // }
 
 
 
@@ -228,15 +223,15 @@ const MemoRecipient = ({ watch, setValue, getValues, register }) => {
             maxCount={getValues('recipient_type') === 'STAFF' ? 100 : undefined }
             size={"large"}
             placeholder="Search Recipient"
-            onChange={onSelectrecipient}
-            // {...register(getValues('recipient_type') === 'STAFF'? "recipients":"recipient_value", {
-            //   required: "This field is required",
-            // })}
+            {...register(getValues('recipient_type') === 'STAFF'? "recipients":"recipient_value", {
+                required: "This field is required",
+              })}
+              onChange={onSelectrecipient}
             className="border-1 border-gray-300 rounded-md"
             style={{
               width: "100%",
             }}
-            defaultValue={watch("recipient_type") === "STAFF" ? getValues()?.recipients : getValues()?.recipient_value}
+            value={watch("recipient_type") === "STAFF" ? watch()?.recipients : watch()?.recipient_value}
             optionFilterProp="label"
             loading={isLoading}
             variant="borderless"

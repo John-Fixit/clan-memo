@@ -180,8 +180,8 @@ const DropdownNotification = () => {
               </div>
             </li>
           ))}
-          {awaiting?.map((tappr) => (
-            <li key={tappr?.REQUEST_ID}>
+          {awaiting?.map((tappr, index) => (
+            <li key={tappr?.REQUEST_ID+"___request_id"+index}>
               <div className="flex flex-col border-t px-4.5 py-3 ">
                 <div className="flex gap-2 justify-between items-start">
                   <Avatar

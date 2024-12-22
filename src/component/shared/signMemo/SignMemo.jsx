@@ -59,12 +59,9 @@ const SignMemo = ({
 
   const contentRef = useRef();
 
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [approvals, setApprovals] = useState(memoApprovers || []);
-  const [open, setOpen] = useState({ status: false, type: "" });
 
   const [isEdit, setIsEdit] = useState(false);
 
@@ -230,8 +227,8 @@ const SignMemo = ({
                       <AntButton
                         size="sm"
                         onClick={downloadPDF}
-                        className="bg-blue-100 text-cyan-600"
-                        icon={<MdSaveAlt size={"1.5rem"} />}
+                        className="bg-purple-100 text-purple-600"
+                        icon={<MdSaveAlt size={"1.3rem"} />}
                       />
                     </Tooltip>
                   </>

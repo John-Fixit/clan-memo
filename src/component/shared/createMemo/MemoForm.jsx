@@ -58,7 +58,7 @@ const MemoForm = ({
   const folderList = getFolderList?.map((folder) => {
     return {
       ...folder,
-      value: folder?.NAME,
+      value: folder?.ID,
       label: folder?.NAME,
     };
   });
@@ -196,6 +196,7 @@ const MemoForm = ({
             Folder
           </label>
           <Select
+          labelInValue
             size={"large"}
             placeholder="Select folder"
             className="border-gray-300 rounded-md"
@@ -209,7 +210,7 @@ const MemoForm = ({
               required: "This field is required",
             })}
             options={folderList}
-            onChange={(value) => setValue("folder", value)}
+            onChange={(e, value) => setValue("folder", value?.NAME)}
           />
           {watch("folder") === "new" && (
             <Input

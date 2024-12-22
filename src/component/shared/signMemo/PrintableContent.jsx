@@ -64,7 +64,7 @@ const PrintableContent = ({
           </table>
           <hr className="my-3 border-t-2 border-gray-500 w-full" />
         </div>
-        <div className="body_of_memo !text-black !text-md">
+        <div className="body_of_memo !text-black !text-md transition-all duration-700 ease-in-out">
           <div
             className="text-[0.9rem] leading-6 text-justify text-default-900 rendered-html-content"
             dangerouslySetInnerHTML={{

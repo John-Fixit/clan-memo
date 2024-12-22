@@ -17,19 +17,25 @@ const MemoDrawer = () => {
 
   const { userData } = useCurrentUser();
 
+
+
   const {
     data: getMemoDetail,
     isPending: getMemoLoading,
     isError,
-    refetch
+    mutate
   } = useViewMemo({
     memo_id: memo?.MEMO_ID,
+    staleTime: Infinity
   });
 
+  
 
   useEffect(()=>{
-       refetch()
-  }, [refetch, memo?.MEMO_ID])
+    mutate({
+      memo_id: memo?.MEMO_ID,
+    })
+  }, [memo?.MEMO_ID, mutate])
 
 
   const memoDetail = useMemo(() => getMemoDetail?.data, [getMemoDetail?.data]);
@@ -42,8 +48,10 @@ const MemoDrawer = () => {
   const selfMemo = memo?.INITIATOR === userData?.data?.STAFF_ID || !is_approve;
 
 
+  // console.log(data)
+  console.log(getMemoDetail)
 
-// console.log(getMemoDetail);
+
 
 
 

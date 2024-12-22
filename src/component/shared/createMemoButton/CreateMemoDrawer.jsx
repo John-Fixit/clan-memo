@@ -22,20 +22,24 @@ const CreateMemoDrawer = () => {
     handleCloseCreateMemo,
   } = useHandleMemo();
 
+
+  console.log(draftedMemo)
+
   const { mutate, isPending } = useCreateMemo({
     updateDraft: draftedMemo ? true : false,
   });
 
-  const { data: getMemoDetail, refetch } = useViewMemo({
+  const { data: getMemoDetail, mutate:mutateViewMemo } = useViewMemo({
     memo_id: draftedMemo?.MEMO_ID,
-    staleTime: Infinity,
   });
 
- 
 
-  useEffect(() => {
-    refetch();
-  }, [draftedMemo?.MEMO_ID]);
+  useEffect(()=>{
+    mutateViewMemo({
+      memo_id: draftedMemo?.MEMO_ID,
+    })
+  }, [draftedMemo?.MEMO_ID, mutateViewMemo])
+
 
   const memoData = useMemo(() => getMemoDetail?.data, [getMemoDetail?.data]);
   const memoApprovers = useMemo(
@@ -43,7 +47,6 @@ const CreateMemoDrawer = () => {
     [getMemoDetail?.approvers]
   );
 
-  console.log(getMemoDetail);
 
   const approvers = useMemo(
     () => memoApprovers?.map((item) => item.APPROVER),
@@ -108,7 +111,7 @@ const CreateMemoDrawer = () => {
       body: memoData?.MEMO_CONTENT || "",
       folder: draftedMemo?.FOLDER_NAME || "General",
       recipient_value_array: draftedMemo?.recipient_value || null,
-      recipient_value: Number(memoData?.RECIPIENT_VALUE) || null,
+      recipient_value: String(memoData?.RECIPIENT_VALUE) || null,
       recipients: recipients || [],
       to_value: null,
       isDraftMemo: draftedMemo ? true : false,

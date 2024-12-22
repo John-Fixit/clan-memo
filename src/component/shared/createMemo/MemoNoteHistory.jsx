@@ -6,7 +6,7 @@ import { BsEnvelopePaper } from "react-icons/bs";
 import { filePrefix } from "../../../utils/filePrefix";
 
 const MemoNoteHistory = ({ memoNote }) => {
-  console.log(memoNote);
+
   return (
     <div>
       {memoNote?.length > 0 ? (
@@ -14,6 +14,7 @@ const MemoNoteHistory = ({ memoNote }) => {
           <div
             key={i}
             className="p-6 pb-3 rounded border bg-white shadow mt-4 min-h-[5rem]"
+            data-aos="fade-down"
           >
             <div className="flex gap-3 mb-2">
               <Avatar
@@ -30,16 +31,17 @@ const MemoNoteHistory = ({ memoNote }) => {
                     "MMMM Do YYYY, h:mm:ss a"
                   )}
                 </span>
-              </div>
-            </div>
 
-            {note?.NOTE_CONTENT ? (
-              <p
-              className="text-default-800"
-              >{note?.NOTE_CONTENT}</p>
+
+                {note?.NOTE_CONTENT ? (
+              <p className="text-default-800">{note?.NOTE_CONTENT}</p>
             ) : (
               <p>...</p>
             )}
+              </div>
+            </div>
+
+           
           </div>
         ))
       ) : (

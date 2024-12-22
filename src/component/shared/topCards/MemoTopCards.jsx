@@ -3,6 +3,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { IoDocumentOutline } from "react-icons/io5";
 import StarLoader from "../../core/loaders/StarLoader";
+import { MdOutlineCancel, MdOutlineCheckCircle, MdOutlinePending } from "react-icons/md";
+import { LiaFirstdraft } from "react-icons/lia";
+import { RiFileCheckLine } from "react-icons/ri";
 
 const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
   const handleSelect = (val) => {
@@ -20,7 +23,7 @@ const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
     {
       name: "Pending",
       key: "pending",
-      icon: IoDocumentOutline,
+      icon: MdOutlinePending,
       b_color: "bg-cyan-100",
       t_color: "text-cyan-600",
     },
@@ -28,21 +31,21 @@ const MemoTopCards = ({ setSelected, selected, grid, statusData }) => {
     {
       name: "Draft",
       key: "draft",
-      icon: IoDocumentOutline,
-      b_color: "bg-cyan-100",
-      t_color: "text-cyan-600",
+      icon: LiaFirstdraft,
+      b_color: "bg-purple-100",
+      t_color: "text-purple-600",
     },
     {
       name: "Approved",
       key: "approved",
-      icon: IoDocumentOutline,
+      icon: RiFileCheckLine,
       b_color: "bg-green-100",
       t_color: "text-green-600",
     },
     {
       name: "Declined",
       key: "declined",
-      icon: IoDocumentOutline,
+      icon: MdOutlineCancel,
       b_color: "bg-red-100",
       t_color: "text-red-600",
     },

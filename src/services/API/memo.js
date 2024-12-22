@@ -44,18 +44,16 @@ export const useViewFolderByStatus  = () => {
     })
     return viewFolder
   }
-export const useViewMemo  = (payload) => {
+export const useViewMemo  = (payload)=>{
     //payload will be {memo_id: `value`}
-    return useQuery({
-        queryFn: async () => {
+    return useMutation({
+        mutationFn: async () => {
             const res = await API.post(API_URL.view_memo, payload)
             return res?.data
           },
-          queryKey: ["view_memo"],
-          refetchOnMount: false
+          // queryKey: ["view_memo"],
     })
   }
-
 
   export const useGetMyApprovals  = (payload) => {
     return useQuery({

@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
 
 import { CiStar } from "react-icons/ci";
+import logo from "../../../assets/images/ncaa_logo.png"
 
 
 const Stamp = ({
   institutionName = "NIGERIA CIVIL",
   designation,
-  date = "03 DEC 2023",
+  date = "",
   address = "AVIATION AUTHORITY",
-  logoUrl = "src/assets/images/ncaa_logo.png",
+  logoUrl = logo,
 }) => {
   return (
     <div className="relative w-30 h-20 animate-drip-expand  transform rotate-[-5deg] translate-x-4 translate-y-1">
