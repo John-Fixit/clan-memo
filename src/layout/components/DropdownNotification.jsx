@@ -9,7 +9,7 @@ import { BsBellFill } from "react-icons/bs";
 import { cn, } from "@nextui-org/react";
 import { BiQuestionMark, BiUser } from "react-icons/bi";
 import { ImCancelCircle } from "react-icons/im";
-import { Avatar, Button } from "antd";
+import { Avatar, Button, Badge } from "antd";
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { useViewMemoHook } from "../../hooks/useViewMemoHook";
 
@@ -118,18 +118,21 @@ const DropdownNotification = () => {
         to="#"
         className=" relative"
       >
-        <div className="p-1 flex items-center rounded-lg cursor-pointer">
+        <Badge count={treated_requests?.length + awaiting_approval?.length}>
+            <BsBellFill className="text-[#B0C3CC]" size={20} />
+          </Badge>
+        {/* <div className="p-1 flex items-center rounded-lg cursor-pointer">
           <BsBellFill
-            color="grey"
+            color="#B0C3CC"
             size={21}
             className="font-medium text-gray-100"
           />
-          <div className={cn(" absolute h-3 w-5 rounded-full bg-[#0f2c1aaa] flex items-center justify-center -right-2 top-[0.4rem] border border-gray-100",(treated_requests?.length + awaiting_approval?.length) === 0 && "hidden")}>
+          <div className={cn(" absolute p-1 rounded-full bg-red-500 flex items-center justify-center -right-4 top-[0] border border-gray-100",(treated_requests?.length + awaiting_approval?.length) === 0 && "hidden")}>
             <span className="flex items-center justify-center text-[0.57rem] font-bold text-white">
               {treated_requests?.length + awaiting_approval?.length}
             </span>
           </div>
-        </div>
+        </div> */}
       </Link>
 
       <div
@@ -139,6 +142,7 @@ const DropdownNotification = () => {
         className={`absolute md:-right-27 right-0 z-[555]  mt-2.5 flex h-96 max-h-90 w-[19rem] flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80 ${
           dropdownOpen === true ? "block" : "hidden"
         }`}
+        // data-aos="fade-left"
       >
         <div className="px-4 py-3">
           <h5 className="text-sm font-medium text-bodydark2">Notification</h5>

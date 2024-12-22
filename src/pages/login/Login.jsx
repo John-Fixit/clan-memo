@@ -68,7 +68,7 @@ const Login = () => {
           }}
         ></div>
 
-        <section className="absolute form_section w-[85%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-lg p-10">
+        <section className="absolute form_section w-[90%] lg:w-[45vw] xl:w-[30vw] md:w-[55vw] rounded-md bg-white shadow-lg md:p-10 p-5">
           <div className="form_header flex flex-col items-center gap-y-4 text-center pb-3">
             <div className="flex items-center gap-x-1">
               <img

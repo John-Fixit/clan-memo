@@ -35,7 +35,7 @@ const ExpandedDrawer = ({
           header: "font-helvetica bg-[#F7F7F7]",
         }}
       >
-        <div className="h-full mx-3">{children}</div>
+        <div className="h-full md:mx-3 -mx-2">{children}</div>
       </Drawer>
     </>
   );

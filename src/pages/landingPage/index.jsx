@@ -30,7 +30,7 @@ const LandingPage = () => {
 
 
   return (
-    <div className="min-h-screen px-10  bg-gradient-to-br from-slate-900 to-slate-800 relative overflow-hidden">
+    <div className="min-h-screen md:px-16 px-5  bg-gradient-to-br from-slate-900 to-slate-800 relative overflow-hidden">
       {/* Background decoration */}
       <motion.div 
         className="absolute top-0 right-0 w-2/3 h-full bg-blue-600/20  rounded-bl-full"
@@ -40,7 +40,7 @@ const LandingPage = () => {
       />
 
       {/* Navigation */}
-      <nav className="container mx-auto px-6 py-4">
+      <nav className="container mx-auto py-4">
         <div className="flex justify-between items-center">
           <motion.div 
             initial={{ y: -20, opacity: 0 }}
@@ -79,7 +79,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <div className="container mx-auto px-6 py-20">
+      <div className="container mx-auto md:py-14 py-8">
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           {/* Left Column */}
           <motion.div 
@@ -221,7 +221,7 @@ const LandingPage = () => {
       </div>
 
              {/* Features Section */}
-      <div className="container mx-auto px-6 py-32">
+      <div className="container mx-auto px-3 py-32">
         <div className="flex justify-center mb-16">
           <motion.div 
             initial={{ y: 50, opacity: 0 }}

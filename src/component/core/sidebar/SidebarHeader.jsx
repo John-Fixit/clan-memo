@@ -82,7 +82,7 @@ const SidebarHeader = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center py-3 shadow lg:px-28 px-5">
+      <div className="flex justify-between gap-x-4 items-center py-3 shadow lg:px-28 px-3">
         <div className="flex gap-x-4 items-center">
           <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => navigate("/dashboard")}>
             <img
@@ -167,9 +167,7 @@ const SidebarHeader = () => {
             <span className="text-sm">{userData?.data?.FIRST_NAME}{" "}
             {userData?.data?.LAST_NAME}</span>
           </div>
-          {/* <Badge dot>
-            <IoNotifications className="text-[#B0C3CC]" size={20} />
-          </Badge> */}
+          
             <DropdownNotification/>
         </div>
       </div>

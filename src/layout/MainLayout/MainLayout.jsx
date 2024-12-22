@@ -26,7 +26,7 @@ const MainLayout = () => {
       <main>
         <SidebarHeader />
         <section
-          className={`lg:!px-28 !px-7 ${
+          className={`lg:!px-28 !px-5 ${
             !navIsOpen ? "page no_sidebar" : "page page-with-navbar"
           }`}
           onClick={() => {
