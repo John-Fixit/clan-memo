@@ -224,12 +224,20 @@ const SignMemo = ({
                       content="Download as PDF"
                       className="text-xs"
                     >
-                      <AntButton
-                        size="sm"
-                        onClick={downloadPDF}
-                        className="bg-purple-100 text-purple-600"
-                        icon={<MdSaveAlt size={"1.3rem"} />}
-                      />
+                      <ConfigProvider theme={{
+                        token: {
+                          
+                            colorPrimary: "#5A6ACF",
+                          
+                        }
+                      }}>
+                        <AntButton
+                          size="sm"
+                          onClick={downloadPDF}
+                          className="bg-purple-100 hover:!bg-purple-100 hover:!text-purple-600 text-purple-600"
+                          icon={<MdSaveAlt size={"1.3rem"} />}
+                        />
+                      </ConfigProvider>
                     </Tooltip>
                   </>
                 )}

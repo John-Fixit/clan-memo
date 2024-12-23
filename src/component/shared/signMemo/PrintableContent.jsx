@@ -39,7 +39,7 @@ const PrintableContent = ({
           <table border={0} className="leading-7 relative">
             <tbody>
                 {
-                    toPrint ? (
+                    (toPrint && formattedRecipients) ? (
                     <tr>
                         <td className="font-semibold uppercase ">To: </td>
                         <td className="leading-5">{formattedRecipients}</td>
@@ -112,7 +112,7 @@ const PrintableContent = ({
                     {item?.APPROVERS?.FIRST_NAME} {item?.APPROVERS?.LAST_NAME}
                   </span>
 
-                  <div className="absolute bottom-[4.1rem]">
+                  <div className="absolute bottom-[4.15rem]">
                     <Stamp
                       designation={
                         item?.APPROVERS?.RANK || item?.APPROVERS?.DEPARTMENT

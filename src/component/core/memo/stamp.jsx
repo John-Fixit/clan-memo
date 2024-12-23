@@ -91,7 +91,7 @@ const Stamp = ({
         {/* Date text */}
         <text
           x="150"
-          y="120"
+          y="115"
           textAnchor="middle"
           fontSize="20"
           fontFamily="Arial"
