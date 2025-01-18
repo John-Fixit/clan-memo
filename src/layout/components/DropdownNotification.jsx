@@ -6,7 +6,6 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import { toStringDate } from "../../utils/utilities";
 import { Link } from "react-router-dom";
 import { BsBellFill } from "react-icons/bs";
-import { cn, } from "@nextui-org/react";
 import { BiQuestionMark, BiUser } from "react-icons/bi";
 import { ImCancelCircle } from "react-icons/im";
 import { Avatar, Button, Badge } from "antd";
@@ -66,7 +65,6 @@ const DropdownNotification = () => {
     try {
       const res = await seenNotification(json);
       if (res) {
-        console.log(res);
         getAvailableNotification();
       }
     } catch (error) {
@@ -76,7 +74,6 @@ const DropdownNotification = () => {
 
 
   const openDrawer = async (memo) => {
-    // console.log(memo)
     handleOpenMemo({memo: {...memo}, is_approve:memo?.is_approved})
      await handleSeen(memo?.MEMO_ID)
   };

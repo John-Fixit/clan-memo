@@ -7,8 +7,10 @@ import SignaturePad from "react-signature-canvas";
 import { Button, ConfigProvider } from "antd";
 import { ImCancelCircle } from "react-icons/im";
 
-const SignatureView = ({ sigCanvas, clear, save, setUploadData }) => {
-  const [activeTab, setActiveTab] = useState("");
+const SignatureView = ({ sigCanvas, clear, save, setSignatureFileString, activeTab, setActiveTab }) => {
+ 
+
+  const [fileSelected, setFileSelected] = useState(null);
 
   /// tabs
   const tabData = [
@@ -17,15 +19,35 @@ const SignatureView = ({ sigCanvas, clear, save, setUploadData }) => {
       label: "Create Signature",
       content: "Requiring Promotion",
     },
-    // {
-    //   id: "upload",
-    //   label: "Upload Signature",
-    //   content: "Requiring Promotion",
-    // },
+    {
+      id: "upload",
+      label: "Upload Signature",
+      content: "Requiring Promotion",
+    },
   ];
   const handleTabChange = (item) => {
     setActiveTab(item);
   };
+
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+});
+
+  const handleSelectFile=async(e)=>{
+    const file = e.target.files[0];
+
+    if (file) {
+
+      const base64 = await toBase64(file);
+
+      setSignatureFileString(base64);
+      setFileSelected(base64);
+    }
+
+  }
 
   return (
     <>
@@ -43,7 +65,6 @@ const SignatureView = ({ sigCanvas, clear, save, setUploadData }) => {
                 tabList:
                   "gap-6 w-full relative rounded-none p-0 border-b border-divider",
                 cursor: "w-full bg-[#22d3ee]",
-                // tab: "max-w-fit px-0 h-12",
                 tabContent: "group-data-[selected=true]:text-[#06b6d4]",
               }}
             >
@@ -53,14 +74,6 @@ const SignatureView = ({ sigCanvas, clear, save, setUploadData }) => {
                   title={item.label}
                   className="px-0 font-medium font-Exotic text-base leading-3"
                 >
-                  {/* {activeTab === tabData[0].id && (
-                    <div className="flex justify-center items-center">
-                      <PiSignatureLight size={25} />
-                      <span className="text-l font-bold ml-3">
-                        Create signature
-                      </span>
-                    </div>
-                  )} */}
                 </Tab>
               )}
             </Tabs>
@@ -101,10 +114,19 @@ const SignatureView = ({ sigCanvas, clear, save, setUploadData }) => {
               {/* Button to trigger save canvas image */}
             </div>
           ) : (
-            <>
-              Add your signature
-              {/* <AttachmentApproval setInformation={setUploadData}  /> */}
-            </>
+            <div className="flex justify-center flex-col gap-4 mt-4 min-h-32 items-center">
+              <label htmlFor="signatureFileID">
+                <div className="p-2 rounded border text-center cursor-pointer">
+                  Upload Signature
+                </div>
+                <input type="file" accept="image/*" id="signatureFileID" onChange={handleSelectFile} className="hidden"/>
+              </label>
+              {
+                fileSelected && (
+                  <img src={fileSelected} width={70} height={70} alt="" />
+                )
+              }
+            </div>
           )}
         </div>
       </div>

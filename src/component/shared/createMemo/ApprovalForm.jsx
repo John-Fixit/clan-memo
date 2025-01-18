@@ -73,7 +73,6 @@ const ApprovalForm = ({
     );
 
     if (existed) {
-      console.log(existed);
       errorToast("Already selected");
     } else {
       setValue("approvalDetail", [

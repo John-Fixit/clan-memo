@@ -47,7 +47,6 @@ const Attachment = ({
       if (setValue) {
         //   setValue('attachments',result.file_url_id)
       } else {
-        // console.log(result.file_url_id)
         //    setInformation((information)=>{
         //      return {...information,attachment: information.isAnnouncement? result.file_url : result.file_url_id}
         //     })
@@ -71,12 +70,7 @@ const Attachment = ({
       }
     }
 
-    // uploadAttachment(files)
 
-    // const file = e.target.files[0]
-    // setPreviewImage(URL.createObjectURL(file))
-
-    // console.log(file
   };
 
   const onDragOver = (event) => {
@@ -100,12 +94,6 @@ const Attachment = ({
         ]);
       }
     }
-
-    // //  uploadAttachment(files)
-
-    // const file = event.dataTransfer.files[0]
-    // // console.log(file);
-    //  uploadAttachment(file)
   };
 
   const handleDeleteAttachment = (i) => {

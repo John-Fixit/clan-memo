@@ -10,7 +10,6 @@ export const uploadFileData = async (file, userToken) => {
 
     const res = await uploadFile(formData, userToken);
     if (res) {
-      // console.log(res)
       return res;
     }
   };

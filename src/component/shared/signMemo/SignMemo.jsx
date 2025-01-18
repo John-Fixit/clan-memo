@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Button, Tooltip } from "@nextui-org/react";
 import styles from "../../../assets/styles/signMemo.module.css";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import SignatureView from "./SignatureView";
 import { MdSaveAlt } from "react-icons/md";
-
-import { useDisclosure } from "@nextui-org/react";
 import {
   Modal,
   Result,
@@ -65,6 +62,10 @@ const SignMemo = ({
 
   const [isEdit, setIsEdit] = useState(false);
 
+  const [activeTab, setActiveTab] = useState("");
+
+  const [signatureFileString, setSignatureFileString] = useState(null);
+
   const hasSignature = getSignature?.SIGNATURE;
 
   const [openApprove, setOpenApprove] = useState(false);
@@ -114,7 +115,6 @@ const SignMemo = ({
     }
 
     try {
-      console.log(isApprove ? payload.approve : payload.decline)
       const res = await mutateAsync(
         isApprove ? payload.approve : payload.decline
       );
@@ -124,12 +124,12 @@ const SignMemo = ({
       }
       setIsApprove(false)
       setConfirmationNote("");
+      setSignatureFileString(null);
 
       handleCloseDrawer();
       handleCloseMemo();
       setIsEdit(false);
     } catch (error) {
-      console.log(error)
       const errMsg = error?.response?.data?.message || error?.message;
       errorToast(errMsg);
     } finally {
@@ -146,15 +146,15 @@ const SignMemo = ({
       confirmApproveOrDecline(hasSignature);
     } else {
       const base64String = sigCanvas.current
-        .getTrimmedCanvas()
-        .toDataURL("image/png");
-
-      // Convert data URL to Blob
-      const blob = dataURItoBlob(base64String);
+        ?.getTrimmedCanvas()
+        ?.toDataURL("image/png");
+      // // Convert data URL to Blob
+      const blob = dataURItoBlob(activeTab==="create"? base64String : activeTab==="upload" &&signatureFileString);
 
       const file = new File([blob], "signature.png", { type: "image/png" });
 
       const res = await uploadFileData(file, userData?.token);
+
 
       confirmApproveOrDecline(res?.file_url_id);
     }
@@ -190,8 +190,6 @@ const SignMemo = ({
     approveStatus?.IS_APPROVED || approveStatus?.IS_DECLINED;
 
 
-    console.log(memoApprovers)
-
   return (
     <>
       {getMemoLoading ? (
@@ -220,10 +218,6 @@ const SignMemo = ({
                 )}
                 {selfMemo && (
                   <>
-                    <Tooltip
-                      content="Download as PDF"
-                      className="text-xs"
-                    >
                       <ConfigProvider theme={{
                         token: {
                           
@@ -238,7 +232,6 @@ const SignMemo = ({
                           icon={<MdSaveAlt size={"1.3rem"} />}
                         />
                       </ConfigProvider>
-                    </Tooltip>
                   </>
                 )}
               </div>
@@ -251,127 +244,6 @@ const SignMemo = ({
                 />
               ) : (
                 <>
-                  {/* <div
-                    style={{
-                      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(${logo})`,
-                      backgroundSize: "600px",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "center",
-                    }}
-                    ref={contentRef}
-                    className="px-12 py-20"
-                  >
-                    <div className="header_address">
-                      <div className="flex justify-center items-center gap-x-2">
-                        <img
-                          src={logo}
-                          alt="communeety logo"
-                          width={40}
-                          className="cursor-pointer"
-                        />
-                        <span className="font-bold leading-3">
-                          Nigeria Civil Aviation Authority
-                        </span>
-                      </div>
-                      <p className="font-semibold  text-2xl my-2 text-center uppercase">
-                        Internal Memo
-                      </p>
-                      <table border={0} className="leading-7 relative">
-                        <tbody>
-                          <tr>
-                            <td className="font-semibold uppercase ">To: </td>
-                            <td className="leading-5">{formattedRecipients}</td>
-                          </tr>
-                          <tr>
-                            <td className="font-semibold uppercase">From: </td>
-                            <td className="font-medium">
-                              {memoDetail?.MEMO_FROM}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="font-semibold uppercase ">Date: </td>
-                            <td className="font-medium">
-                              {moment(memoDetail?.DATE_CREATED)?.format(
-                                "MMMM DD, YYYY"
-                              )}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="font-semibold uppercase ">
-                              Subject:{" "}
-                            </td>
-                            <td className="font-bold text-base ">
-                              {memoDetail?.SUBJECT}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <hr className="my-3 border-t-2 border-gray-500 w-full" />
-                    </div>
-                    <div className="body_of_memo !text-black !text-md">
-                      <div
-                        className="text-[0.9rem] leading-6 text-justify text-default-900 rendered-html-content"
-                        dangerouslySetInnerHTML={{
-                          __html: memoDetail?.MEMO_CONTENT,
-                        }}
-                      />
-
-                      <br />
-                    </div>
-                    <div className="mt-7 mb-5">
-                      <div className="flex gap-x-9 gap-y-14 flex-wrap items-end">
-                        {memoApprovers?.map((item, index) =>
-                          item?.IS_APPROVED ? (
-                            <div
-                              className="flex flex-col items-center gap-y-2 relative border"
-                              key={index + "_"}
-                            >
-                              <div className="border-b-1 flex justify-center border-b-black w-full">
-                                <img
-                                  src={item?.APPROVERS?.SIGNATURE}
-                                  alt=""
-                                  style={{
-                                    height: "50%",
-                                    width: "50%",
-                                  }}
-                                />
-                              </div>
-                              <div className="mt-2">
-                                {item?.APPROVERS?.RANK ? (
-                                  <span className="text-xs text-default-700 flex">
-                                    {item?.APPROVERS?.RANK}
-                                  </span>
-                                ) : (
-                                  <div className="h-3.5"></div>
-                                )}
-                              </div>
-
-                              <span className="text-xs text-default-700 flex capitalize">
-                                {item?.APPROVERS?.DEPARTMENT?.toLowerCase()}
-                              </span>
-
-                              <span className=" text-default-700 flex">
-                                {item?.APPROVERS?.FIRST_NAME}{" "}
-                                {item?.APPROVERS?.LAST_NAME}
-                              </span>
-
-                              <div className="absolute bottom-[4.5rem]">
-                                <Stamp
-                                  designation={
-                                    item?.APPROVERS?.RANK ||
-                                    item?.APPROVERS?.DEPARTMENT
-                                  }
-                                  date={moment(item?.DATE_DONE)?.format(
-                                    "DD MMM YYYY"
-                                  )}
-                                />
-                              </div>
-                            </div>
-                          ) : null
-                        )}
-                      </div>
-                    </div>
-                  </div> */}
                 <PrintableContent contentRef={contentRef} memoDetail={memoDetail} memoApprovers={memoApprovers} formattedRecipients={formattedRecipients}/>
                 <PrintableContent contentRef={contentRef} memoDetail={memoDetail} memoApprovers={memoApprovers} formattedRecipients={formattedRecipients} toPrint={true}/>
                 </>
@@ -432,7 +304,7 @@ const SignMemo = ({
         <div>
           {(isApprove && !hasSignature) && (
             <>
-              <SignatureView save={save} clear={clear} sigCanvas={sigCanvas} />
+              <SignatureView save={save} clear={clear} sigCanvas={sigCanvas} setSignatureFileString={setSignatureFileString} activeTab={activeTab} setActiveTab={setActiveTab}/>
             </>
           )}
           <div className="mt-3">

@@ -21,7 +21,6 @@ const Dashboard = () => {
       staff_id:userData?.data?.STAFF_ID
     })
 
-    console.log(fileStatus)
 
 
   return (

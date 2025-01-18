@@ -37,7 +37,6 @@ const AddNote = () => {
 
   const handleSubmitMemo = () => {
     setIsLoading(true);
-    console.log(to, subject, memo_body);
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);

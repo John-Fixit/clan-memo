@@ -33,7 +33,6 @@ const Login = () => {
 
     mutate(payload, {
         onError: (error)=>{
-            console.log(error)
             const errMsg = error?.response?.data?.message || error?.message
             errorToast(errMsg)
         },

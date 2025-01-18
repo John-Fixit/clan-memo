@@ -84,8 +84,6 @@ const ScrollableFolders = () => {
     staff_id:userData?.data?.STAFF_ID
   })
 
-//   console.log(data, status_value)
-
 
 
   const scroll = (direction) => {

@@ -46,7 +46,6 @@ const FolderForm = () => {
 
        },
        onSuccess:(response)=>{
-        // console.log(response);
         successToast('Folder created successfuly')
         queryClient.invalidateQueries('list_folder_status')
         // 

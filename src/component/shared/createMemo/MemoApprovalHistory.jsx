@@ -6,7 +6,6 @@ import { filePrefix } from "../../../utils/filePrefix";
 
 const MemoApprovalHistory = ({ memoApprovers, currentView, role }) => {
 
-  console.log(memoApprovers)
 
   const data = {
     _id: 3,

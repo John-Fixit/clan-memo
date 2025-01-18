@@ -23,7 +23,6 @@ const CreateMemoDrawer = () => {
   } = useHandleMemo();
 
 
-  console.log(draftedMemo)
 
   const { mutate, isPending } = useCreateMemo({
     updateDraft: draftedMemo ? true : false,
@@ -127,67 +126,6 @@ const CreateMemoDrawer = () => {
   ]);
 
 
-
-  const formatFieldName = (fieldName) => {
-    // Replace underscores with spaces and capitalize the first letter
-    return fieldName
-      .replace(/_/g, " ") // Replace underscores with spaces
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter
-  };
-
-  // const onSubmit = async({ is_draft }) => {
-
-  //   // const isValid = await trigger()
-
-  //   console.log(errors)
-
-  //   const values = { ...getValues(), is_draft };
-  //   const approval = values?.approvalDetail?.map((item) => {
-  //     return {
-  //       STAFF_ID: item?.STAFF_ID,
-  //       DESIGNATION: item?.designation,
-  //     };
-  //   });
-
-  //   const payload = {
-  //     memo_subject: values.subject,
-  //     content: values.body,
-  //     staff_id: userData?.data?.STAFF_ID,
-  //     company_id: userData?.data.COMPANY_ID,
-  //     for: values?.senderName || userData?.data?.STAFF_ID, //"5678",
-  //     recipient_type: values?.recipient_type,
-  //     recipient_value: values?.recipient_value, //DirectorateID, deparmentID, regionID, unitID
-  //     recipients: values?.recipients, // If staff is picked as recipient type
-  //     approvals: approval,
-  //     is_draft: values?.is_draft || 0, // 1 means save as draft, 0 means submit for approval
-  //     folder: values?.folder, // or whatever name of folder chosen or created
-  //     memo_id: memoData?.MEMO_ID || null,
-  //   };
-
-  //   if (Object.keys(errors).length > 0) {
-  //     const errorMessages = Object.entries(errors).map(([field]) => {
-  //       const formattedField = formatFieldName(field);
-  //       return `${formattedField} is required.`;
-  //     });
-
-  //     errorToast(errorMessages.join("\n"));
-  //   } else {
-  //     console.log("payload: ", payload);
-  //     // mutate(payload, {
-  //     //   onError: (error) => {
-  //     //     const errMessage = error?.response?.data?.message || error?.message;
-
-  //     //     errorToast(errMessage);
-  //     //   },
-  //     //   onSuccess: (response) => {
-  //     //     const resMsg = response?.data?.message;
-  //     //     successToast(resMsg);
-  //     //     reset();
-  //     //     handleCloseCreateMemo();
-  //     //   },
-  //     // });
-  //   }
-  // };
 
   const onSubmit = ({ is_draft }) => {
     const values = { ...getValues(), is_draft };

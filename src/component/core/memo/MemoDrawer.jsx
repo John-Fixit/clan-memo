@@ -48,9 +48,6 @@ const MemoDrawer = () => {
   const selfMemo = memo?.INITIATOR === userData?.data?.STAFF_ID || !is_approve;
 
 
-  // console.log(data)
-  console.log(getMemoDetail)
-
 
 
 
