@@ -118,18 +118,6 @@ const DropdownNotification = () => {
         <Badge count={treated_requests?.length + awaiting_approval?.length}>
             <BsBellFill className="text-[#B0C3CC]" size={20} />
           </Badge>
-        {/* <div className="p-1 flex items-center rounded-lg cursor-pointer">
-          <BsBellFill
-            color="#B0C3CC"
-            size={21}
-            className="font-medium text-gray-100"
-          />
-          <div className={cn(" absolute p-1 rounded-full bg-red-500 flex items-center justify-center -right-4 top-[0] border border-gray-100",(treated_requests?.length + awaiting_approval?.length) === 0 && "hidden")}>
-            <span className="flex items-center justify-center text-[0.57rem] font-bold text-white">
-              {treated_requests?.length + awaiting_approval?.length}
-            </span>
-          </div>
-        </div> */}
       </Link>
 
       <div

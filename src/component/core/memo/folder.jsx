@@ -148,17 +148,7 @@ const ScrollableFolders = () => {
 //     }
 //   };
   
-  // Sample folder data
-  const folders = [
-    { name: "General", fileCount: 45 },
-    { name: "Images", fileCount: 128 },
-    { name: "Projects", fileCount: 23 },
-    { name: "Downloads", fileCount: 67 },
-    { name: "Music", fileCount: 256 },
-    { name: "Videos", fileCount: 89 },
-    { name: "Work", fileCount: 34 },
-    { name: "Personal", fileCount: 78 }
-  ];
+
 
   return (
     <div className="relative max-w-full mx-auto">

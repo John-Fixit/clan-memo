@@ -119,7 +119,7 @@ const RecentActivity = ({ userData }) => {
                         {item?.ACTIVITY}
                       </p>
                       <p className="text-[#273240] opacity-70 leading-[20px] tracking-[0.5px] text-[12px]">
-                        {moment(item?.DATE_CREATED)?.calendar()}
+                        {moment(item?.DATE_CREATED)?.format("DD/MM/YYYY")}
                       </p>
                     </div>
                   </motion.div>
